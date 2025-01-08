@@ -3,10 +3,16 @@ import { Button } from "@/components/ui/button";
 export const Hero = () => {
   return (
     <div className="min-h-[80vh] flex flex-col items-center justify-center text-center px-4 animate-fade-up">
-      <h1 className="text-4xl md:text-6xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-primary to-purple-400">
-        Promplify: Amplify Your AI Potential
+      <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
+        <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary via-purple-600 to-primary inline-block">
+          Promplify:
+        </span>
+        <br />
+        <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary to-purple-600">
+          Amplify Your AI Potential
+        </span>
       </h1>
-      <p className="text-xl md:text-2xl font-semibold text-gray-700 mb-6">
+      <p className="text-xl md:text-2xl font-semibold text-gray-700 mb-6 max-w-2xl">
         Boost Your Prompts. Empower Your AI.
       </p>
       <p className="text-lg md:text-xl text-gray-600 max-w-2xl mb-8">
