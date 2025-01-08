@@ -8,7 +8,7 @@ export const Footer = () => {
         <div className="flex flex-col md:flex-row justify-between items-center">
           <div className="mb-6 md:mb-0">
             <Logo />
-            <p className="text-white/80 mt-2">Amplify Your AI Potential</p>
+            <p className="text-white/80 mt-2 text-sm">Amplify Your AI Potential</p>
           </div>
           <div className="flex space-x-6">
             <a href="#" className="text-white/80 hover:text-white transition-colors">
