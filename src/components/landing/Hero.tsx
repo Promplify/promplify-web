@@ -8,13 +8,12 @@ export const Hero = () => {
       
       <div className="relative animate-fade-up z-10">
         <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
-          <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#2C106A] to-purple-600 md:text-8xl">
+          <p className="bg-clip-text text-transparent bg-gradient-to-r from-[#2C106A] to-purple-600 md:text-8xl" style={{ lineHeight: '1.2' }}>
             Promplify
-          </span>
-          <br />
-          <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#2C106A] to-purple-600">
+          </p>
+          <p className="bg-clip-text text-transparent bg-gradient-to-r from-[#2C106A] to-purple-600">
             Amplify Your AI Potential
-          </span>
+          </p>
         </h1>
         <p className="text-xl md:text-2xl font-semibold text-gray-700 mb-6 max-w-2xl">
           Boost Your Prompts, Empower Your AI.
