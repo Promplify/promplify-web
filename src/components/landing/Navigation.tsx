@@ -13,13 +13,10 @@ export const Navigation = () => {
 
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center space-x-8">
-            <a href="#features" className="text-white/80 hover:text-white transition-colors">
-              Features
+            <a href="https://github.com/promplify" target="_blank" rel="noopener noreferrer" className="text-white/80 hover:text-white transition-colors">
+              GitHub
             </a>
-            <a href="#how-it-works" className="text-white/80 hover:text-white transition-colors">
-              How It Works
-            </a>
-            <Button className="bg-white text-black hover:bg-white/90">Get Started</Button>
+            <Button className="bg-white text-black hover:bg-white/90">Join Waitlist</Button>
           </div>
 
           {/* Mobile Menu Button */}
@@ -34,14 +31,11 @@ export const Navigation = () => {
         {isMenuOpen && (
           <div className="md:hidden bg-black border-t border-white/10 py-4">
             <div className="flex flex-col space-y-4 px-4">
-              <a href="#features" className="text-white/80 hover:text-white transition-colors py-2" onClick={() => setIsMenuOpen(false)}>
-                Features
-              </a>
-              <a href="#how-it-works" className="text-white/80 hover:text-white transition-colors py-2" onClick={() => setIsMenuOpen(false)}>
-                How It Works
+              <a href="https://github.com/promplify" target="_blank" rel="noopener noreferrer" className="text-white/80 hover:text-white transition-colors py-2" onClick={() => setIsMenuOpen(false)}>
+                GitHub
               </a>
               <Button className="bg-white text-black hover:bg-white/90 w-full" onClick={() => setIsMenuOpen(false)}>
-                Get Started
+                Join Waitlist
               </Button>
             </div>
           </div>
