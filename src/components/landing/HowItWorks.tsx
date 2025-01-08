@@ -3,18 +3,18 @@ import { Button } from "@/components/ui/button";
 const steps = [
   {
     number: "01",
-    title: "Input Your Prompt",
-    description: "Start with your basic prompt or choose from our templates",
+    title: "Save Your Prompts",
+    description: "Store and organize all your AI prompts in one central location",
   },
   {
     number: "02",
-    title: "Enhance & Refine",
-    description: "Our AI analyzes and suggests improvements to your prompt",
+    title: "Optimize & Improve",
+    description: "Get AI-powered suggestions to enhance your prompts' effectiveness",
   },
   {
     number: "03",
-    title: "Get Results",
-    description: "See better responses from your favorite AI models",
+    title: "Monitor Tokens",
+    description: "Track token usage and optimize prompt lengths for better results",
   },
 ];
 
@@ -38,7 +38,7 @@ export const HowItWorks = () => {
         </div>
         <div className="text-center">
           <Button size="lg" className="bg-primary hover:bg-primary/90">
-            Try It Now
+            Start Managing Your Prompts
           </Button>
         </div>
       </div>

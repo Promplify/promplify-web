@@ -1,20 +1,20 @@
-import { Zap, Target, Sparkles } from "lucide-react";
+import { BookMarked, Sparkles, Gauge } from "lucide-react";
 
 const features = [
   {
-    icon: Zap,
-    title: "Lightning Fast",
-    description: "Get instant results with our optimized prompt processing engine",
-  },
-  {
-    icon: Target,
-    title: "Precision Control",
-    description: "Fine-tune your prompts with advanced customization options",
+    icon: BookMarked,
+    title: "Centralized Prompt Management",
+    description: "Store, organize, and access all your AI prompts in one secure location",
   },
   {
     icon: Sparkles,
-    title: "Smart Suggestions",
-    description: "AI-powered recommendations to improve your prompts",
+    title: "AI-Powered Optimization",
+    description: "Get intelligent suggestions to improve your prompts and learn best practices",
+  },
+  {
+    icon: Gauge,
+    title: "Token Management",
+    description: "Track and optimize your prompt lengths with built-in token management",
   },
 ];
 
@@ -23,7 +23,7 @@ export const Features = () => {
     <div className="py-24 bg-gray-50">
       <div className="container mx-auto px-4">
         <h2 className="text-3xl md:text-4xl font-bold text-center mb-16">
-          Why Choose Promplify?
+          Everything You Need for Better Prompts
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
           {features.map((feature, index) => (

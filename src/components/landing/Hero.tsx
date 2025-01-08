@@ -7,15 +7,15 @@ export const Hero = () => {
         Amplify Your AI Potential
       </h1>
       <p className="text-lg md:text-xl text-gray-600 max-w-2xl mb-8">
-        Transform your AI interactions with powerful prompt engineering tools. 
-        Make your AI conversations more effective, precise, and productive.
+        Manage, optimize, and master your AI prompts in one place. 
+        Get AI-powered suggestions and best practices to make your prompts more effective.
       </p>
       <div className="space-x-4">
         <Button size="lg" className="bg-primary hover:bg-primary/90">
-          Get Started
+          Start Managing Prompts
         </Button>
         <Button size="lg" variant="outline">
-          Learn More
+          Learn Best Practices
         </Button>
       </div>
     </div>
