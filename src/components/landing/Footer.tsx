@@ -8,7 +8,7 @@ export const Footer = () => {
         <div className="flex flex-col md:flex-row justify-between items-center md:items-start">
           <div className="flex flex-col items-center md:items-start mb-6 md:mb-0">
             <Logo />
-            <p className="text-white/80 mt-2 text-sm text-center md:text-left">Coming Soon - Join Our Waitlist!</p>
+            <p className="text-white/80 mt-2 text-sm text-center md:text-left">Amplify Your AI Potential</p>
           </div>
           <div className="flex space-x-6 mt-4 md:mt-0">
             <a href="https://github.com/promplify" target="_blank" rel="noopener noreferrer" className="text-white/80 hover:text-white transition-colors" title="Follow us on GitHub">
