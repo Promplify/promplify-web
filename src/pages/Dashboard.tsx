@@ -33,12 +33,12 @@ export default function Dashboard() {
         <div className="flex-1 flex w-full">
           <DashboardSidebar />
           <div className="flex-1 flex flex-col">
-            <main className="flex-1 p-6 bg-gray-50">
+            <main className="flex-1 container mx-auto px-4 py-8">
               <Routes>
                 <Route path="/" element={
-                  <div className="container mx-auto">
-                    <h2 className="text-2xl font-bold mb-6">Welcome to Promplify</h2>
-                    <div className="bg-white rounded-lg shadow p-6">
+                  <div className="space-y-6">
+                    <h2 className="text-2xl font-bold">Welcome to Promplify</h2>
+                    <div className="bg-white rounded-lg shadow-sm border p-6">
                       <p className="text-gray-500">Get started by creating your first prompt.</p>
                     </div>
                   </div>

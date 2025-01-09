@@ -1,10 +1,38 @@
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { Logo } from "./Logo";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { supabase } from "@/lib/supabase";
+import { toast } from "sonner";
+import { LogOut } from "lucide-react";
 
 export const Navigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const navigate = useNavigate();
+  const [session, setSession] = useState(null);
+
+  // Check auth state on component mount
+  useState(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+    });
+
+    supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
+  });
+
+  const handleLogout = async () => {
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+      toast.success("Logged out successfully");
+      navigate("/");
+    } catch (error) {
+      console.error("Logout error:", error);
+      toast.error("Failed to logout");
+    }
+  };
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-black shadow-md">
@@ -23,11 +51,29 @@ export const Navigation = () => {
             <a href="https://github.com/promplify" target="_blank" rel="noopener noreferrer" className="text-white/80 hover:text-white transition-colors">
               GitHub
             </a>
-            <Link to="/auth">
-              <Button className="bg-primary text-white hover:bg-primary/90">
-                Sign In
-              </Button>
-            </Link>
+            {session ? (
+              <div className="flex items-center gap-4">
+                <Link to="/dashboard">
+                  <Button variant="ghost" className="text-white hover:text-white/90">
+                    Dashboard
+                  </Button>
+                </Link>
+                <Button 
+                  onClick={handleLogout}
+                  variant="ghost" 
+                  className="text-white hover:text-white/90 flex items-center gap-2"
+                >
+                  <LogOut className="w-4 h-4" />
+                  Logout
+                </Button>
+              </div>
+            ) : (
+              <Link to="/auth">
+                <Button className="bg-primary text-white hover:bg-primary/90">
+                  Sign In
+                </Button>
+              </Link>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
@@ -51,11 +97,32 @@ export const Navigation = () => {
               <a href="https://github.com/promplify" target="_blank" rel="noopener noreferrer" className="text-white/80 hover:text-white transition-colors py-2" onClick={() => setIsMenuOpen(false)}>
                 GitHub
               </a>
-              <Link to="/auth" onClick={() => setIsMenuOpen(false)}>
-                <Button className="w-full bg-primary text-white hover:bg-primary/90">
-                  Sign In
-                </Button>
-              </Link>
+              {session ? (
+                <>
+                  <Link to="/dashboard" onClick={() => setIsMenuOpen(false)}>
+                    <Button variant="ghost" className="w-full text-white hover:text-white/90">
+                      Dashboard
+                    </Button>
+                  </Link>
+                  <Button 
+                    onClick={() => {
+                      handleLogout();
+                      setIsMenuOpen(false);
+                    }}
+                    variant="ghost"
+                    className="w-full text-white hover:text-white/90 flex items-center justify-center gap-2"
+                  >
+                    <LogOut className="w-4 h-4" />
+                    Logout
+                  </Button>
+                </>
+              ) : (
+                <Link to="/auth" onClick={() => setIsMenuOpen(false)}>
+                  <Button className="w-full bg-primary text-white hover:bg-primary/90">
+                    Sign In
+                  </Button>
+                </Link>
+              )}
             </div>
           </div>
         )}
