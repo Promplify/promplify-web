@@ -98,7 +98,7 @@ export const Navigation = () => {
                       <AvatarFallback className="bg-primary/20 text-white text-lg">{session.user.email?.charAt(0).toUpperCase()}</AvatarFallback>
                     </Avatar>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent className="w-56 mt-2" align="end">
+                  <DropdownMenuContent className="w-56 mt-3" align="end">
                     <div className="flex flex-col space-y-1 p-2">
                       <p className="text-sm font-medium leading-none">{session.user.user_metadata?.full_name || userProfile?.full_name || session.user.email}</p>
                       <p className="text-xs leading-none text-muted-foreground">{session.user.email}</p>
