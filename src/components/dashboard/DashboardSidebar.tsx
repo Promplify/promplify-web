@@ -38,10 +38,10 @@ export function DashboardSidebar() {
   const location = useLocation();
 
   return (
-    <Sidebar>
+    <Sidebar className="border-r border-border/10">
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel className="text-base font-semibold">Menu</SidebarGroupLabel>
+          <SidebarGroupLabel className="text-base font-semibold px-6">Menu</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {mainMenuItems.map((item) => (
@@ -49,16 +49,16 @@ export function DashboardSidebar() {
                   <SidebarMenuButton asChild>
                     <Link 
                       to={item.url} 
-                      className={`flex items-center gap-4 px-6 py-4 text-base rounded-lg transition-colors ${
+                      className={`flex items-center gap-4 px-6 py-4 text-base rounded-lg transition-all hover:bg-primary/5 ${
                         location.pathname === item.url 
-                          ? "bg-primary/10 text-primary" 
-                          : "hover:bg-primary/5"
+                          ? "bg-primary text-primary-foreground" 
+                          : "text-gray-500 hover:text-primary"
                       }`}
                     >
                       <item.icon className={`h-5 w-5 ${
                         location.pathname === item.url 
-                          ? "text-primary" 
-                          : "text-gray-500"
+                          ? "text-primary-foreground" 
+                          : "text-gray-400"
                       }`} />
                       <span className="font-medium">{item.title}</span>
                     </Link>
