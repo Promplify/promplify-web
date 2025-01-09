@@ -5,14 +5,34 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { LoginForm } from "@/components/auth/LoginForm";
 import { SignUpForm } from "@/components/auth/SignUpForm";
+import { supabase } from "@/lib/supabase";
+import { toast } from "sonner";
 
 export default function Auth() {
+  const handleSocialLogin = async (provider: 'github' | 'google') => {
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider,
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback`
+        }
+      });
+
+      if (error) {
+        toast.error(error.message);
+      }
+    } catch (error) {
+      console.error(`${provider} login error:`, error);
+      toast.error(`An error occurred during ${provider} login`);
+    }
+  };
+
   return (
     <div className="container relative min-h-screen flex-col items-center justify-center grid lg:max-w-none lg:grid-cols-2 lg:px-0">
       <div className="relative hidden h-full flex-col bg-muted p-10 text-white lg:flex dark:border-r">
         <div className="absolute inset-0 bg-[#2C106A]" />
-        <div className="relative z-20 flex items-center text-2xl font-medium">
-          <img src="/logo.svg" alt="Promplify Logo" className="h-12 w-auto mr-4" />
+        <div className="relative z-20 flex items-center text-3xl font-medium">
+          <img src="/logo.svg" alt="Promplify Logo" className="h-16 w-auto mr-4" />
           Promplify
         </div>
         <div className="relative z-20 mt-8">
@@ -30,14 +50,25 @@ export default function Auth() {
                 </svg>
               </div>
               <div>
-                <h3 className="text-xl font-semibold">Lightning Fast</h3>
-                <p className="text-white/70">Instant access to your prompts</p>
+                <h3 className="text-xl font-semibold">Streamline Your Workflow</h3>
+                <p className="text-white/70">Manage all your AI prompts in one place</p>
               </div>
             </div>
             <div className="flex items-center space-x-4">
               <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center">
                 <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                </svg>
+              </div>
+              <div>
+                <h3 className="text-xl font-semibold">Version Control</h3>
+                <p className="text-white/70">Track and improve your prompts over time</p>
+              </div>
+            </div>
+            <div className="flex items-center space-x-4">
+              <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center">
+                <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                 </svg>
               </div>
               <div>
@@ -57,7 +88,7 @@ export default function Auth() {
         </div>
       </div>
       <div className="lg:p-8">
-        <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[450px]">
+        <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[500px]">
           <Card className="p-8">
             <CardHeader className="space-y-1">
               <CardTitle className="text-3xl text-center">Welcome back</CardTitle>
@@ -67,11 +98,21 @@ export default function Auth() {
             </CardHeader>
             <CardContent className="grid gap-6">
               <div className="grid grid-cols-2 gap-6">
-                <Button variant="outline" size="lg" className="w-full">
+                <Button 
+                  variant="outline" 
+                  size="lg" 
+                  className="w-full"
+                  onClick={() => handleSocialLogin('google')}
+                >
                   <FcGoogle className="mr-2 h-5 w-5" />
                   Google
                 </Button>
-                <Button variant="outline" size="lg" className="w-full">
+                <Button 
+                  variant="outline" 
+                  size="lg" 
+                  className="w-full"
+                  onClick={() => handleSocialLogin('github')}
+                >
                   <Github className="mr-2 h-5 w-5" />
                   Github
                 </Button>
