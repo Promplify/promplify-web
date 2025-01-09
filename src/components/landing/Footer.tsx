@@ -1,4 +1,4 @@
-import { Github, Mail, Twitter } from "lucide-react";
+import { Github, Mail } from "lucide-react";
 import { Logo } from "./Logo";
 
 export const Footer = () => {
@@ -13,9 +13,6 @@ export const Footer = () => {
           <div className="flex space-x-6 mt-4 md:mt-0">
             <a href="https://github.com/promplify" target="_blank" rel="noopener noreferrer" className="text-white/80 hover:text-white transition-colors" title="Follow us on GitHub">
               <Github className="w-6 h-6" />
-            </a>
-            <a href="https://twitter.com/promplify" target="_blank" rel="noopener noreferrer" className="text-white/80 hover:text-white transition-colors" title="Follow us on Twitter">
-              <Twitter className="w-6 h-6" />
             </a>
             <a href="mailto:hello@promplify.ai" className="text-white/80 hover:text-white transition-colors" title="Contact us">
               <Mail className="w-6 h-6" />
