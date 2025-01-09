@@ -14,11 +14,17 @@ export const Navigation = () => {
 
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center space-x-8">
+            <a href="#features" className="text-white/80 hover:text-white transition-colors">
+              Features
+            </a>
+            <a href="#how-it-works" className="text-white/80 hover:text-white transition-colors">
+              How It Works
+            </a>
             <a href="https://github.com/promplify" target="_blank" rel="noopener noreferrer" className="text-white/80 hover:text-white transition-colors">
               GitHub
             </a>
             <Link to="/auth">
-              <Button variant="outline" className="text-white border-white/20 hover:bg-white/10">
+              <Button className="bg-primary text-white hover:bg-primary/90">
                 Sign In
               </Button>
             </Link>
@@ -36,11 +42,17 @@ export const Navigation = () => {
         {isMenuOpen && (
           <div className="md:hidden bg-black border-t border-white/10 py-4">
             <div className="flex flex-col space-y-4 px-4">
+              <a href="#features" className="text-white/80 hover:text-white transition-colors py-2" onClick={() => setIsMenuOpen(false)}>
+                Features
+              </a>
+              <a href="#how-it-works" className="text-white/80 hover:text-white transition-colors py-2" onClick={() => setIsMenuOpen(false)}>
+                How It Works
+              </a>
               <a href="https://github.com/promplify" target="_blank" rel="noopener noreferrer" className="text-white/80 hover:text-white transition-colors py-2" onClick={() => setIsMenuOpen(false)}>
                 GitHub
               </a>
               <Link to="/auth" onClick={() => setIsMenuOpen(false)}>
-                <Button variant="outline" className="w-full text-white border-white/20 hover:bg-white/10">
+                <Button className="w-full bg-primary text-white hover:bg-primary/90">
                   Sign In
                 </Button>
               </Link>

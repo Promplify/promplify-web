@@ -1,5 +1,5 @@
 import { Home, Plus, List, Settings, LogOut } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
 import {
@@ -55,23 +55,29 @@ export function DashboardSidebar() {
     <Sidebar>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Menu</SidebarGroupLabel>
+          <SidebarGroupLabel className="text-sm font-medium">Menu</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {mainMenuItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
-                    <a href={item.url} className="flex items-center gap-2">
-                      <item.icon className="h-4 w-4" />
-                      <span>{item.title}</span>
-                    </a>
+                    <Link 
+                      to={item.url} 
+                      className="flex items-center gap-3 px-4 py-3 text-base hover:bg-primary/10 rounded-lg transition-colors"
+                    >
+                      <item.icon className="h-5 w-5 text-primary" />
+                      <span className="font-medium">{item.title}</span>
+                    </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
               <SidebarMenuItem>
-                <SidebarMenuButton onClick={handleLogout} className="flex items-center gap-2 text-red-500 hover:text-red-600">
-                  <LogOut className="h-4 w-4" />
-                  <span>Logout</span>
+                <SidebarMenuButton 
+                  onClick={handleLogout} 
+                  className="flex items-center gap-3 px-4 py-3 text-base text-red-500 hover:bg-red-50 rounded-lg transition-colors w-full"
+                >
+                  <LogOut className="h-5 w-5" />
+                  <span className="font-medium">Logout</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>
