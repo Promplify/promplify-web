@@ -20,9 +20,9 @@ const features = [
 
 export const Features = () => {
   return (
-    <div className="py-24 bg-gradient-to-b from-white to-gray-50/50" id="features">
+    <div className="py-16 bg-gradient-to-b from-white to-gray-50/50" id="features">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-16">
+        <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-[#2C106A] to-purple-600">
             Everything You Need for Better Prompts
           </h2>
