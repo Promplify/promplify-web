@@ -32,7 +32,9 @@ export default function Auth() {
       <div className="relative hidden h-full flex-col bg-muted p-8 text-white lg:flex dark:border-r">
         <div className="absolute inset-0 bg-[#000000]" />
         <div className="relative z-20 flex items-center text-2xl font-medium">
-          <img src="/logo.svg" alt="Promplify Logo" className="h-12 w-auto mr-3" />
+          <a href="/">
+            <img src="/logo.svg" alt="Promplify Logo" className="h-12 w-auto mr-3" />
+          </a>
         </div>
         <div className="relative z-20 mt-6">
           <div className="space-y-4">

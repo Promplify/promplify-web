@@ -55,11 +55,11 @@ export const Navigation = () => {
             {session ? (
               <div className="flex items-center gap-4">
                 <Link to="/dashboard">
-                  <Button variant="ghost" className={`${isDashboard ? "bg-white" : ""}`}>
+                  <Button variant="ghost" className={`text-white/80 ${isDashboard ? "bg-white text-black" : ""}`}>
                     Dashboard
                   </Button>
                 </Link>
-                <Button onClick={handleLogout} variant="ghost" className="text-white flex items-center gap-2">
+                <Button onClick={handleLogout} variant="ghost" className="text-white/80 flex items-center gap-2">
                   <LogOut className="w-4 h-4" />
                   Logout
                 </Button>

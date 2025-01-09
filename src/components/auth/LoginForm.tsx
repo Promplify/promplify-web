@@ -54,8 +54,6 @@ export function LoginForm() {
         password,
       });
 
-      console.log("Login response:", { data, error });
-
       if (error) {
         if (error.message.includes("Invalid login credentials")) {
           toast.error("Invalid email or password, please try again");
