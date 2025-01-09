@@ -3,6 +3,7 @@ import { Navigation } from "@/components/landing/Navigation";
 import { supabase } from "@/lib/supabase";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -12,10 +13,10 @@ export default function Dashboard() {
       const {
         data: { session },
       } = await supabase.auth.getSession();
-      // if (!session) {
-      //   toast.error("Please login to access the dashboard");
-      //   navigate("/auth");
-      // }
+      if (!session) {
+        toast.error("Please login to access the dashboard");
+        navigate("/auth");
+      }
     };
 
     checkAuth();

@@ -14,7 +14,7 @@ export const Footer = () => {
             <a href="https://github.com/promplify" target="_blank" rel="noopener noreferrer" className="text-white/80 hover:text-white transition-colors" title="Follow us on GitHub">
               <Github className="w-6 h-6" />
             </a>
-            <a href="mailto:hello@promplify.ai" className="text-white/80 hover:text-white transition-colors" title="Contact us">
+            <a href="mailto:support@promplify.com" className="text-white/80 hover:text-white transition-colors" title="Contact us">
               <Mail className="w-6 h-6" />
             </a>
           </div>
@@ -25,4 +25,4 @@ export const Footer = () => {
       </div>
     </footer>
   );
-}
+};
