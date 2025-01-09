@@ -29,28 +29,30 @@ export default function Dashboard() {
     <div className="min-h-screen flex flex-col bg-background">
       <Navigation />
       
-      <SidebarProvider>
-        <div className="flex-1 flex container mx-auto">
-          <DashboardSidebar />
-          <div className="flex-1 flex flex-col">
-            <main className="flex-1 py-8 px-6">
-              <Routes>
-                <Route path="/" element={
-                  <div className="space-y-6">
-                    <h2 className="text-2xl font-bold">Welcome to Promplify</h2>
-                    <div className="bg-white rounded-lg shadow-sm border p-6">
-                      <p className="text-gray-500">Get started by creating your first prompt.</p>
+      <div className="flex-1 container mx-auto px-4">
+        <SidebarProvider>
+          <div className="flex gap-6 relative pt-24">
+            <DashboardSidebar />
+            <div className="flex-1 min-w-0">
+              <main className="py-6">
+                <Routes>
+                  <Route path="/" element={
+                    <div className="space-y-6">
+                      <h2 className="text-2xl font-bold">Welcome to Promplify</h2>
+                      <div className="bg-white rounded-lg shadow-sm border p-6">
+                        <p className="text-gray-500">Get started by creating your first prompt.</p>
+                      </div>
                     </div>
-                  </div>
-                } />
-                <Route path="/create" element={<CreatePrompt />} />
-                <Route path="/prompts" element={<Prompts />} />
-                <Route path="/settings" element={<Settings />} />
-              </Routes>
-            </main>
+                  } />
+                  <Route path="/create" element={<CreatePrompt />} />
+                  <Route path="/prompts" element={<Prompts />} />
+                  <Route path="/settings" element={<Settings />} />
+                </Routes>
+              </main>
+            </div>
           </div>
-        </div>
-      </SidebarProvider>
+        </SidebarProvider>
+      </div>
 
       <Footer />
     </div>
