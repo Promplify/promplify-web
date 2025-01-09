@@ -16,7 +16,6 @@ export const Navigation = () => {
             <a href="https://github.com/promplify" target="_blank" rel="noopener noreferrer" className="text-white/80 hover:text-white transition-colors">
               GitHub
             </a>
-            <Button className="bg-white text-black hover:bg-white/90">Join Waitlist</Button>
           </div>
 
           {/* Mobile Menu Button */}
@@ -34,9 +33,6 @@ export const Navigation = () => {
               <a href="https://github.com/promplify" target="_blank" rel="noopener noreferrer" className="text-white/80 hover:text-white transition-colors py-2" onClick={() => setIsMenuOpen(false)}>
                 GitHub
               </a>
-              <Button className="bg-white text-black hover:bg-white/90 w-full" onClick={() => setIsMenuOpen(false)}>
-                Join Waitlist
-              </Button>
             </div>
           </div>
         )}
