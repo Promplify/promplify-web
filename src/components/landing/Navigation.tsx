@@ -70,7 +70,7 @@ export const Navigation = () => {
               GitHub
             </a>
             {session ? (
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-4 !ml-4">
                 <Link to="/dashboard">
                   <Button className={`bg-black hover:text-white hover:bg-white/10 text-white/80 text-[16px] ${isDashboard ? "bg-white text-black" : ""}`}>Dashboard</Button>
                 </Link>
