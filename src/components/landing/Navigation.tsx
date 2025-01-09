@@ -89,7 +89,7 @@ export const Navigation = () => {
             {session ? (
               <div className="flex items-center gap-4">
                 <Link to="/dashboard">
-                  <Button className={`bg-black hover:text-white hover:bg-white/10 text-white/80 ${isDashboard ? "bg-white text-black" : ""}`}>Dashboard</Button>
+                  <Button className={`bg-black hover:text-white hover:bg-white/10 text-white/80 text-[16px] ${isDashboard ? "bg-white text-black" : ""}`}>Dashboard</Button>
                 </Link>
                 <DropdownMenu>
                   <DropdownMenuTrigger className="focus:outline-none">
