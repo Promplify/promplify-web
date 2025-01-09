@@ -11,6 +11,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarFooter,
 } from "@/components/ui/sidebar";
 
 const mainMenuItems = [
@@ -55,7 +56,7 @@ export function DashboardSidebar() {
     <Sidebar>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel className="text-sm font-medium">Menu</SidebarGroupLabel>
+          <SidebarGroupLabel className="text-base font-semibold">Menu</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {mainMenuItems.map((item) => (
@@ -63,7 +64,7 @@ export function DashboardSidebar() {
                   <SidebarMenuButton asChild>
                     <Link 
                       to={item.url} 
-                      className="flex items-center gap-3 px-4 py-3 text-base hover:bg-primary/10 rounded-lg transition-colors"
+                      className="flex items-center gap-4 px-6 py-4 text-base hover:bg-primary/10 rounded-lg transition-colors"
                     >
                       <item.icon className="h-5 w-5 text-primary" />
                       <span className="font-medium">{item.title}</span>
@@ -71,19 +72,20 @@ export function DashboardSidebar() {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
-              <SidebarMenuItem>
-                <SidebarMenuButton 
-                  onClick={handleLogout} 
-                  className="flex items-center gap-3 px-4 py-3 text-base text-red-500 hover:bg-red-50 rounded-lg transition-colors w-full"
-                >
-                  <LogOut className="h-5 w-5" />
-                  <span className="font-medium">Logout</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+      
+      <SidebarFooter className="p-4 border-t border-gray-200">
+        <button 
+          onClick={handleLogout}
+          className="flex w-full items-center gap-4 px-6 py-4 text-base text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+        >
+          <LogOut className="h-5 w-5" />
+          <span className="font-medium">Logout</span>
+        </button>
+      </SidebarFooter>
     </Sidebar>
   );
 }
