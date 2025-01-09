@@ -11,9 +11,41 @@ export default function Auth() {
     <div className="container relative min-h-screen flex-col items-center justify-center grid lg:max-w-none lg:grid-cols-2 lg:px-0">
       <div className="relative hidden h-full flex-col bg-muted p-10 text-white lg:flex dark:border-r">
         <div className="absolute inset-0 bg-[#2C106A]" />
-        <div className="relative z-20 flex items-center text-lg font-medium">
-          <img src="/logo.svg" alt="Promplify Logo" className="h-8 w-8 mr-2" />
+        <div className="relative z-20 flex items-center text-2xl font-medium">
+          <img src="/logo.svg" alt="Promplify Logo" className="h-12 w-auto mr-4" />
           Promplify
+        </div>
+        <div className="relative z-20 mt-8">
+          <div className="space-y-6">
+            <h1 className="text-4xl font-bold">Welcome to Promplify</h1>
+            <p className="text-xl text-white/80">
+              Your AI prompt management platform. Create, organize, and optimize your prompts with ease.
+            </p>
+          </div>
+          <div className="mt-16 space-y-8">
+            <div className="flex items-center space-x-4">
+              <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center">
+                <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+              </div>
+              <div>
+                <h3 className="text-xl font-semibold">Lightning Fast</h3>
+                <p className="text-white/70">Instant access to your prompts</p>
+              </div>
+            </div>
+            <div className="flex items-center space-x-4">
+              <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center">
+                <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                </svg>
+              </div>
+              <div>
+                <h3 className="text-xl font-semibold">Secure Storage</h3>
+                <p className="text-white/70">Your prompts are safe with us</p>
+              </div>
+            </div>
+          </div>
         </div>
         <div className="relative z-20 mt-auto">
           <blockquote className="space-y-2">
@@ -25,22 +57,22 @@ export default function Auth() {
         </div>
       </div>
       <div className="lg:p-8">
-        <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
-          <Card>
+        <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[450px]">
+          <Card className="p-8">
             <CardHeader className="space-y-1">
-              <CardTitle className="text-2xl text-center">Welcome back</CardTitle>
-              <CardDescription className="text-center">
+              <CardTitle className="text-3xl text-center">Welcome back</CardTitle>
+              <CardDescription className="text-center text-lg">
                 Choose your preferred sign in method
               </CardDescription>
             </CardHeader>
-            <CardContent className="grid gap-4">
+            <CardContent className="grid gap-6">
               <div className="grid grid-cols-2 gap-6">
-                <Button variant="outline" className="w-full">
-                  <FcGoogle className="mr-2 h-4 w-4" />
+                <Button variant="outline" size="lg" className="w-full">
+                  <FcGoogle className="mr-2 h-5 w-5" />
                   Google
                 </Button>
-                <Button variant="outline" className="w-full">
-                  <Github className="mr-2 h-4 w-4" />
+                <Button variant="outline" size="lg" className="w-full">
+                  <Github className="mr-2 h-5 w-5" />
                   Github
                 </Button>
               </div>

@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { Logo } from "./Logo";
+import { Link } from "react-router-dom";
 
 export const Navigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -16,6 +17,11 @@ export const Navigation = () => {
             <a href="https://github.com/promplify" target="_blank" rel="noopener noreferrer" className="text-white/80 hover:text-white transition-colors">
               GitHub
             </a>
+            <Link to="/auth">
+              <Button variant="outline" className="text-white border-white/20 hover:bg-white/10">
+                Sign In
+              </Button>
+            </Link>
           </div>
 
           {/* Mobile Menu Button */}
@@ -33,10 +39,15 @@ export const Navigation = () => {
               <a href="https://github.com/promplify" target="_blank" rel="noopener noreferrer" className="text-white/80 hover:text-white transition-colors py-2" onClick={() => setIsMenuOpen(false)}>
                 GitHub
               </a>
+              <Link to="/auth" onClick={() => setIsMenuOpen(false)}>
+                <Button variant="outline" className="w-full text-white border-white/20 hover:bg-white/10">
+                  Sign In
+                </Button>
+              </Link>
             </div>
           </div>
         )}
       </div>
     </nav>
   );
-};
+}
