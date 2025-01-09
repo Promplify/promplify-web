@@ -63,25 +63,8 @@ export const Navigation = () => {
           <Logo />
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center space-x-8">
-            <a
-              href="/#features"
-              className="text-white/80 hover:text-white transition-colors"
-              onClick={(e) => {
-                e.preventDefault();
-                window.scrollTo({ top: document.getElementById("features").offsetTop - 68, behavior: "smooth" });
-              }}
-            >
-              Features
-            </a>
-            <a
-              href="/#how-it-works"
-              className="text-white/80 hover:text-white transition-colors"
-              onClick={(e) => {
-                e.preventDefault();
-                window.scrollTo({ top: document.getElementById("how-it-works").offsetTop - 68, behavior: "smooth" });
-              }}
-            >
-              How It Works
+            <a href="/" className="text-white/80 hover:text-white transition-colors">
+              Home
             </a>
             <a href="https://github.com/promplify" target="_blank" rel="noopener noreferrer" className="text-white/80 hover:text-white transition-colors">
               GitHub
@@ -134,11 +117,8 @@ export const Navigation = () => {
         {isMenuOpen && (
           <div className="md:hidden bg-black border-t border-white/10 py-4">
             <div className="flex flex-col space-y-4 px-4">
-              <a href="#features" className="text-white/80 hover:text-white transition-colors py-2" onClick={() => setIsMenuOpen(false)}>
-                Features
-              </a>
-              <a href="#how-it-works" className="text-white/80 hover:text-white transition-colors py-2" onClick={() => setIsMenuOpen(false)}>
-                How It Works
+              <a href="/" className="text-white/80 hover:text-white transition-colors py-2" onClick={() => setIsMenuOpen(false)}>
+                Home
               </a>
               <a href="https://github.com/promplify" target="_blank" rel="noopener noreferrer" className="text-white/80 hover:text-white transition-colors py-2" onClick={() => setIsMenuOpen(false)}>
                 GitHub
