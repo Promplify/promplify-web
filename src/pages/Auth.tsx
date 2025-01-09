@@ -1,21 +1,21 @@
-import { Button } from "@/components/ui/button";
-import { Github } from "lucide-react";
-import { FcGoogle } from "react-icons/fc";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { LoginForm } from "@/components/auth/LoginForm";
 import { SignUpForm } from "@/components/auth/SignUpForm";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/lib/supabase";
+import { Github } from "lucide-react";
+import { FcGoogle } from "react-icons/fc";
 import { toast } from "sonner";
 
 export default function Auth() {
-  const handleSocialLogin = async (provider: 'github' | 'google') => {
+  const handleSocialLogin = async (provider: "github" | "google") => {
     try {
       const { error } = await supabase.auth.signInWithOAuth({
         provider,
         options: {
-          redirectTo: `${window.location.origin}/dashboard`
-        }
+          redirectTo: `${window.location.origin}/dashboard`,
+        },
       });
 
       if (error) {
@@ -30,17 +30,14 @@ export default function Auth() {
   return (
     <div className="container relative min-h-screen flex-col items-center justify-center grid lg:max-w-none lg:grid-cols-2 lg:px-0">
       <div className="relative hidden h-full flex-col bg-muted p-10 text-white lg:flex dark:border-r">
-        <div className="absolute inset-0 bg-[#2C106A]" />
+        <div className="absolute inset-0 bg-[#000000]" />
         <div className="relative z-20 flex items-center text-3xl font-medium">
           <img src="/logo.svg" alt="Promplify Logo" className="h-16 w-auto mr-4" />
-          Promplify
         </div>
         <div className="relative z-20 mt-8">
           <div className="space-y-6">
             <h1 className="text-4xl font-bold">Welcome to Promplify</h1>
-            <p className="text-xl text-white/80">
-              Your AI prompt management platform. Create, organize, and optimize your prompts with ease.
-            </p>
+            <p className="text-xl text-white/80">Your AI prompt management platform. Create, organize, and optimize your prompts with ease.</p>
           </div>
           <div className="mt-16 space-y-8">
             <div className="flex items-center space-x-4">
@@ -68,7 +65,12 @@ export default function Auth() {
             <div className="flex items-center space-x-4">
               <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center">
                 <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+                  />
                 </svg>
               </div>
               <div>
@@ -92,27 +94,15 @@ export default function Auth() {
           <Card className="p-8">
             <CardHeader className="space-y-1">
               <CardTitle className="text-3xl text-center">Welcome back</CardTitle>
-              <CardDescription className="text-center text-lg">
-                Choose your preferred sign in method
-              </CardDescription>
+              <CardDescription className="text-center text-lg">Choose your preferred sign in method</CardDescription>
             </CardHeader>
             <CardContent className="grid gap-6">
               <div className="grid grid-cols-2 gap-6">
-                <Button 
-                  variant="outline" 
-                  size="lg" 
-                  className="w-full"
-                  onClick={() => handleSocialLogin('google')}
-                >
+                <Button variant="outline" size="lg" className="w-full" onClick={() => handleSocialLogin("google")}>
                   <FcGoogle className="mr-2 h-5 w-5" />
                   Google
                 </Button>
-                <Button 
-                  variant="outline" 
-                  size="lg" 
-                  className="w-full"
-                  onClick={() => handleSocialLogin('github')}
-                >
+                <Button variant="outline" size="lg" className="w-full" onClick={() => handleSocialLogin("github")}>
                   <Github className="mr-2 h-5 w-5" />
                   Github
                 </Button>
@@ -122,9 +112,7 @@ export default function Auth() {
                   <span className="w-full border-t" />
                 </div>
                 <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-background px-2 text-muted-foreground">
-                    Or continue with
-                  </span>
+                  <span className="bg-background px-2 text-muted-foreground">Or continue with</span>
                 </div>
               </div>
               <Tabs defaultValue="login" className="w-full">
