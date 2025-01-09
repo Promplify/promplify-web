@@ -1,7 +1,9 @@
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { supabase } from "@/lib/supabase";
-import { LogOut } from "lucide-react";
-import { useState } from "react";
+import { LogOut, Settings } from "lucide-react";
+import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { Logo } from "./Logo";
@@ -10,19 +12,37 @@ export const Navigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
   const [session, setSession] = useState(null);
+  const [userProfile, setUserProfile] = useState(null);
   const location = useLocation();
   const isDashboard = location.pathname === "/dashboard";
 
-  // Check auth state on component mount
-  useState(() => {
+  // Check auth state and fetch user profile on component mount
+  useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
+      if (session?.user) {
+        fetchUserProfile(session.user.id);
+      }
     });
 
     supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
+      if (session?.user) {
+        fetchUserProfile(session.user.id);
+      }
     });
-  });
+  }, []);
+
+  const fetchUserProfile = async (userId) => {
+    try {
+      const { data, error } = await supabase.from("profiles").select("*").eq("id", userId).single();
+
+      if (error) throw error;
+      setUserProfile(data);
+    } catch (error) {
+      console.error("Error fetching user profile:", error);
+    }
+  };
 
   const handleLogout = async () => {
     try {
@@ -43,10 +63,24 @@ export const Navigation = () => {
           <Logo />
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center space-x-8">
-            <a href="/#features" className="text-white/80 hover:text-white transition-colors">
+            <a
+              href="/#features"
+              className="text-white/80 hover:text-white transition-colors"
+              onClick={(e) => {
+                e.preventDefault();
+                window.scrollTo({ top: document.getElementById("features").offsetTop - 68, behavior: "smooth" });
+              }}
+            >
               Features
             </a>
-            <a href="/#how-it-works" className="text-white/80 hover:text-white transition-colors">
+            <a
+              href="/#how-it-works"
+              className="text-white/80 hover:text-white transition-colors"
+              onClick={(e) => {
+                e.preventDefault();
+                window.scrollTo({ top: document.getElementById("how-it-works").offsetTop - 68, behavior: "smooth" });
+              }}
+            >
               How It Works
             </a>
             <a href="https://github.com/promplify" target="_blank" rel="noopener noreferrer" className="text-white/80 hover:text-white transition-colors">
@@ -55,14 +89,31 @@ export const Navigation = () => {
             {session ? (
               <div className="flex items-center gap-4">
                 <Link to="/dashboard">
-                  <Button variant="ghost" className={`text-white/80 ${isDashboard ? "bg-white text-black" : ""}`}>
-                    Dashboard
-                  </Button>
+                  <Button className={`bg-black hover:text-white hover:bg-white/10 text-white/80 ${isDashboard ? "bg-white text-black" : ""}`}>Dashboard</Button>
                 </Link>
-                <Button onClick={handleLogout} variant="ghost" className="text-white/80 flex items-center gap-2">
-                  <LogOut className="w-4 h-4" />
-                  Logout
-                </Button>
+                <DropdownMenu>
+                  <DropdownMenuTrigger className="focus:outline-none">
+                    <Avatar className="w-10 h-10 border-2 border-white/20 hover:border-white/40 transition-colors">
+                      <AvatarImage src={session.user.user_metadata?.avatar_url || userProfile?.avatar_url} />
+                      <AvatarFallback className="bg-primary/20 text-white text-lg">{session.user.email?.charAt(0).toUpperCase()}</AvatarFallback>
+                    </Avatar>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="w-56 mt-2" align="end">
+                    <div className="flex flex-col space-y-1 p-2">
+                      <p className="text-sm font-medium leading-none">{session.user.user_metadata?.full_name || userProfile?.full_name || session.user.email}</p>
+                      <p className="text-xs leading-none text-muted-foreground">{session.user.email}</p>
+                    </div>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={() => navigate("/settings")} className="cursor-pointer">
+                      <Settings className="mr-2 h-4 w-4" />
+                      <span>Settings</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={handleLogout} className="cursor-pointer text-red-600 focus:text-red-600">
+                      <LogOut className="mr-2 h-4 w-4" />
+                      <span>Log out</span>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
             ) : (
               <Link to="/auth">
