@@ -3,8 +3,8 @@ import { Logo } from "./Logo";
 
 export const Footer = () => {
   return (
-    <footer className="bg-black py-8">
-      <div className="container mx-auto px-4">
+    <footer className="w-full bg-black py-8">
+      <div className="container mx-auto px-6">
         <div className="flex flex-col md:flex-row justify-between items-center md:items-start">
           <div className="flex flex-col items-center md:items-start mb-6 md:mb-0">
             <Logo />

@@ -26,15 +26,17 @@ export default function Dashboard() {
   }, [navigate]);
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
+    <div className="min-h-screen flex flex-col">
       <Navigation />
       
-      <div className="flex-1 container mx-auto px-4">
+      <div className="flex-1 flex">
         <SidebarProvider>
-          <div className="flex gap-6 relative pt-24">
-            <DashboardSidebar />
-            <div className="flex-1 min-w-0">
-              <main className="py-6">
+          <div className="flex w-full">
+            <div className="fixed top-[68px] bottom-0 z-40">
+              <DashboardSidebar />
+            </div>
+            <div className="flex-1 pl-64">
+              <main className="container mx-auto px-6 py-8">
                 <Routes>
                   <Route path="/" element={
                     <div className="space-y-6">
