@@ -38,7 +38,7 @@ export function DashboardSidebar() {
   const location = useLocation();
 
   return (
-    <Sidebar className="h-full w-64 shrink-0 border-r bg-background shadow-sm">
+    <Sidebar className="h-[calc(100vh-68px)] w-64 shrink-0 border-r bg-background">
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupLabel className="text-sm font-medium px-4 py-2">Menu</SidebarGroupLabel>

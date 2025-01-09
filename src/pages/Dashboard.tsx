@@ -28,15 +28,14 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen flex flex-col">
       <Navigation />
-      
       <div className="flex-1 flex">
         <SidebarProvider>
           <div className="flex w-full">
-            <div className="fixed top-[68px] bottom-0 z-40">
+            <div className="fixed left-0 top-[68px] bottom-0 z-40">
               <DashboardSidebar />
             </div>
             <div className="flex-1 pl-64">
-              <main className="container mx-auto px-6 py-8">
+              <main className="min-h-[calc(100vh-68px-88px)] container mx-auto px-6 py-8">
                 <Routes>
                   <Route path="/" element={
                     <div className="space-y-6">
@@ -51,12 +50,11 @@ export default function Dashboard() {
                   <Route path="/settings" element={<Settings />} />
                 </Routes>
               </main>
+              <Footer />
             </div>
           </div>
         </SidebarProvider>
       </div>
-
-      <Footer />
     </div>
   );
 }
