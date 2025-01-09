@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export const Hero = () => {
   return (
@@ -26,8 +27,10 @@ export const Hero = () => {
         <p className="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto mb-8">Optimize your prompts, enhance your AI interactions, and unlock the full potential of artificial intelligence.</p>
         
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-          <Button size="lg" className="bg-[#2C106A] hover:bg-[#2C106A]/90 text-white px-8 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
-            Get Started <ArrowRight className="ml-2 h-4 w-4" />
+          <Button asChild size="lg" className="bg-[#2C106A] hover:bg-[#2C106A]/90 text-white px-8 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+            <Link to="/auth">
+              Get Started <ArrowRight className="ml-2 h-4 w-4" />
+            </Link>
           </Button>
           <Button size="lg" variant="outline" className="border-[#2C106A] text-[#2C106A] hover:bg-[#2C106A]/5 shadow-md hover:shadow-lg transition-all duration-300">
             Learn More
