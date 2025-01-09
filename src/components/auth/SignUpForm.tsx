@@ -1,20 +1,22 @@
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { supabase } from "@/lib/supabase";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { z } from "zod";
 
-const signUpSchema = z.object({
-  email: z.string().email("请输入有效的邮箱地址"),
-  password: z.string().min(6, "密码至少需要6个字符"),
-  confirmPassword: z.string().min(6, "确认密码至少需要6个字符"),
-}).refine((data) => data.password === data.confirmPassword, {
-  message: "两次输入的密码不匹配",
-  path: ["confirmPassword"],
-});
+const signUpSchema = z
+  .object({
+    email: z.string().email("Please enter a valid email address"),
+    password: z.string().min(6, "Password must be at least 6 characters"),
+    confirmPassword: z.string().min(6, "Confirm password must be at least 6 characters"),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"],
+  });
 
 export function SignUpForm() {
   const [email, setEmail] = useState("");
@@ -66,69 +68,64 @@ export function SignUpForm() {
 
       if (error) {
         if (error.message.includes("User already registered")) {
-          toast.error("该邮箱已被注册");
+          toast.error("Email already registered. Please sign in or use a different email");
         } else {
-          toast.error(error.message);
+          toast.error("Registration failed: " + error.message);
         }
       } else {
-        toast.success("注册成功！请查收邮件以确认您的账户");
-        navigate("/");
+        toast.success("Registration successful! We've sent a confirmation email to your address. Please check your inbox and click the confirmation link to activate your account.");
+        setEmail("");
+        setPassword("");
+        setConfirmPassword("");
       }
     } catch (error) {
       console.error("Signup error:", error);
-      toast.error("注册过程中发生错误");
+      toast.error("An error occurred during registration");
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="grid gap-4">
+    <form onSubmit={handleSubmit} className="grid gap-6">
       <div className="grid gap-2">
-        <Label htmlFor="email">邮箱</Label>
-        <Input 
-          id="email" 
-          type="email" 
+        <Label htmlFor="email" className="text-base">
+          Email
+        </Label>
+        <Input
+          id="email"
+          type="email"
           placeholder="name@example.com"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          required 
-          className={errors.email ? "border-red-500" : ""}
+          required
+          className={`h-12 text-base ${errors.email ? "border-red-500" : ""}`}
         />
-        {errors.email && (
-          <p className="text-sm text-red-500">{errors.email}</p>
-        )}
+        {errors.email && <p className="text-sm text-red-500">{errors.email}</p>}
       </div>
       <div className="grid gap-2">
-        <Label htmlFor="password">密码</Label>
-        <Input 
-          id="password" 
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required 
-          className={errors.password ? "border-red-500" : ""}
-        />
-        {errors.password && (
-          <p className="text-sm text-red-500">{errors.password}</p>
-        )}
+        <Label htmlFor="password" className="text-base">
+          Password
+        </Label>
+        <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required className={`h-12 text-base ${errors.password ? "border-red-500" : ""}`} />
+        {errors.password && <p className="text-sm text-red-500">{errors.password}</p>}
       </div>
       <div className="grid gap-2">
-        <Label htmlFor="confirm-password">确认密码</Label>
-        <Input 
-          id="confirm-password" 
+        <Label htmlFor="confirm-password" className="text-base">
+          Confirm Password
+        </Label>
+        <Input
+          id="confirm-password"
           type="password"
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
-          required 
-          className={errors.confirmPassword ? "border-red-500" : ""}
+          required
+          className={`h-12 text-base ${errors.confirmPassword ? "border-red-500" : ""}`}
         />
-        {errors.confirmPassword && (
-          <p className="text-sm text-red-500">{errors.confirmPassword}</p>
-        )}
+        {errors.confirmPassword && <p className="text-sm text-red-500">{errors.confirmPassword}</p>}
       </div>
-      <Button type="submit" className="w-full" disabled={isLoading}>
-        {isLoading ? "创建账户中..." : "创建账户"}
+      <Button type="submit" className="w-full h-12 text-base mt-2" disabled={isLoading}>
+        {isLoading ? "Creating account..." : "Create account"}
       </Button>
     </form>
   );

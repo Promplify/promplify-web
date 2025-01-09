@@ -28,18 +28,18 @@ export default function Auth() {
   };
 
   return (
-    <div className="container relative min-h-screen flex-col items-center justify-center grid lg:max-w-none lg:grid-cols-2 lg:px-0">
-      <div className="relative hidden h-full flex-col bg-muted p-10 text-white lg:flex dark:border-r">
+    <div className="container relative min-h-screen flex-col items-center justify-center grid lg:max-w-none lg:grid-cols-[2fr_3fr] lg:px-0">
+      <div className="relative hidden h-full flex-col bg-muted p-8 text-white lg:flex dark:border-r">
         <div className="absolute inset-0 bg-[#000000]" />
-        <div className="relative z-20 flex items-center text-3xl font-medium">
-          <img src="/logo.svg" alt="Promplify Logo" className="h-16 w-auto mr-4" />
+        <div className="relative z-20 flex items-center text-2xl font-medium">
+          <img src="/logo.svg" alt="Promplify Logo" className="h-12 w-auto mr-3" />
         </div>
-        <div className="relative z-20 mt-8">
-          <div className="space-y-6">
-            <h1 className="text-4xl font-bold">Welcome to Promplify</h1>
-            <p className="text-xl text-white/80">Your AI prompt management platform. Create, organize, and optimize your prompts with ease.</p>
+        <div className="relative z-20 mt-6">
+          <div className="space-y-4">
+            <h1 className="text-3xl font-bold">Welcome to Promplify</h1>
+            <p className="text-lg text-white/80">Your AI prompt management platform. Create, organize, and optimize your prompts with ease.</p>
           </div>
-          <div className="mt-16 space-y-8">
+          <div className="mt-12 space-y-6">
             <div className="flex items-center space-x-4">
               <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center">
                 <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -82,27 +82,27 @@ export default function Auth() {
         </div>
         <div className="relative z-20 mt-auto">
           <blockquote className="space-y-2">
-            <p className="text-lg">
+            <p className="text-base italic text-white/90">
               "Promplify has revolutionized how I manage and optimize my AI prompts. The platform's intuitive interface and powerful features have made my workflow significantly more efficient."
             </p>
-            <footer className="text-sm">Sofia Davis, AI Researcher</footer>
+            <footer className="text-sm text-white/70">Sofia Davis, AI Researcher</footer>
           </blockquote>
         </div>
       </div>
       <div className="lg:p-8">
-        <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[500px]">
+        <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[600px]">
           <Card className="p-8">
-            <CardHeader className="space-y-1">
-              <CardTitle className="text-3xl text-center">Welcome back</CardTitle>
-              <CardDescription className="text-center text-lg">Choose your preferred sign in method</CardDescription>
+            <CardHeader className="space-y-2 pb-6">
+              <CardTitle className="text-3xl text-center font-bold">Welcome Back</CardTitle>
+              <CardDescription className="text-center text-lg">Choose your preferred sign-in method</CardDescription>
             </CardHeader>
-            <CardContent className="grid gap-6">
+            <CardContent className="grid gap-8">
               <div className="grid grid-cols-2 gap-6">
-                <Button variant="outline" size="lg" className="w-full" onClick={() => handleSocialLogin("google")}>
+                <Button variant="outline" size="lg" className="w-full h-12 text-base" onClick={() => handleSocialLogin("google")}>
                   <FcGoogle className="mr-2 h-5 w-5" />
                   Google
                 </Button>
-                <Button variant="outline" size="lg" className="w-full" onClick={() => handleSocialLogin("github")}>
+                <Button variant="outline" size="lg" className="w-full h-12 text-base" onClick={() => handleSocialLogin("github")}>
                   <Github className="mr-2 h-5 w-5" />
                   Github
                 </Button>
@@ -111,14 +111,18 @@ export default function Auth() {
                 <div className="absolute inset-0 flex items-center">
                   <span className="w-full border-t" />
                 </div>
-                <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-background px-2 text-muted-foreground">Or continue with</span>
+                <div className="relative flex justify-center text-sm">
+                  <span className="bg-background px-4 text-muted-foreground">Or continue with email</span>
                 </div>
               </div>
               <Tabs defaultValue="login" className="w-full">
-                <TabsList className="grid w-full grid-cols-2">
-                  <TabsTrigger value="login">Login</TabsTrigger>
-                  <TabsTrigger value="register">Register</TabsTrigger>
+                <TabsList className="grid w-full grid-cols-2 h-12 mb-2">
+                  <TabsTrigger value="login" className="text-base">
+                    Login
+                  </TabsTrigger>
+                  <TabsTrigger value="register" className="text-base">
+                    Register
+                  </TabsTrigger>
                 </TabsList>
                 <TabsContent value="login">
                   <LoginForm />
@@ -128,7 +132,7 @@ export default function Auth() {
                 </TabsContent>
               </Tabs>
             </CardContent>
-            <CardFooter className="flex flex-col space-y-4">
+            <CardFooter className="flex flex-col space-y-4 pt-4">
               <div className="text-sm text-muted-foreground text-center">
                 By clicking continue, you agree to our{" "}
                 <a href="/terms" className="underline underline-offset-4 hover:text-primary">
@@ -138,7 +142,6 @@ export default function Auth() {
                 <a href="/privacy" className="underline underline-offset-4 hover:text-primary">
                   Privacy Policy
                 </a>
-                .
               </div>
             </CardFooter>
           </Card>

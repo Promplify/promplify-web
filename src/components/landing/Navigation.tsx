@@ -1,15 +1,17 @@
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
-import { Logo } from "./Logo";
-import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "@/lib/supabase";
-import { toast } from "sonner";
 import { LogOut } from "lucide-react";
+import { useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { toast } from "sonner";
+import { Logo } from "./Logo";
 
 export const Navigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
   const [session, setSession] = useState(null);
+  const location = useLocation();
+  const isDashboard = location.pathname === "/dashboard";
 
   // Check auth state on component mount
   useState(() => {
@@ -39,13 +41,12 @@ export const Navigation = () => {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between" style={{ height: "68px" }}>
           <Logo />
-
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center space-x-8">
-            <a href="#features" className="text-white/80 hover:text-white transition-colors">
+            <a href="/#features" className="text-white/80 hover:text-white transition-colors">
               Features
             </a>
-            <a href="#how-it-works" className="text-white/80 hover:text-white transition-colors">
+            <a href="/#how-it-works" className="text-white/80 hover:text-white transition-colors">
               How It Works
             </a>
             <a href="https://github.com/promplify" target="_blank" rel="noopener noreferrer" className="text-white/80 hover:text-white transition-colors">
@@ -54,24 +55,18 @@ export const Navigation = () => {
             {session ? (
               <div className="flex items-center gap-4">
                 <Link to="/dashboard">
-                  <Button variant="ghost" className="text-white hover:text-white/90">
+                  <Button variant="ghost" className={`${isDashboard ? "bg-white" : ""}`}>
                     Dashboard
                   </Button>
                 </Link>
-                <Button 
-                  onClick={handleLogout}
-                  variant="ghost" 
-                  className="text-white hover:text-white/90 flex items-center gap-2"
-                >
+                <Button onClick={handleLogout} variant="ghost" className="text-white flex items-center gap-2">
                   <LogOut className="w-4 h-4" />
                   Logout
                 </Button>
               </div>
             ) : (
               <Link to="/auth">
-                <Button className="bg-primary text-white hover:bg-primary/90">
-                  Sign In
-                </Button>
+                <Button className="bg-primary text-white hover:bg-primary/90">Sign In</Button>
               </Link>
             )}
           </div>
@@ -104,7 +99,7 @@ export const Navigation = () => {
                       Dashboard
                     </Button>
                   </Link>
-                  <Button 
+                  <Button
                     onClick={() => {
                       handleLogout();
                       setIsMenuOpen(false);
@@ -118,9 +113,7 @@ export const Navigation = () => {
                 </>
               ) : (
                 <Link to="/auth" onClick={() => setIsMenuOpen(false)}>
-                  <Button className="w-full bg-primary text-white hover:bg-primary/90">
-                    Sign In
-                  </Button>
+                  <Button className="w-full bg-primary text-white hover:bg-primary/90">Sign In</Button>
                 </Link>
               )}
             </div>
@@ -129,4 +122,4 @@ export const Navigation = () => {
       </div>
     </nav>
   );
-}
+};
