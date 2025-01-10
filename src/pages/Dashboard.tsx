@@ -34,13 +34,13 @@ export default function Dashboard() {
 
       {/* Main Content */}
       <div className="flex-1 flex overflow-hidden">
-        <div className="flex-none border-r border-gray-200 overflow-y-auto">
+        <div className="flex-none">
           <Sidebar />
         </div>
-        <div className="flex-none border-r border-gray-200 overflow-y-auto">
+        <div className="flex-none border-r border-gray-200">
           <PromptList />
         </div>
-        <div className="flex-1 overflow-y-auto">
+        <div className="flex-1">
           <PromptEditor />
         </div>
       </div>
