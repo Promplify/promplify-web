@@ -14,7 +14,6 @@ export function DashboardHeader() {
         <div className="flex items-center space-x-8">
           <Link to="/" className="flex items-center space-x-2">
             <Logo />
-            <span className="text-xl font-semibold text-white">Promptify</span>
           </Link>
           <nav className="flex items-center space-x-6">
             <Link to="/" className={`transition-colors text-sm ${isActive("/") ? "text-white" : "text-gray-400 hover:text-white"}`}>
