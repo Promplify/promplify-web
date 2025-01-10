@@ -1,4 +1,4 @@
-import { ArrowDownUp, Award, Heart, Plus, Search } from "lucide-react";
+import { ArrowDownUp, Gauge, Heart, Plus, Search } from "lucide-react";
 import { useState } from "react";
 
 interface PromptMeta {
@@ -9,11 +9,9 @@ interface PromptMeta {
   updatedAt: string;
   description: string;
   version: string;
-  rating?: number;
+  performance?: number;
   isFavorite?: boolean;
 }
-
-type SortOption = "date" | "rating";
 
 const mockPrompts: PromptMeta[] = [
   {
@@ -24,7 +22,7 @@ const mockPrompts: PromptMeta[] = [
     tokenCount: 1200,
     updatedAt: "2024-01-10",
     version: "v2.1.0",
-    rating: 10,
+    performance: 10,
     isFavorite: true,
   },
   {
@@ -35,7 +33,7 @@ const mockPrompts: PromptMeta[] = [
     tokenCount: 800,
     updatedAt: "2024-01-09",
     version: "v1.3.2",
-    rating: 9,
+    performance: 9,
     isFavorite: false,
   },
   {
@@ -46,7 +44,7 @@ const mockPrompts: PromptMeta[] = [
     tokenCount: 1500,
     updatedAt: "2024-01-08",
     version: "v2.0.0",
-    rating: 8,
+    performance: 8,
     isFavorite: false,
   },
   {
@@ -57,7 +55,7 @@ const mockPrompts: PromptMeta[] = [
     tokenCount: 900,
     updatedAt: "2024-01-07",
     version: "v1.2.1",
-    rating: 7,
+    performance: 7,
     isFavorite: false,
   },
   {
@@ -68,7 +66,7 @@ const mockPrompts: PromptMeta[] = [
     tokenCount: 2000,
     updatedAt: "2024-01-06",
     version: "v1.0.0",
-    rating: 7,
+    performance: 7,
     isFavorite: false,
   },
   {
@@ -79,7 +77,7 @@ const mockPrompts: PromptMeta[] = [
     tokenCount: 1100,
     updatedAt: "2024-01-05",
     version: "v1.5.0",
-    rating: 6,
+    performance: 6,
     isFavorite: false,
   },
   {
@@ -90,7 +88,7 @@ const mockPrompts: PromptMeta[] = [
     tokenCount: 1300,
     updatedAt: "2024-01-04",
     version: "v1.1.0",
-    rating: 6,
+    performance: 6,
     isFavorite: false,
   },
   {
@@ -101,24 +99,20 @@ const mockPrompts: PromptMeta[] = [
     tokenCount: 950,
     updatedAt: "2024-01-03",
     version: "v1.4.2",
-    rating: 5,
+    performance: 5,
     isFavorite: false,
   },
 ];
 
 export function PromptList() {
-  const [sortBy, setSortBy] = useState<SortOption>("date");
-  const [showFavorites, setShowFavorites] = useState(false);
+  const [sortByDate, setSortByDate] = useState(true);
 
-  // Sort prompts: favorites first, then by date or rating
+  // Sort prompts: favorites first, then by date
   const sortedPrompts = [...mockPrompts].sort((a, b) => {
     if (a.isFavorite !== b.isFavorite) {
       return a.isFavorite ? -1 : 1;
     }
-    if (sortBy === "rating") {
-      return (b.rating || 0) - (a.rating || 0);
-    }
-    return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
+    return sortByDate ? new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime() : new Date(a.updatedAt).getTime() - new Date(b.updatedAt).getTime();
   });
 
   return (
@@ -136,16 +130,10 @@ export function PromptList() {
         </div>
         <div className="flex items-center justify-between text-sm text-gray-500">
           <span>145 prompts</span>
-          <div className="flex items-center space-x-4">
-            <button onClick={() => setShowFavorites(!showFavorites)} className={`flex items-center space-x-1 min-w-[80px] justify-center ${showFavorites ? "text-red-500" : "hover:text-gray-900"}`}>
-              <Heart size={14} className={showFavorites ? "fill-current" : ""} />
-              <span>Favorites</span>
-            </button>
-            <button onClick={() => setSortBy(sortBy === "date" ? "rating" : "date")} className="flex items-center space-x-1 min-w-[100px] justify-center hover:text-gray-900">
-              <ArrowDownUp size={14} />
-              <span>Sort: {sortBy === "date" ? "Rating" : "Date"}</span>
-            </button>
-          </div>
+          <button onClick={() => setSortByDate(!sortByDate)} className="flex items-center space-x-1 min-w-[100px] justify-center hover:text-gray-900">
+            <ArrowDownUp size={14} />
+            <span>Sort by date</span>
+          </button>
         </div>
       </div>
       <div className="overflow-y-auto h-[calc(100%-145px)]">
@@ -159,10 +147,10 @@ export function PromptList() {
                     <button className={`transition-opacity ${prompt.isFavorite ? "opacity-100" : "opacity-0 group-hover:opacity-100"}`}>
                       <Heart size={14} className={`transition-colors hover:text-red-500 ${prompt.isFavorite ? "text-red-500 fill-current" : "text-gray-400"}`} />
                     </button>
-                    {prompt.rating && (
-                      <div className="flex items-center text-xs bg-amber-50 px-2 py-1 rounded-full">
-                        <Award size={12} className="text-amber-500" />
-                        <span className="ml-1 text-amber-700">{prompt.rating}</span>
+                    {prompt.performance && (
+                      <div className="flex items-center text-xs bg-purple-50 px-2 py-1 rounded-full">
+                        <Gauge size={12} className="text-purple-500" />
+                        <span className="ml-1 text-purple-700">{prompt.performance}</span>
                       </div>
                     )}
                     <span className="text-xs text-gray-500">{prompt.version}</span>

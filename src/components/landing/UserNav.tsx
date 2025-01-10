@@ -14,19 +14,37 @@ export function UserNav() {
 
   useEffect(() => {
     async function getProfile() {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
-      if (session?.user) {
-        const { data } = await supabase.from("profiles").select("avatar_url, full_name, email").eq("id", session.user.id).single();
+      try {
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
+        if (session?.user) {
+          const { data: profileData } = await supabase.from("profiles").select("avatar_url, full_name, email").eq("id", session.user.id).single();
 
-        setProfile(
-          data || {
-            email: session.user.email,
-            full_name: session.user.user_metadata?.full_name,
-            avatar_url: session.user.user_metadata?.avatar_url,
+          if (profileData) {
+            setProfile(profileData);
+          } else {
+            // Fallback to user metadata if no profile exists
+            setProfile({
+              email: session.user.email,
+              full_name: session.user.user_metadata?.full_name,
+              avatar_url: session.user.user_metadata?.avatar_url,
+            });
           }
-        );
+
+          // Update profile if it doesn't exist
+          if (!profileData) {
+            await supabase.from("profiles").upsert({
+              id: session.user.id,
+              email: session.user.email,
+              full_name: session.user.user_metadata?.full_name,
+              avatar_url: session.user.user_metadata?.avatar_url,
+              updated_at: new Date().toISOString(),
+            });
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching profile:", error);
       }
     }
 
