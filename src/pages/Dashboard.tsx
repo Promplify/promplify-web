@@ -26,21 +26,27 @@ export default function Dashboard() {
   }, [navigate]);
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col h-screen">
       {/* Fixed Header */}
-      <div className="fixed top-0 left-0 right-0 z-10">
+      <div className="flex-none">
         <DashboardHeader />
       </div>
 
-      {/* Main Content with top padding for header */}
-      <div className="flex flex-1 pt-16 pb-12">
-        <Sidebar />
-        <PromptList />
-        <PromptEditor />
+      {/* Main Content */}
+      <div className="flex-1 flex overflow-hidden">
+        <div className="flex-none border-r border-gray-200 overflow-y-auto">
+          <Sidebar />
+        </div>
+        <div className="flex-none border-r border-gray-200 overflow-y-auto">
+          <PromptList />
+        </div>
+        <div className="flex-1 overflow-y-auto">
+          <PromptEditor />
+        </div>
       </div>
 
       {/* Fixed Footer */}
-      <div className="fixed bottom-0 left-0 right-0 z-10">
+      <div className="flex-none">
         <DashboardFooter />
       </div>
     </div>
