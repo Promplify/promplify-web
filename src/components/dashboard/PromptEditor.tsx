@@ -8,10 +8,13 @@ export function PromptEditor() {
     <div className="flex-1 h-full bg-gray-50 flex flex-col">
       <div className="p-3 border-b border-gray-200 bg-white flex items-center justify-between">
         <div className="flex items-center space-x-4">
-          <h2 className="font-medium">Edit Prompt</h2>
+          <h2 className="font-medium">Code Optimization Assistant</h2>
           <span className="text-sm text-gray-500">Version 2.1.0</span>
         </div>
         <div className="flex items-center space-x-2">
+          <span className="text-sm text-gray-500">
+            <b className="text-primary">#</b>FJ737KF73LMN
+          </span>
           <button className="inline-flex items-center px-3 py-1.5 border border-gray-300 shadow-sm text-sm font-medium rounded text-gray-700 bg-white hover:bg-gray-50">
             <Copy size={16} className="mr-1.5" />
             Copy
