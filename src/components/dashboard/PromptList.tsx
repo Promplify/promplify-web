@@ -1,4 +1,4 @@
-import { ArrowDownUp, Heart, Plus, Search, Star } from "lucide-react";
+import { ArrowDownUp, Award, Heart, Plus, Search } from "lucide-react";
 import { useState } from "react";
 
 interface PromptMeta {
@@ -110,6 +110,17 @@ export function PromptList() {
   const [sortBy, setSortBy] = useState<SortOption>("date");
   const [showFavorites, setShowFavorites] = useState(false);
 
+  // Sort prompts: favorites first, then by date or rating
+  const sortedPrompts = [...mockPrompts].sort((a, b) => {
+    if (a.isFavorite !== b.isFavorite) {
+      return a.isFavorite ? -1 : 1;
+    }
+    if (sortBy === "rating") {
+      return (b.rating || 0) - (a.rating || 0);
+    }
+    return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
+  });
+
   return (
     <div className="w-[320px] h-full bg-white">
       <div className="p-4 border-b border-gray-200">
@@ -140,18 +151,18 @@ export function PromptList() {
       <div className="overflow-y-auto h-[calc(100%-145px)]">
         <div className="p-2">
           <div className="space-y-2">
-            {mockPrompts.map((prompt) => (
-              <div key={prompt.id} className="p-3 hover:bg-gray-50 rounded-lg cursor-pointer border border-gray-100 hover:border-gray-200 group">
+            {sortedPrompts.map((prompt) => (
+              <div key={prompt.id} className="p-3 hover:bg-gray-50 rounded-lg cursor-pointer border border-gray-100 hover:border-gray-200 group relative">
                 <div className="flex items-center justify-between gap-2 mb-1">
                   <h3 className="font-medium text-gray-900 truncate flex-1">{prompt.title}</h3>
                   <div className="flex items-center gap-3 flex-shrink-0">
-                    <button>
-                      <Heart size={14} className={`transition-colors ${prompt.isFavorite ? "text-red-500 fill-current" : "text-gray-400"}`} />
+                    <button className={`transition-opacity ${prompt.isFavorite ? "opacity-100" : "opacity-0 group-hover:opacity-100"}`}>
+                      <Heart size={14} className={`transition-colors hover:text-red-500 ${prompt.isFavorite ? "text-red-500 fill-current" : "text-gray-400"}`} />
                     </button>
                     {prompt.rating && (
-                      <div className="flex items-center text-xs">
-                        <Star size={12} className="text-amber-500 fill-current" />
-                        <span className="ml-1 text-gray-700">{prompt.rating}</span>
+                      <div className="flex items-center text-xs bg-amber-50 px-2 py-1 rounded-full">
+                        <Award size={12} className="text-amber-500" />
+                        <span className="ml-1 text-amber-700">{prompt.rating}</span>
                       </div>
                     )}
                     <span className="text-xs text-gray-500">{prompt.version}</span>
