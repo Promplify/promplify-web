@@ -12,37 +12,19 @@ export const Navigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
   const [session, setSession] = useState(null);
-  const [userProfile, setUserProfile] = useState(null);
   const location = useLocation();
   const isDashboard = location.pathname === "/dashboard";
 
-  // Check auth state and fetch user profile on component mount
+  // Check auth state on component mount
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
-      if (session?.user) {
-        fetchUserProfile(session.user.id);
-      }
     });
 
     supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
-      if (session?.user) {
-        fetchUserProfile(session.user.id);
-      }
     });
   }, []);
-
-  const fetchUserProfile = async (userId) => {
-    try {
-      const { data, error } = await supabase.from("profiles").select("*").eq("id", userId).single();
-
-      if (error) throw error;
-      setUserProfile(data);
-    } catch (error) {
-      console.error("Error fetching user profile:", error);
-    }
-  };
 
   const handleLogout = async () => {
     try {
@@ -77,13 +59,21 @@ export const Navigation = () => {
                 <DropdownMenu>
                   <DropdownMenuTrigger className="focus:outline-none">
                     <Avatar className="w-10 h-10 border-2 border-white/20 hover:border-white/40 transition-colors">
-                      <AvatarImage src={session.user.user_metadata?.avatar_url || userProfile?.avatar_url} />
-                      <AvatarFallback className="bg-primary/20 text-white text-lg">{session.user.email?.charAt(0).toUpperCase()}</AvatarFallback>
+                      <AvatarImage
+                        src={session.user.user_metadata?.avatar_url || session.user.user_metadata?.picture}
+                        onError={(e) => {
+                          e.currentTarget.style.display = "none";
+                          e.currentTarget.nextElementSibling?.classList.remove("hidden");
+                        }}
+                      />
+                      <AvatarFallback className="bg-primary/20 text-white text-lg">
+                        {(session.user.user_metadata?.full_name || session.user.user_metadata?.name || session.user.email)?.charAt(0).toUpperCase()}
+                      </AvatarFallback>
                     </Avatar>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent className="w-56 mt-3" align="end">
                     <div className="flex flex-col space-y-1 p-2">
-                      <p className="text-sm font-medium leading-none">{session.user.user_metadata?.full_name || userProfile?.full_name || session.user.email}</p>
+                      <p className="text-sm font-medium leading-none">{session.user.user_metadata?.full_name || session.user.user_metadata?.name || session.user.email}</p>
                       <p className="text-xs leading-none text-muted-foreground">{session.user.email}</p>
                     </div>
                     <DropdownMenuSeparator />

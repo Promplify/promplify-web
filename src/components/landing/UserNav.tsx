@@ -3,52 +3,17 @@ import { LogOut, Settings, User } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
-interface Profile {
-  avatar_url?: string;
-  full_name?: string;
-  email?: string;
-}
-
 export function UserNav() {
-  const [profile, setProfile] = useState<Profile | null>(null);
+  const [session, setSession] = useState(null);
 
   useEffect(() => {
-    async function getProfile() {
-      try {
-        const {
-          data: { session },
-        } = await supabase.auth.getSession();
-        if (session?.user) {
-          const { data: profileData } = await supabase.from("profiles").select("avatar_url, full_name, email").eq("id", session.user.id).single();
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+    });
 
-          if (profileData) {
-            setProfile(profileData);
-          } else {
-            // Fallback to user metadata if no profile exists
-            setProfile({
-              email: session.user.email,
-              full_name: session.user.user_metadata?.full_name,
-              avatar_url: session.user.user_metadata?.avatar_url,
-            });
-          }
-
-          // Update profile if it doesn't exist
-          if (!profileData) {
-            await supabase.from("profiles").upsert({
-              id: session.user.id,
-              email: session.user.email,
-              full_name: session.user.user_metadata?.full_name,
-              avatar_url: session.user.user_metadata?.avatar_url,
-              updated_at: new Date().toISOString(),
-            });
-          }
-        }
-      } catch (error) {
-        console.error("Error fetching profile:", error);
-      }
-    }
-
-    getProfile();
+    supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
   }, []);
 
   const handleSignOut = async () => {
@@ -56,25 +21,26 @@ export function UserNav() {
     window.location.href = "/";
   };
 
-  const initials = profile?.full_name
-    ? profile.full_name
+  if (!session) return null;
+
+  const initials = session.user.user_metadata?.full_name
+    ? session.user.user_metadata.full_name
         .split(" ")
         .map((n) => n[0])
         .join("")
         .toUpperCase()
-    : "U";
+    : session.user.email?.charAt(0).toUpperCase();
 
   return (
     <div className="relative group">
       <button className="h-8 w-8 rounded-full bg-gray-800 text-white flex items-center justify-center hover:bg-gray-700 transition-colors overflow-hidden">
-        {profile?.avatar_url ? (
+        {session.user.user_metadata?.avatar_url ? (
           <img
-            src={profile.avatar_url}
-            alt={profile.full_name || "User"}
+            src={session.user.user_metadata.avatar_url}
+            alt={session.user.user_metadata?.full_name || "User"}
             className="h-8 w-8 object-cover"
             onError={(e) => {
-              e.currentTarget.src = "";
-              e.currentTarget.classList.add("hidden");
+              e.currentTarget.style.display = "none";
               e.currentTarget.nextElementSibling?.classList.remove("hidden");
             }}
           />
@@ -85,8 +51,8 @@ export function UserNav() {
       <div className="absolute right-0 top-full mt-2 w-56 rounded-md bg-black border border-gray-800 shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
         <div className="p-2">
           <div className="px-3 py-2 border-b border-gray-800">
-            <div className="text-sm font-medium text-white">{profile?.full_name || "User"}</div>
-            <div className="text-xs text-gray-400">{profile?.email}</div>
+            <div className="text-sm font-medium text-white">{session.user.user_metadata?.full_name || session.user.email}</div>
+            <div className="text-xs text-gray-400">{session.user.email}</div>
           </div>
           <div className="pt-2 space-y-1">
             <Link to="/dashboard" className="flex items-center px-3 py-2 text-sm rounded-md text-gray-300 hover:text-white hover:bg-gray-800">
