@@ -4,11 +4,17 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/lib/supabase";
+import { updateMeta } from "@/utils/meta";
 import { Github } from "lucide-react";
+import { useEffect } from "react";
 import { FcGoogle } from "react-icons/fc";
 import { toast } from "sonner";
 
 export default function Auth() {
+  useEffect(() => {
+    updateMeta("Sign In", "Sign in or create an account to start managing your AI prompts with Promplify.", "sign in, login, register, account, AI prompt management");
+  }, []);
+
   const handleSocialLogin = async (provider: "github" | "google") => {
     try {
       const { error } = await supabase.auth.signInWithOAuth({

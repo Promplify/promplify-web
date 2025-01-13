@@ -4,6 +4,7 @@ import { PromptEditor } from "@/components/dashboard/PromptEditor";
 import { PromptList } from "@/components/dashboard/PromptList";
 import { Sidebar } from "@/components/dashboard/Sidebar";
 import { supabase } from "@/lib/supabase";
+import { updateMeta } from "@/utils/meta";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -12,6 +13,10 @@ export default function Dashboard() {
   const navigate = useNavigate();
   const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
   const [selectedPromptId, setSelectedPromptId] = useState<string | null>(null);
+
+  useEffect(() => {
+    updateMeta("Dashboard", "Manage and optimize your AI prompts with Promplify's intuitive dashboard.", "AI prompt management, prompt organization, prompt optimization, AI workflow");
+  }, []);
 
   useEffect(() => {
     const checkAuth = async () => {

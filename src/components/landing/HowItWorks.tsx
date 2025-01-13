@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 
 const steps = [
   {
@@ -33,11 +34,11 @@ export const HowItWorks = () => {
           ))}
         </div>
         <div className="text-center">
-          <a href="/dashboard">
+          <Link to="/auth">
             <Button size="lg" className="bg-primary hover:bg-primary/90">
               Start Managing Your Prompts
             </Button>
-          </a>
+          </Link>
         </div>
       </div>
     </div>

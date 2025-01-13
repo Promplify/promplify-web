@@ -1,7 +1,13 @@
 import { Footer } from "@/components/landing/Footer";
 import { Navigation } from "@/components/landing/Navigation";
+import { updateMeta } from "@/utils/meta";
+import { useEffect } from "react";
 
 export default function Privacy() {
+  useEffect(() => {
+    updateMeta("Privacy Policy", "Learn about Promplify's privacy policy and data protection practices.", "privacy policy, data protection, security, user privacy");
+  }, []);
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Navigation />

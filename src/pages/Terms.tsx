@@ -1,7 +1,13 @@
 import { Footer } from "@/components/landing/Footer";
 import { Navigation } from "@/components/landing/Navigation";
+import { updateMeta } from "@/utils/meta";
+import { useEffect } from "react";
 
 export default function Terms() {
+  useEffect(() => {
+    updateMeta("Terms of Service", "Read Promplify's terms of service and usage conditions.", "terms of service, legal, conditions, usage terms");
+  }, []);
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Navigation />
