@@ -4,7 +4,7 @@ const DEFAULT_DESCRIPTION = "Promplify helps you manage, optimize, and master yo
 const DEFAULT_KEYWORDS = "AI prompts, prompt engineering, prompt optimization, AI tools, prompt management, artificial intelligence, LLM prompts, ChatGPT prompts";
 
 export const updateMeta = (title?: string, description: string = DEFAULT_DESCRIPTION, keywords: string = DEFAULT_KEYWORDS) => {
-  document.title = title ? `${title} - ${APP_NAME}` : `${APP_NAME} - ${DEFAULT_TITLE}`;
+  document.title = title ? `${title} | ${APP_NAME} - ${DEFAULT_TITLE}` : `${APP_NAME} - ${DEFAULT_TITLE}`;
 
   // Update meta description
   let metaDescription = document.querySelector('meta[name="description"]');

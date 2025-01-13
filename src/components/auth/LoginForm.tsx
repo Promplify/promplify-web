@@ -55,43 +55,39 @@ export function LoginForm() {
 
       if (error) {
         if (error.message.includes("Email not confirmed")) {
-          toast.error("您的邮箱尚未验证。请检查邮箱完成验证后再登录。", {
+          toast.error("Your email is not verified. Please check your inbox to complete verification.", {
             duration: 6000,
             action: {
-              label: "重新发送验证邮件",
+              label: "Resend verification email",
               onClick: async () => {
                 try {
                   const { error: resendError } = await supabase.auth.resend({
                     type: "signup",
-                    email,
-                    options: {
-                      emailRedirectTo: `${window.location.origin}/auth/callback`,
-                    },
+                    email: data.email,
                   });
                   if (resendError) {
-                    toast.error("发送验证邮件失败: " + resendError.message);
-                  } else {
-                    toast.success("验证邮件已重新发送，请查收");
+                    toast.error("Failed to send verification email: " + resendError.message);
+                    return;
                   }
-                } catch (err) {
-                  console.error("重发验证邮件错误:", err);
-                  toast.error("发送验证邮件时发生错误");
+                  toast.success("Verification email has been resent, please check your inbox");
+                } catch (error) {
+                  console.error("Error resending verification email:", error);
                 }
               },
             },
           });
         } else if (error.message.includes("Invalid login credentials")) {
-          toast.error("邮箱或密码错误，请重试");
+          toast.error("Email or password is incorrect, please try again");
         } else {
-          toast.error("登录失败: " + error.message);
+          toast.error("Login failed: " + error.message);
         }
       } else if (data.user) {
-        toast.success("登录成功！正在跳转到仪表盘...");
+        toast.success("Login successful! Redirecting to dashboard...");
         navigate("/dashboard");
       }
     } catch (error) {
-      console.error("登录错误:", error);
-      toast.error("登录过程中发生错误，请稍后重试");
+      console.error("Login error:", error);
+      toast.error("An error occurred during login, please try again later");
     } finally {
       setIsLoading(false);
     }

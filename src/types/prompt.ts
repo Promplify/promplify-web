@@ -1,4 +1,4 @@
-export interface Prompt {
+export type Prompt = {
   id: string;
   user_id: string;
   title: string;
@@ -8,16 +8,18 @@ export interface Prompt {
   user_prompt: string;
   version: string;
   token_count: number;
+  system_tokens: number;
+  user_tokens: number;
   performance: number;
   is_favorite: boolean;
   category_id: string;
   model: string;
   temperature: number;
   max_tokens: number;
-  created_at: string;
-  updated_at: string;
+  created_at?: string;
+  updated_at?: string;
   prompt_tags?: { tags: Tag }[];
-}
+};
 
 export interface Category {
   id: string;

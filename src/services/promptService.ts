@@ -44,7 +44,7 @@ export const createPrompt = async (prompt: Omit<Prompt, "created_at" | "updated_
   const { data, error } = await supabase.from("prompts").insert([promptData]).select().single();
   if (error) throw error;
 
-  // 如果有标签，添加关联
+  // If there are tags, add associations
   if (prompt_tags && prompt_tags.length > 0) {
     for (const pt of prompt_tags) {
       await addTagToPrompt(data.id, pt.tags.id);
@@ -59,7 +59,7 @@ export const updatePrompt = async (id: string, prompt: Partial<Prompt>) => {
   const { error } = await supabase.from("prompts").update(promptData).eq("id", id);
   if (error) throw error;
 
-  // 如果有标签，先删除所有现有标签，然后添加新标签
+  // If there are tags, first delete all existing tags, then add new ones
   if (prompt_tags !== undefined) {
     await supabase.from("prompt_tags").delete().eq("prompt_id", id);
     if (prompt_tags.length > 0) {
@@ -139,7 +139,7 @@ export const removeTagFromPrompt = async (promptId: string, tagId: string) => {
 };
 
 export const createPromptWithCategory = async (prompt: Omit<Prompt, "id" | "created_at" | "updated_at">, categoryName: string) => {
-  // 先获取分类列表
+  // First get the category list
   const categories = await getCategories(prompt.user_id);
   const category = categories.find((c) => c.name.toLowerCase() === categoryName.toLowerCase());
 
@@ -147,7 +147,7 @@ export const createPromptWithCategory = async (prompt: Omit<Prompt, "id" | "crea
     throw new Error(`Category ${categoryName} not found`);
   }
 
-  // 使用找到的 category.id 创建 prompt
+  // Use the found category.id to create prompt
   const promptWithValidCategory = {
     ...prompt,
     category_id: category.id,

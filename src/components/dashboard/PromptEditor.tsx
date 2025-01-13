@@ -6,7 +6,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { supabase } from "@/lib/supabase";
 import { addTagToPrompt, createPrompt, createTag, deletePrompt, getCategories, getPromptById, getTags, updatePrompt } from "@/services/promptService";
 import { Category, Prompt, Tag } from "@/types/prompt";
-import { AlertCircle, ChevronDown, ChevronUp, Copy, Gauge, Trash2, X } from "lucide-react";
+import { countTokens } from "gpt-tokenizer/model/gpt-4";
+import { AlertCircle, ChevronDown, ChevronUp, Copy, Gauge, Save, Trash2, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { v4 as uuidv4 } from "uuid";
@@ -168,10 +169,18 @@ export function PromptEditor({ promptId, onSave }: PromptEditorProps) {
 
     try {
       setIsSaving(true);
+      // 重新计算一次 tokens 确保数据最新
+      const systemTokens = countTokens(prompt.system_prompt || "");
+      const userTokens = countTokens(prompt.user_prompt || "");
+      const totalTokens = systemTokens + userTokens;
+
       const promptData = {
         ...prompt,
         id: promptId === "new" ? uuidv4() : prompt.id || uuidv4(),
         user_id: session?.user?.id,
+        token_count: totalTokens,
+        system_tokens: systemTokens,
+        user_tokens: userTokens,
       };
 
       if (!promptData.id) {
@@ -237,6 +246,23 @@ export function PromptEditor({ promptId, onSave }: PromptEditorProps) {
     }
   };
 
+  const calculateTokens = () => {
+    const systemTokens = countTokens(prompt.system_prompt || "");
+    const userTokens = countTokens(prompt.user_prompt || "");
+    const totalTokens = systemTokens + userTokens;
+
+    setPrompt((prev) => ({
+      ...prev,
+      token_count: totalTokens,
+      system_tokens: systemTokens,
+      user_tokens: userTokens,
+    }));
+  };
+
+  useEffect(() => {
+    calculateTokens();
+  }, [prompt.system_prompt, prompt.user_prompt]);
+
   if (isLoading) {
     return (
       <div className="flex-1 h-full bg-gray-50 p-4">
@@ -254,7 +280,8 @@ export function PromptEditor({ promptId, onSave }: PromptEditorProps) {
       <div className="p-3 border-b border-gray-200 bg-white flex items-center justify-between">
         <div className="flex items-center space-x-4">
           <h2 className="font-medium">{prompt.title || "New Prompt"}</h2>
-          <span className="text-sm text-gray-500">Version {prompt.version}</span>
+          <span className="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-purple-100 text-purple-800">Version {prompt.version}</span>
+          <span className="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-blue-100 text-blue-800">Tokens: {prompt.token_count}</span>
         </div>
         <div className="flex items-center space-x-2">
           <span className="font-mono text-sm text-gray-500">
@@ -262,14 +289,15 @@ export function PromptEditor({ promptId, onSave }: PromptEditorProps) {
             {promptId === "new" ? "NEW" : promptId?.toUpperCase()}
           </span>
           <Button variant="outline" size="sm" onClick={handleCopyContent}>
-            <Copy size={16} className="mr-1.5" />
+            <Copy size={16} className="mr-1" />
             Copy
           </Button>
           <Button variant="outline" size="sm" onClick={() => setShowDeleteDialog(true)} disabled={!promptId || isDeleting}>
-            <Trash2 size={16} className="mr-1.5" />
+            <Trash2 size={16} className="mr-1" />
             Delete
           </Button>
-          <Button variant="default" size="sm" onClick={handleSave} disabled={isSaving}>
+          <Button variant="default" size="sm" onClick={handleSave} disabled={isSaving} className="min-w-[100px]">
+            <Save size={16} className="mr-1" />
             {isSaving ? "Saving..." : "Save"}
           </Button>
         </div>
@@ -282,7 +310,7 @@ export function PromptEditor({ promptId, onSave }: PromptEditorProps) {
               <div className="px-4 py-3 border-b border-gray-100">
                 <div className="flex items-center justify-between">
                   <h3 className="text-base font-medium text-gray-900">Basic Information</h3>
-                  <span className="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-blue-100 text-blue-800">Required</span>
+                  <span className="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-purple-100 text-purple-800">Required</span>
                 </div>
               </div>
               <div className="p-4 space-y-4">
@@ -478,7 +506,11 @@ export function PromptEditor({ promptId, onSave }: PromptEditorProps) {
             <section className="bg-white border-b border-gray-200">
               <div className="px-4 py-3 border-b border-gray-100">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-base font-medium text-gray-900">Model Configuration</h3>
+                  <div className="flex items-center space-x-2">
+                    <h3 className="text-base font-medium text-gray-900">Model Configuration</h3>
+                    <span className="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-purple-100 text-purple-800">Version {prompt.version}</span>
+                    <span className="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-blue-100 text-blue-800">Tokens: {prompt.token_count}</span>
+                  </div>
                   <span className="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-purple-100 text-purple-800">Advanced</span>
                 </div>
               </div>
@@ -566,7 +598,9 @@ export function PromptEditor({ promptId, onSave }: PromptEditorProps) {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
                     <h3 className="text-base font-medium text-gray-900">Content</h3>
-                    <span className="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-blue-100 text-blue-800">Required</span>
+                    <span className="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-blue-100 text-blue-800">
+                      System: {prompt.system_tokens || 0} + User: {prompt.user_tokens || 0} = {prompt.token_count} tokens
+                    </span>
                   </div>
                   <div className="flex items-center text-xs text-gray-500">
                     <AlertCircle size={14} className="mr-1" />

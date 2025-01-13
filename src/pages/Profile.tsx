@@ -173,18 +173,6 @@ export default function Profile() {
               />
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="avatar_url">Avatar URL</Label>
-              <Input
-                id="avatar_url"
-                type="url"
-                value={profile.avatar_url}
-                onChange={(e) => setProfile({ ...profile, avatar_url: e.target.value })}
-                className="max-w-md"
-                placeholder="https://example.com/avatar.jpg"
-              />
-            </div>
-
             <Button type="submit" disabled={isSaving} className="w-full md:w-auto">
               {isSaving ? "Saving..." : "Save Changes"}
             </Button>

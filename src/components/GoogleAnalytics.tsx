@@ -15,13 +15,13 @@ export function GoogleAnalytics() {
   useEffect(() => {
     if (!isProduction) return;
 
-    // 添加 Google Analytics 脚本
+    // Add Google Analytics script
     const script1 = document.createElement("script");
     script1.async = true;
     script1.src = "https://www.googletagmanager.com/gtag/js?id=G-YC641PMZ52";
     document.head.appendChild(script1);
 
-    // 初始化 gtag
+    // Initialize gtag
     window.dataLayer = window.dataLayer || [];
     function gtag(...args: any[]) {
       window.dataLayer.push(args);
@@ -32,12 +32,12 @@ export function GoogleAnalytics() {
     window.gtag = gtag;
 
     return () => {
-      // 清理脚本
+      // Clean up script
       document.head.removeChild(script1);
     };
   }, []);
 
-  // 页面浏览追踪
+  // Page view tracking
   useEffect(() => {
     if (!isProduction || !window.gtag) return;
 
