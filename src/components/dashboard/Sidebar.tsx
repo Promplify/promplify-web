@@ -1,8 +1,11 @@
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { supabase } from "@/lib/supabase";
 import { createCategory, getCategories } from "@/services/promptService";
 import { Category } from "@/types/prompt";
-import { ChevronLeft, ChevronRight, Folder, Plus } from "lucide-react";
+import { ChevronDown, ChevronLeft, ChevronRight, Folder, Plus } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
@@ -129,9 +132,43 @@ export function Sidebar({ onCategorySelect, selectedCategoryId }: SidebarProps) 
           {!isCollapsed && <h2 className="font-medium text-lg">Categories</h2>}
           <div className="flex items-center gap-2">
             {!isCollapsed && (
-              <Button variant="ghost" size="icon" className="hover:bg-gray-100">
-                <Plus size={22} />
-              </Button>
+              <Dialog open={isAddCategoryOpen} onOpenChange={setIsAddCategoryOpen}>
+                <DialogTrigger asChild>
+                  <Button variant="ghost" size="icon" className="hover:bg-gray-100">
+                    <Plus size={22} />
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Add New Category</DialogTitle>
+                  </DialogHeader>
+                  <div className="space-y-4 py-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="name">Category Name</Label>
+                      <Input id="name" value={newCategoryName} onChange={(e) => setNewCategoryName(e.target.value)} placeholder="Enter category name" />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="parent">Parent Category (Optional)</Label>
+                      <select
+                        id="parent"
+                        className="w-full px-3 py-2 bg-white border border-gray-200 rounded-md"
+                        value={selectedParentId || ""}
+                        onChange={(e) => setSelectedParentId(e.target.value || undefined)}
+                      >
+                        <option value="">None (Root Category)</option>
+                        {categories.map((category) => (
+                          <option key={category.id} value={category.id}>
+                            {category.name}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <Button onClick={handleAddCategory} className="w-full">
+                      Add Category
+                    </Button>
+                  </div>
+                </DialogContent>
+              </Dialog>
             )}
             <Button variant="ghost" size="icon" onClick={() => setIsCollapsed(!isCollapsed)} className="hover:bg-gray-100">
               {isCollapsed ? <ChevronRight size={22} /> : <ChevronLeft size={22} />}
@@ -143,7 +180,7 @@ export function Sidebar({ onCategorySelect, selectedCategoryId }: SidebarProps) 
             className={`w-full flex items-center gap-2 px-3 py-2 hover:bg-gray-100 rounded-md text-sm text-gray-700 ${selectedCategoryId === null ? "bg-gray-100" : ""}`}
             onClick={() => onCategorySelect?.(null)}
           >
-            <Folder size={20} className="text-gray-400" />
+            <Folder size={20} className="text-gray-400 flex-shrink-0" />
             {!isCollapsed && <span className="flex-1 text-left">All Prompts</span>}
           </button>
           {categories.map((category) => (
@@ -155,11 +192,16 @@ export function Sidebar({ onCategorySelect, selectedCategoryId }: SidebarProps) 
                   onCategorySelect?.(category.id);
                 }}
               >
-                {category.icon ? <span className="text-gray-400">{category.icon}</span> : <Folder size={20} className="text-gray-400" />}
+                <Folder size={20} className="text-gray-400 flex-shrink-0" />
                 {!isCollapsed && (
                   <>
                     <span className="flex-1 text-left">{category.name}</span>
-                    {category.subcategories?.length > 0 && <span className="text-xs text-gray-400">{category.subcategories.length}</span>}
+                    {category.subcategories?.length > 0 && (
+                      <>
+                        <span className="text-xs text-gray-400">{category.subcategories.length}</span>
+                        {expandedCategories.includes(category.id) ? <ChevronDown size={20} className="text-gray-400" /> : <ChevronRight size={20} className="text-gray-400" />}
+                      </>
+                    )}
                   </>
                 )}
               </button>

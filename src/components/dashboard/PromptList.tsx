@@ -18,6 +18,7 @@ export function PromptList({ categoryId, onPromptSelect, selectedPromptId }: Pro
   const [sortByDate, setSortByDate] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(searchTerm);
 
   const fetchPrompts = async () => {
     try {
@@ -48,6 +49,13 @@ export function PromptList({ categoryId, onPromptSelect, selectedPromptId }: Pro
     fetchPrompts();
   }, [categoryId, selectedPromptId]);
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearchTerm(searchTerm);
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [searchTerm]);
+
   const handleToggleFavorite = async (e: React.MouseEvent, id: string, currentFavorite: boolean) => {
     e.stopPropagation();
     try {
@@ -62,9 +70,9 @@ export function PromptList({ categoryId, onPromptSelect, selectedPromptId }: Pro
 
   const filteredPrompts = prompts.filter(
     (prompt) =>
-      prompt.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      prompt.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      prompt.content.toLowerCase().includes(searchTerm.toLowerCase())
+      prompt.title.toLowerCase().includes(debouncedSearchTerm.toLowerCase()) ||
+      prompt.description?.toLowerCase().includes(debouncedSearchTerm.toLowerCase()) ||
+      prompt.content.toLowerCase().includes(debouncedSearchTerm.toLowerCase())
   );
 
   const sortedPrompts = [...filteredPrompts].sort((a, b) => {
@@ -145,31 +153,40 @@ export function PromptList({ categoryId, onPromptSelect, selectedPromptId }: Pro
       <div className="p-4 border-b border-gray-200">
         <div className="flex items-center justify-between mb-4">
           <h2 className="font-medium">Prompts</h2>
-          <Button onClick={handleNewPrompt} className="bg-[#2C106A] hover:bg-[#1F0B4C] text-white">
+          <Button onClick={handleNewPrompt} className="bg-[#2C106A] hover:bg-[#1F0B4C] text-white transition-colors duration-200">
             <Plus className="w-4 h-4 mr-2" />
             New Prompt
           </Button>
         </div>
-        <div className="relative mb-4">
-          <Search className="absolute left-3 top-2.5 text-gray-400" size={18} />
-          <Input type="text" placeholder="Search prompts..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="pl-9" />
+        <div className="relative mb-4 group">
+          <Search className="absolute left-3 top-2.5 text-gray-400 group-focus-within:text-[#2C106A] transition-colors duration-200" size={18} />
+          <Input
+            type="text"
+            placeholder="Search prompts..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="pl-9 transition-all duration-200 focus:ring-[#2C106A] focus:border-[#2C106A]"
+          />
         </div>
         <div className="flex items-center justify-between text-sm text-gray-500">
-          <span className="bg-gray-100 px-2 py-1 rounded-md">{sortedPrompts.length} prompts</span>
-          <button onClick={() => setSortByDate(!sortByDate)} className="flex items-center space-x-1 min-w-[100px] justify-center hover:text-gray-900 bg-gray-50 px-2 py-1 rounded-md transition-colors">
-            <ArrowDownUp size={14} />
+          <span className="bg-gray-100 px-2 py-1 rounded-md transition-colors duration-200">{sortedPrompts.length} prompts</span>
+          <button
+            onClick={() => setSortByDate(!sortByDate)}
+            className="flex items-center space-x-1 min-w-[100px] justify-center hover:text-gray-900 bg-gray-50 px-2 py-1 rounded-md transition-all duration-200 hover:bg-gray-100"
+          >
+            <ArrowDownUp size={14} className="transition-transform duration-200" />
             <span>Sort by {sortByDate ? "newest" : "oldest"}</span>
           </button>
         </div>
       </div>
-      <div className="overflow-y-auto h-[calc(100%-145px)]">
+      <div className="overflow-y-auto h-[calc(100%-145px)] scrollbar-thin scrollbar-thumb-gray-200 scrollbar-track-transparent">
         <div className="p-2">
           <div className="space-y-2">
             {sortedPrompts.map((prompt) => (
               <div
                 key={prompt.id}
-                className={`p-3 hover:bg-gray-50 rounded-lg cursor-pointer border border-gray-100 hover:border-gray-200 group relative ${
-                  selectedPromptId === prompt.id ? "bg-gray-50 border-gray-200" : ""
+                className={`p-3 hover:bg-gray-50 rounded-lg cursor-pointer border border-gray-100 hover:border-gray-200 group relative transition-all duration-200 ${
+                  selectedPromptId === prompt.id ? "bg-gray-50 border-gray-200 ring-1 ring-[#2C106A] shadow-sm" : ""
                 }`}
                 onClick={() => onPromptSelect?.(prompt.id)}
               >
