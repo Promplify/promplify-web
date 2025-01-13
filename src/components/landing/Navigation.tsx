@@ -42,7 +42,9 @@ export const Navigation = () => {
     <nav className="fixed top-0 left-0 right-0 z-50 bg-black shadow-md">
       <div className="container mx-auto px-6">
         <div className="flex items-center justify-between" style={{ height: "68px" }}>
-          <Logo />
+          <Link to="/">
+            <Logo />
+          </Link>
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center space-x-8">
             <a href="/" className="text-white/80 hover:text-white transition-colors">
