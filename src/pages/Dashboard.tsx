@@ -27,6 +27,14 @@ export default function Dashboard() {
     checkAuth();
   }, [navigate]);
 
+  const handleNewPrompt = () => {
+    setSelectedPromptId("new");
+  };
+
+  const handlePromptSelect = (promptId: string) => {
+    setSelectedPromptId(promptId);
+  };
+
   return (
     <div className="flex flex-col h-screen">
       {/* Fixed Header */}
@@ -39,7 +47,7 @@ export default function Dashboard() {
         <Sidebar onCategorySelect={setSelectedCategoryId} selectedCategoryId={selectedCategoryId} />
         <div className="flex-1 flex">
           <div className="w-[320px] border-r border-gray-200">
-            <PromptList categoryId={selectedCategoryId} onPromptSelect={setSelectedPromptId} selectedPromptId={selectedPromptId} />
+            <PromptList categoryId={selectedCategoryId} onPromptSelect={handlePromptSelect} selectedPromptId={selectedPromptId} />
           </div>
           <div className="flex-1">
             <PromptEditor promptId={selectedPromptId} onSave={() => setSelectedPromptId(null)} />

@@ -180,7 +180,7 @@ export function PromptEditor({ promptId, onSave }: PromptEditorProps) {
       }
 
       if (promptId === "new") {
-        const savedPrompt = await createPrompt(promptData);
+        await createPrompt(promptData);
         toast.success("Prompt created successfully");
         onSave?.();
       } else {

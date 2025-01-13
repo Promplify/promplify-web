@@ -29,7 +29,7 @@ export function PromptList({ categoryId, onPromptSelect, selectedPromptId }: Pro
         if (selectedPromptId === "new") {
           const newPrompt = {
             id: "new",
-            title: "New Prompt",
+            title: "",
             description: "",
             created_at: new Date().toISOString(),
             updated_at: new Date().toISOString(),
