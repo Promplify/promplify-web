@@ -200,7 +200,7 @@ export function PromptList({ categoryId, onPromptSelect, selectedPromptId }: Pro
                     >
                       <Heart size={14} className={`transition-colors hover:text-red-500 ${prompt.is_favorite ? "text-red-500 fill-current" : "text-gray-400"}`} />
                     </button>
-                    <span className="text-xs text-gray-500">{prompt.version}</span>
+                    <span className="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-purple-100 text-purple-800">Version {prompt.version}</span>
                   </div>
                 </div>
                 {prompt.description && <p className="text-sm text-gray-500 mb-2 line-clamp-2">{prompt.description}</p>}

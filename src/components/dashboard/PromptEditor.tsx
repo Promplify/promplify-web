@@ -508,8 +508,6 @@ export function PromptEditor({ promptId, onSave }: PromptEditorProps) {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
                     <h3 className="text-base font-medium text-gray-900">Model Configuration</h3>
-                    <span className="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-purple-100 text-purple-800">Version {prompt.version}</span>
-                    <span className="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-blue-100 text-blue-800">Tokens: {prompt.token_count}</span>
                   </div>
                   <span className="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-purple-100 text-purple-800">Advanced</span>
                 </div>
