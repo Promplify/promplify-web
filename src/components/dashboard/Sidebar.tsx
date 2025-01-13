@@ -1,11 +1,8 @@
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { supabase } from "@/lib/supabase";
 import { createCategory, getCategories } from "@/services/promptService";
 import { Category } from "@/types/prompt";
-import { ChevronLeft, ChevronRight, FolderIcon, PlusIcon } from "lucide-react";
+import { ChevronLeft, ChevronRight, Folder, Plus } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
@@ -101,6 +98,8 @@ export function Sidebar({ onCategorySelect, selectedCategoryId }: SidebarProps) 
     setExpandedCategories((prev) => (prev.includes(categoryId) ? prev.filter((id) => id !== categoryId) : [...prev, categoryId]));
   };
 
+  const toggleCollapse = () => setIsCollapsed(!isCollapsed);
+
   if (isLoading) {
     return (
       <div className="w-[240px] h-full bg-gray-50 p-4">
@@ -127,70 +126,36 @@ export function Sidebar({ onCategorySelect, selectedCategoryId }: SidebarProps) 
     <div className={`h-full bg-gray-50 border-r border-gray-200 transition-all duration-300 ${isCollapsed ? "w-[60px]" : "w-[240px]"}`}>
       <div className="p-4">
         <div className="flex items-center justify-between mb-6">
-          {!isCollapsed && <h2 className="font-medium">Categories</h2>}
+          {!isCollapsed && <h2 className="font-medium text-lg">Categories</h2>}
           <div className="flex items-center gap-2">
             {!isCollapsed && (
-              <Dialog open={isAddCategoryOpen} onOpenChange={setIsAddCategoryOpen}>
-                <DialogTrigger asChild>
-                  <Button variant="ghost" size="icon">
-                    <PlusIcon size={20} />
-                  </Button>
-                </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>Add New Category</DialogTitle>
-                  </DialogHeader>
-                  <div className="space-y-4 py-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="name">Category Name</Label>
-                      <Input id="name" value={newCategoryName} onChange={(e) => setNewCategoryName(e.target.value)} placeholder="Enter category name" />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="parent">Parent Category (Optional)</Label>
-                      <select
-                        id="parent"
-                        className="w-full px-3 py-2 bg-white border border-gray-200 rounded-md"
-                        value={selectedParentId || ""}
-                        onChange={(e) => setSelectedParentId(e.target.value || undefined)}
-                      >
-                        <option value="">None (Root Category)</option>
-                        {categories.map((category) => (
-                          <option key={category.id} value={category.id}>
-                            {category.name}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                    <Button onClick={handleAddCategory} className="w-full">
-                      Add Category
-                    </Button>
-                  </div>
-                </DialogContent>
-              </Dialog>
+              <Button variant="ghost" size="icon" className="hover:bg-gray-100">
+                <Plus size={22} />
+              </Button>
             )}
-            <Button variant="ghost" size="icon" onClick={() => setIsCollapsed(!isCollapsed)}>
-              {isCollapsed ? <ChevronRight size={20} /> : <ChevronLeft size={20} />}
+            <Button variant="ghost" size="icon" onClick={() => setIsCollapsed(!isCollapsed)} className="hover:bg-gray-100">
+              {isCollapsed ? <ChevronRight size={22} /> : <ChevronLeft size={22} />}
             </Button>
           </div>
         </div>
         <div className="space-y-1">
           <button
-            className={`w-full flex items-center gap-2 px-2 py-1.5 hover:bg-gray-100 rounded-md text-sm text-gray-700 ${selectedCategoryId === null ? "bg-gray-100" : ""}`}
+            className={`w-full flex items-center gap-2 px-3 py-2 hover:bg-gray-100 rounded-md text-sm text-gray-700 ${selectedCategoryId === null ? "bg-gray-100" : ""}`}
             onClick={() => onCategorySelect?.(null)}
           >
-            <FolderIcon size={18} className="text-gray-400" />
+            <Folder size={20} className="text-gray-400" />
             {!isCollapsed && <span className="flex-1 text-left">All Prompts</span>}
           </button>
           {categories.map((category) => (
             <div key={category.id}>
               <button
-                className={`w-full flex items-center gap-2 px-2 py-1.5 hover:bg-gray-100 rounded-md text-sm text-gray-700 ${selectedCategoryId === category.id ? "bg-gray-100" : ""}`}
+                className={`w-full flex items-center gap-2 px-3 py-2 hover:bg-gray-100 rounded-md text-sm text-gray-700 ${selectedCategoryId === category.id ? "bg-gray-100" : ""}`}
                 onClick={() => {
                   toggleCategory(category.id);
                   onCategorySelect?.(category.id);
                 }}
               >
-                {category.icon ? <span className="text-gray-400">{category.icon}</span> : <FolderIcon size={18} className="text-gray-400" />}
+                {category.icon ? <span className="text-gray-400">{category.icon}</span> : <Folder size={20} className="text-gray-400" />}
                 {!isCollapsed && (
                   <>
                     <span className="flex-1 text-left">{category.name}</span>
@@ -206,7 +171,7 @@ export function Sidebar({ onCategorySelect, selectedCategoryId }: SidebarProps) 
                       className={`w-full flex items-center gap-2 px-2 py-1.5 hover:bg-gray-100 rounded-md text-sm text-gray-700 ${selectedCategoryId === subcategory.id ? "bg-gray-100" : ""}`}
                       onClick={() => onCategorySelect?.(subcategory.id)}
                     >
-                      <span className="text-gray-400">{subcategory.icon || <FolderIcon size={16} />}</span>
+                      <span className="text-gray-400">{subcategory.icon || <Folder size={16} />}</span>
                       <span className="flex-1 text-left">{subcategory.name}</span>
                     </button>
                   ))}

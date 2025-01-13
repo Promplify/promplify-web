@@ -1,22 +1,55 @@
+import { DashboardFooter } from "@/components/dashboard/DashboardFooter";
+import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
 import { PromptEditor } from "@/components/dashboard/PromptEditor";
 import { PromptList } from "@/components/dashboard/PromptList";
 import { Sidebar } from "@/components/dashboard/Sidebar";
-import { useState } from "react";
+import { supabase } from "@/lib/supabase";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 export default function Dashboard() {
+  const navigate = useNavigate();
   const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
   const [selectedPromptId, setSelectedPromptId] = useState<string | null>(null);
 
+  useEffect(() => {
+    const checkAuth = async () => {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      if (!session) {
+        toast.error("Please login to access the dashboard");
+        navigate("/auth");
+      }
+    };
+
+    checkAuth();
+  }, [navigate]);
+
   return (
-    <div className="flex h-screen">
-      <Sidebar onCategorySelect={setSelectedCategoryId} selectedCategoryId={selectedCategoryId} />
-      <div className="flex-1 flex">
-        <div className="w-[320px] border-r border-gray-200">
-          <PromptList categoryId={selectedCategoryId} onPromptSelect={setSelectedPromptId} selectedPromptId={selectedPromptId} />
+    <div className="flex flex-col h-screen">
+      {/* Fixed Header */}
+      <div className="flex-none">
+        <DashboardHeader />
+      </div>
+
+      {/* Main Content */}
+      <div className="flex-1 flex overflow-hidden">
+        <Sidebar onCategorySelect={setSelectedCategoryId} selectedCategoryId={selectedCategoryId} />
+        <div className="flex-1 flex">
+          <div className="w-[320px] border-r border-gray-200">
+            <PromptList categoryId={selectedCategoryId} onPromptSelect={setSelectedPromptId} selectedPromptId={selectedPromptId} />
+          </div>
+          <div className="flex-1">
+            <PromptEditor promptId={selectedPromptId} onSave={() => setSelectedPromptId(null)} />
+          </div>
         </div>
-        <div className="flex-1">
-          <PromptEditor promptId={selectedPromptId} onSave={() => setSelectedPromptId(null)} />
-        </div>
+      </div>
+
+      {/* Fixed Footer */}
+      <div className="flex-none">
+        <DashboardFooter />
       </div>
     </div>
   );

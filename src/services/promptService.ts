@@ -39,19 +39,35 @@ export const getPromptById = async (id: string) => {
   return data;
 };
 
-export const createPrompt = async (prompt: Omit<Prompt, "id" | "created_at" | "updated_at">) => {
-  const { data, error } = await supabase.from("prompts").insert(prompt).select().single();
-
+export const createPrompt = async (prompt: Omit<Prompt, "created_at" | "updated_at">) => {
+  const { prompt_tags, ...promptData } = prompt;
+  const { data, error } = await supabase.from("prompts").insert([promptData]).select().single();
   if (error) throw error;
+
+  // 如果有标签，添加关联
+  if (prompt_tags && prompt_tags.length > 0) {
+    for (const pt of prompt_tags) {
+      await addTagToPrompt(data.id, pt.tags.id);
+    }
+  }
+
   return data;
 };
 
 export const updatePrompt = async (id: string, prompt: Partial<Prompt>) => {
   const { prompt_tags, ...promptData } = prompt;
-  const { data, error } = await supabase.from("prompts").update(promptData).eq("id", id).select().single();
-
+  const { error } = await supabase.from("prompts").update(promptData).eq("id", id);
   if (error) throw error;
-  return data;
+
+  // 如果有标签，先删除所有现有标签，然后添加新标签
+  if (prompt_tags !== undefined) {
+    await supabase.from("prompt_tags").delete().eq("prompt_id", id);
+    if (prompt_tags.length > 0) {
+      for (const pt of prompt_tags) {
+        await addTagToPrompt(id, pt.tags.id);
+      }
+    }
+  }
 };
 
 export const deletePrompt = async (id: string) => {

@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/input";
 import { supabase } from "@/lib/supabase";
 import { getPrompts, toggleFavorite } from "@/services/promptService";
 import { Prompt } from "@/types/prompt";
-import { ArrowDownUp, Gauge, Heart, Plus, Search } from "lucide-react";
+import { ArrowDownUp, Heart, Plus, Search } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
@@ -24,7 +24,17 @@ export function PromptList({ categoryId, onPromptSelect, selectedPromptId }: Pro
       const session = await supabase.auth.getSession();
       if (session.data.session?.user.id) {
         const data = await getPrompts(session.data.session.user.id, categoryId || undefined);
+        if (selectedPromptId === "new") {
+          const newPrompt = prompts.find((p) => p.id === "new");
+          if (newPrompt) {
+            setPrompts([newPrompt, ...data]);
+            return;
+          }
+        }
         setPrompts(data);
+        if (!selectedPromptId && data.length > 0) {
+          onPromptSelect?.(data[0].id);
+        }
       }
     } catch (error) {
       console.error("Error fetching prompts:", error);
@@ -36,7 +46,7 @@ export function PromptList({ categoryId, onPromptSelect, selectedPromptId }: Pro
 
   useEffect(() => {
     fetchPrompts();
-  }, [categoryId]);
+  }, [categoryId, selectedPromptId]);
 
   const handleToggleFavorite = async (e: React.MouseEvent, id: string, currentFavorite: boolean) => {
     e.stopPropagation();
@@ -63,6 +73,32 @@ export function PromptList({ categoryId, onPromptSelect, selectedPromptId }: Pro
     }
     return sortByDate ? new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime() : new Date(a.updated_at).getTime() - new Date(b.updated_at).getTime();
   });
+
+  const handleNewPrompt = () => {
+    const newPrompt = {
+      id: "new",
+      title: "New Prompt",
+      description: "",
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+      is_favorite: false,
+      user_id: "",
+      content: "",
+      system_prompt: "",
+      user_prompt: "",
+      version: "1.0.0",
+      token_count: 0,
+      performance: 0,
+      category_id: categoryId || "",
+      model: "gpt-4",
+      temperature: 0.7,
+      max_tokens: 2000,
+      prompt_tags: [],
+    } as Prompt;
+
+    setPrompts((prevPrompts) => [newPrompt, ...prevPrompts]);
+    onPromptSelect?.(newPrompt.id);
+  };
 
   if (isLoading) {
     return (
@@ -109,8 +145,8 @@ export function PromptList({ categoryId, onPromptSelect, selectedPromptId }: Pro
       <div className="p-4 border-b border-gray-200">
         <div className="flex items-center justify-between mb-4">
           <h2 className="font-medium">Prompts</h2>
-          <Button variant="default" size="sm" onClick={() => onPromptSelect?.("")} className="bg-[#2C106A] hover:bg-[#1F0B4C] text-white">
-            <Plus size={16} className="mr-1" />
+          <Button onClick={handleNewPrompt} className="bg-[#2C106A] hover:bg-[#1F0B4C] text-white">
+            <Plus className="w-4 h-4 mr-2" />
             New Prompt
           </Button>
         </div>
@@ -149,12 +185,6 @@ export function PromptList({ categoryId, onPromptSelect, selectedPromptId }: Pro
                     >
                       <Heart size={14} className={`transition-colors hover:text-red-500 ${prompt.is_favorite ? "text-red-500 fill-current" : "text-gray-400"}`} />
                     </button>
-                    {prompt.performance && (
-                      <div className="flex items-center text-xs bg-purple-50 px-2 py-1 rounded-full">
-                        <Gauge size={12} className="text-purple-500" />
-                        <span className="ml-1 text-purple-700">{prompt.performance}</span>
-                      </div>
-                    )}
                     <span className="text-xs text-gray-500">{prompt.version}</span>
                   </div>
                 </div>
