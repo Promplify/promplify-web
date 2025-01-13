@@ -25,15 +25,35 @@ export function PromptList({ categoryId, onPromptSelect, selectedPromptId }: Pro
       const session = await supabase.auth.getSession();
       if (session.data.session?.user.id) {
         const data = await getPrompts(session.data.session.user.id, categoryId || undefined);
+
         if (selectedPromptId === "new") {
-          const newPrompt = prompts.find((p) => p.id === "new");
-          if (newPrompt) {
-            setPrompts([newPrompt, ...data]);
-            return;
-          }
+          const newPrompt = {
+            id: "new",
+            title: "New Prompt",
+            description: "",
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+            is_favorite: false,
+            user_id: session.data.session.user.id,
+            content: "",
+            system_prompt: "",
+            user_prompt: "",
+            version: "1.0.0",
+            token_count: 0,
+            performance: 0,
+            category_id: categoryId || "",
+            model: "gpt-4",
+            temperature: 0.7,
+            max_tokens: 2000,
+            prompt_tags: [],
+          } as Prompt;
+          setPrompts([newPrompt, ...data]);
+          return;
         }
+
         setPrompts(data);
-        if (!selectedPromptId && data.length > 0) {
+
+        if ((!selectedPromptId || !data.find((p) => p.id === selectedPromptId)) && data.length > 0) {
           onPromptSelect?.(data[0].id);
         }
       }
@@ -83,29 +103,7 @@ export function PromptList({ categoryId, onPromptSelect, selectedPromptId }: Pro
   });
 
   const handleNewPrompt = () => {
-    const newPrompt = {
-      id: "new",
-      title: "New Prompt",
-      description: "",
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-      is_favorite: false,
-      user_id: "",
-      content: "",
-      system_prompt: "",
-      user_prompt: "",
-      version: "1.0.0",
-      token_count: 0,
-      performance: 0,
-      category_id: categoryId || "",
-      model: "gpt-4",
-      temperature: 0.7,
-      max_tokens: 2000,
-      prompt_tags: [],
-    } as Prompt;
-
-    setPrompts((prevPrompts) => [newPrompt, ...prevPrompts]);
-    onPromptSelect?.(newPrompt.id);
+    onPromptSelect?.("new");
   };
 
   if (isLoading) {

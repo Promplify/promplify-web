@@ -1,5 +1,4 @@
 import { Logo } from "@/components/landing/Logo";
-import { Bell, Settings } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { UserNav } from "../landing/UserNav";
 
@@ -24,13 +23,7 @@ export function DashboardHeader() {
             </Link>
           </nav>
         </div>
-        <div className="flex items-center space-x-4">
-          <button className="p-2 hover:bg-gray-800 rounded-full text-gray-400 hover:text-white transition-colors">
-            <Bell size={20} />
-          </button>
-          <button className="p-2 hover:bg-gray-800 rounded-full text-gray-400 hover:text-white transition-colors">
-            <Settings size={20} />
-          </button>
+        <div className="flex items-center">
           <UserNav />
         </div>
       </div>
