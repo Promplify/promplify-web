@@ -22,12 +22,6 @@ export function DashboardHeader() {
             <Link to="/dashboard" className={`transition-colors text-sm ${isActive("/dashboard") ? "text-white" : "text-gray-400 hover:text-white"}`}>
               Dashboard
             </Link>
-            <Link to="/api" className={`transition-colors text-sm ${isActive("/api") ? "text-white" : "text-gray-400 hover:text-white"}`}>
-              API
-            </Link>
-            <Link to="/docs" className={`transition-colors text-sm ${isActive("/docs") ? "text-white" : "text-gray-400 hover:text-white"}`}>
-              Documentation
-            </Link>
           </nav>
         </div>
         <div className="flex items-center space-x-4">

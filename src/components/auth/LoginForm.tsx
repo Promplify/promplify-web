@@ -40,7 +40,6 @@ export function LoginForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Login attempt with email:", email);
 
     if (!validateForm()) {
       return;
@@ -55,18 +54,44 @@ export function LoginForm() {
       });
 
       if (error) {
-        if (error.message.includes("Invalid login credentials")) {
-          toast.error("Invalid email or password, please try again");
+        if (error.message.includes("Email not confirmed")) {
+          toast.error("您的邮箱尚未验证。请检查邮箱完成验证后再登录。", {
+            duration: 6000,
+            action: {
+              label: "重新发送验证邮件",
+              onClick: async () => {
+                try {
+                  const { error: resendError } = await supabase.auth.resend({
+                    type: "signup",
+                    email,
+                    options: {
+                      emailRedirectTo: `${window.location.origin}/auth/callback`,
+                    },
+                  });
+                  if (resendError) {
+                    toast.error("发送验证邮件失败: " + resendError.message);
+                  } else {
+                    toast.success("验证邮件已重新发送，请查收");
+                  }
+                } catch (err) {
+                  console.error("重发验证邮件错误:", err);
+                  toast.error("发送验证邮件时发生错误");
+                }
+              },
+            },
+          });
+        } else if (error.message.includes("Invalid login credentials")) {
+          toast.error("邮箱或密码错误，请重试");
         } else {
-          toast.error("Login failed: " + error.message);
+          toast.error("登录失败: " + error.message);
         }
-      } else {
-        toast.success("Login successful! Redirecting to dashboard...");
+      } else if (data.user) {
+        toast.success("登录成功！正在跳转到仪表盘...");
         navigate("/dashboard");
       }
     } catch (error) {
-      console.error("Login error:", error);
-      toast.error("An error occurred during login");
+      console.error("登录错误:", error);
+      toast.error("登录过程中发生错误，请稍后重试");
     } finally {
       setIsLoading(false);
     }

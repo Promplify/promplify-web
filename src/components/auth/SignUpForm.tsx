@@ -47,7 +47,6 @@ export function SignUpForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Signup attempt with email:", email);
 
     if (!validateForm()) {
       return;
@@ -56,31 +55,75 @@ export function SignUpForm() {
     setIsLoading(true);
 
     try {
+      const { data: existingUser } = await supabase.from("users").select("id").eq("email", email).single();
+
+      if (existingUser) {
+        toast.error("This email is already registered with SSO. Please sign in with Google or GitHub.");
+        setIsLoading(false);
+        return;
+      }
+
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
           emailRedirectTo: `${window.location.origin}/auth/callback`,
+          data: {
+            email_confirmed: false,
+          },
         },
       });
 
-      console.log("Signup response:", { data, error });
-
       if (error) {
         if (error.message.includes("User already registered")) {
-          toast.error("Email already registered. Please sign in or use a different email");
+          const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
+            email,
+            password,
+          });
+
+          if (signInError) {
+            if (signInError.message.includes("Email not confirmed")) {
+              toast.error("Email not verified. Please check your inbox for the verification email.", {
+                duration: 6000,
+                action: {
+                  label: "Resend email",
+                  onClick: async () => {
+                    const { error: resendError } = await supabase.auth.resend({
+                      type: "signup",
+                      email,
+                      options: {
+                        emailRedirectTo: `${window.location.origin}/auth/callback`,
+                      },
+                    });
+                    if (resendError) {
+                      toast.error("Failed to send verification email: " + resendError.message);
+                    } else {
+                      toast.success("Verification email sent!");
+                    }
+                  },
+                },
+              });
+            } else {
+              toast.error("This email is already registered. Please sign in.");
+            }
+          } else {
+            toast.success("Sign in successful! Redirecting to dashboard...");
+            navigate("/dashboard");
+          }
         } else {
           toast.error("Registration failed: " + error.message);
         }
-      } else {
-        toast.success("Registration successful! We've sent a confirmation email to your address. Please check your inbox and click the confirmation link to activate your account.");
+      } else if (data.user) {
+        toast.success("Registration successful! Please check your email for the verification link.", {
+          duration: 6000,
+        });
         setEmail("");
         setPassword("");
         setConfirmPassword("");
       }
     } catch (error) {
-      console.error("Signup error:", error);
-      toast.error("An error occurred during registration");
+      console.error("Registration error:", error);
+      toast.error("An error occurred during registration. Please try again later.");
     } finally {
       setIsLoading(false);
     }
