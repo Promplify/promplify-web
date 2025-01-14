@@ -1,10 +1,20 @@
-import { Hero } from "@/components/landing/Hero";
 import { Features } from "@/components/landing/Features";
-import { HowItWorks } from "@/components/landing/HowItWorks";
 import { Footer } from "@/components/landing/Footer";
+import { Hero } from "@/components/landing/Hero";
+import { HowItWorks } from "@/components/landing/HowItWorks";
 import { Navigation } from "@/components/landing/Navigation";
+import { updateMeta } from "@/utils/meta";
+import { useEffect } from "react";
 
 const Index = () => {
+  useEffect(() => {
+    updateMeta(
+      "Promplify - Amplify Your AI Potential",
+      "Optimize your prompts, enhance your AI interactions, and unlock the full potential of artificial intelligence with Promplify.",
+      "AI prompt management, prompt optimization, AI workflow, prompt organization"
+    );
+  }, []);
+
   return (
     <div className="min-h-screen">
       <Navigation />

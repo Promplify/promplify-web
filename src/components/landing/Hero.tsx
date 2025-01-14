@@ -11,12 +11,12 @@ export const Hero = () => {
 
       {/* Floating Elements */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-20 left-10 w-72 h-72 bg-purple-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob" />
-        <div className="absolute top-40 right-10 w-72 h-72 bg-yellow-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob animation-delay-2000" />
-        <div className="absolute -bottom-8 left-20 w-72 h-72 bg-pink-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob animation-delay-4000" />
+        <div className="absolute top-20 left-10 w-72 h-72 bg-purple-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob will-change-transform" />
+        <div className="absolute top-40 right-10 w-72 h-72 bg-yellow-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob animation-delay-2000 will-change-transform" />
+        <div className="absolute -bottom-8 left-20 w-72 h-72 bg-pink-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob animation-delay-4000 will-change-transform" />
       </div>
 
-      <div className="relative animate-fade-up z-10 max-w-4xl mx-auto">
+      <div className="relative animate-fade-up z-10 max-w-4xl mx-auto will-change-transform">
         <h1 className="text-4xl md:text-6xl font-bold mb-4 leading-tight">
           <p className="bg-clip-text text-transparent bg-gradient-to-r from-[#2C106A] to-purple-600 md:text-8xl" style={{ lineHeight: "1.2" }}>
             Promplify
@@ -27,12 +27,12 @@ export const Hero = () => {
         <p className="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto mb-8">Optimize your prompts, enhance your AI interactions, and unlock the full potential of artificial intelligence.</p>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-          <Button asChild size="lg" className="bg-[#2C106A] hover:bg-[#2C106A]/90 text-white px-8 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+          <Button asChild size="lg" className="bg-[#2C106A] hover:bg-[#2C106A]/90 text-white px-8 shadow-lg hover:shadow-xl transition-transform duration-300 transform hover:-translate-y-1">
             <Link to="/dashboard">
               Get Started <ArrowRight className="ml-2 h-4 w-4" />
             </Link>
           </Button>
-          <Button size="lg" variant="outline" className="border-[#2C106A] text-[#2C106A] hover:bg-[#2C106A]/5 shadow-md hover:shadow-lg transition-all duration-300" asChild>
+          <Button size="lg" variant="outline" className="border-[#2C106A] text-[#2C106A] hover:bg-[#2C106A]/5 shadow-md hover:shadow-lg transition-transform duration-300" asChild>
             <a href="#features">Learn More</a>
           </Button>
         </div>
