@@ -1,3 +1,4 @@
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
@@ -23,6 +24,9 @@ export function Sidebar({ onCategorySelect, selectedCategoryId }: SidebarProps) 
   const [isAddCategoryOpen, setIsAddCategoryOpen] = useState(false);
   const [newCategoryName, setNewCategoryName] = useState("");
   const [selectedParentId, setSelectedParentId] = useState<string | undefined>();
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [categoryToDelete, setCategoryToDelete] = useState<string | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -105,9 +109,17 @@ export function Sidebar({ onCategorySelect, selectedCategoryId }: SidebarProps) 
   const toggleCollapse = () => setIsCollapsed(!isCollapsed);
 
   const handleDeleteCategory = async (categoryId: string) => {
+    setCategoryToDelete(categoryId);
+    setShowDeleteDialog(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!categoryToDelete) return;
+
+    setIsDeleting(true);
     try {
       // 获取所有提示
-      const { data: prompts } = await supabase.from("prompts").select("id").eq("category_id", categoryId);
+      const { data: prompts } = await supabase.from("prompts").select("id").eq("category_id", categoryToDelete);
 
       // 获取默认分类（第一个分类）
       const defaultCategory = categories.find((c) => !c.parent_id);
@@ -124,11 +136,11 @@ export function Sidebar({ onCategorySelect, selectedCategoryId }: SidebarProps) 
       }
 
       // 删除分类
-      await deleteCategory(categoryId);
+      await deleteCategory(categoryToDelete);
 
       // 更新本地状态
-      setCategories(categories.filter((c) => c.id !== categoryId));
-      if (selectedCategoryId === categoryId) {
+      setCategories(categories.filter((c) => c.id !== categoryToDelete));
+      if (selectedCategoryId === categoryToDelete) {
         onCategorySelect?.(null);
       }
 
@@ -136,6 +148,10 @@ export function Sidebar({ onCategorySelect, selectedCategoryId }: SidebarProps) 
     } catch (error) {
       console.error("Error deleting category:", error);
       toast.error("Failed to delete category");
+    } finally {
+      setIsDeleting(false);
+      setShowDeleteDialog(false);
+      setCategoryToDelete(null);
     }
   };
 
@@ -276,6 +292,23 @@ export function Sidebar({ onCategorySelect, selectedCategoryId }: SidebarProps) 
           ))}
         </div>
       </div>
+
+      <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Category</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete this category? All prompts in this category will be moved to the default category. This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={confirmDelete} className="bg-red-600 hover:bg-red-700 text-white" disabled={isDeleting}>
+              {isDeleting ? "Deleting..." : "Delete"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
