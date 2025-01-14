@@ -91,7 +91,7 @@ export const getCategories = async (userId: string) => {
   return data;
 };
 
-export const createCategory = async (category: Omit<Category, "id" | "created_at" | "updated_at">) => {
+export const createCategory = async (category: { name: string; user_id: string }) => {
   const { data, error } = await supabase.from("categories").insert(category).select().single();
 
   if (error) throw error;
@@ -113,16 +113,38 @@ export const deleteCategory = async (id: string) => {
 
 // Tags
 export const getTags = async () => {
-  const { data, error } = await supabase.from("tags").select("*").order("name");
+  const session = await supabase.auth.getSession();
+  if (!session.data.session?.user.id) {
+    throw new Error("No user session");
+  }
 
-  if (error) throw error;
+  const { data, error } = await supabase.from("tags").select("*").eq("user_id", session.data.session.user.id).order("name");
+
+  if (error) {
+    console.error("Error fetching tags:", error);
+    throw error;
+  }
+
   return data;
 };
 
 export const createTag = async (name: string) => {
-  const { data, error } = await supabase.from("tags").insert({ name }).select().single();
+  const session = await supabase.auth.getSession();
+  if (!session.data.session?.user.id) {
+    throw new Error("No user session");
+  }
 
-  if (error) throw error;
+  const { data, error } = await supabase
+    .from("tags")
+    .insert([{ name, user_id: session.data.session.user.id }])
+    .select()
+    .single();
+
+  if (error) {
+    console.error("Error creating tag:", error);
+    throw error;
+  }
+
   return data;
 };
 
@@ -151,6 +173,7 @@ export const createPromptWithCategory = async (prompt: Omit<Prompt, "id" | "crea
   const promptWithValidCategory = {
     ...prompt,
     category_id: category.id,
+    id: crypto.randomUUID(),
   };
 
   return createPrompt(promptWithValidCategory);

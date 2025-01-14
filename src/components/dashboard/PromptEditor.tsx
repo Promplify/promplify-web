@@ -56,20 +56,73 @@ export function PromptEditor({ promptId, onSave }: PromptEditorProps) {
     temperature: 0.7,
     max_tokens: 2000,
     prompt_tags: [],
+    category_id: null,
+    system_prompt: "",
+    user_prompt: "",
   } as Prompt);
   const [session, setSession] = useState<any>(null);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    const getSession = async () => {
+      try {
+        const {
+          data: { session: currentSession },
+          error,
+        } = await supabase.auth.getSession();
+        if (error) {
+          console.error("Error getting session:", error);
+          toast.error("Session error, please try logging in again");
+          return;
+        }
+        setSession(currentSession);
+      } catch (error) {
+        console.error("Error getting session:", error);
+        toast.error("Session error, please try logging in again");
+      }
+    };
+
+    getSession();
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
     });
+
+    return () => subscription.unsubscribe();
   }, []);
+
+  useEffect(() => {
+    const loadCategories = async () => {
+      try {
+        const session = await supabase.auth.getSession();
+        if (!session.data.session?.user.id) {
+          console.error("No user session");
+          return;
+        }
+
+        const userId = session.data.session.user.id;
+        try {
+          const categories = await getCategories(userId);
+          setAvailableCategories(categories || []);
+        } catch (error) {
+          console.error("Error fetching categories:", error);
+          setAvailableCategories([]);
+        }
+      } catch (error) {
+        console.error("Error in loadCategories:", error);
+        toast.error("Failed to load categories");
+      }
+    };
+
+    loadCategories();
+  }, [session?.user?.id]);
 
   useEffect(() => {
     const loadPrompt = async () => {
       if (!promptId) {
-        // 当 promptId 为空时,重置表单为默认值
-        setPrompt({
+        setPrompt((prev) => ({
+          ...prev,
           id: "",
           user_id: "",
           title: "",
@@ -81,18 +134,24 @@ export function PromptEditor({ promptId, onSave }: PromptEditorProps) {
           token_count: 0,
           performance: 0,
           is_favorite: false,
-          category_id: "",
+          category_id: null,
           model: "gpt-4",
           temperature: 0.7,
           max_tokens: 2000,
           prompt_tags: [],
-        } as Prompt);
+        }));
         return;
       }
 
       if (promptId === "new") {
-        // 如果是新建,也使用默认值
-        setPrompt({
+        const session = await supabase.auth.getSession();
+        if (!session.data.session?.user.id) {
+          toast.error("Please login first");
+          return;
+        }
+
+        setPrompt((prev) => ({
+          ...prev,
           id: "",
           user_id: "",
           title: "",
@@ -104,12 +163,12 @@ export function PromptEditor({ promptId, onSave }: PromptEditorProps) {
           token_count: 0,
           performance: 0,
           is_favorite: false,
-          category_id: "",
+          category_id: availableCategories.length > 0 ? availableCategories[0].id : null,
           model: "gpt-4",
           temperature: 0.7,
           max_tokens: 2000,
           prompt_tags: [],
-        } as Prompt);
+        }));
         return;
       }
 
@@ -135,26 +194,9 @@ export function PromptEditor({ promptId, onSave }: PromptEditorProps) {
       }
     };
 
-    const loadCategories = async () => {
-      try {
-        const session = await supabase.auth.getSession();
-        if (session.data.session?.user.id) {
-          const categories = await getCategories(session.data.session.user.id);
-          setAvailableCategories(categories);
-          if (!promptId && !prompt.category_id && categories.length > 0) {
-            setPrompt((prev) => ({ ...prev, category_id: categories[0].id }));
-          }
-        }
-      } catch (error) {
-        console.error("Error loading categories:", error);
-        toast.error("Failed to load categories");
-      }
-    };
-
     loadPrompt();
     loadTags();
-    loadCategories();
-  }, [promptId]);
+  }, [promptId, availableCategories]);
 
   const handleCopyContent = () => {
     const combinedPrompt = `System: ${prompt.system_prompt}\n\nUser: ${prompt.user_prompt}`;
@@ -168,33 +210,38 @@ export function PromptEditor({ promptId, onSave }: PromptEditorProps) {
       return;
     }
 
+    const {
+      data: { session: currentSession },
+    } = await supabase.auth.getSession();
+    if (!currentSession?.user?.id) {
+      toast.error("Please login to save prompt");
+      return;
+    }
+
     try {
       setIsSaving(true);
-      // 重新计算一次 tokens 确保数据最新
       const systemTokens = countTokens(prompt.system_prompt || "");
       const userTokens = countTokens(prompt.user_prompt || "");
       const totalTokens = systemTokens + userTokens;
 
       const promptData = {
         ...prompt,
-        id: promptId === "new" ? uuidv4() : prompt.id || uuidv4(),
-        user_id: session?.user?.id,
+        id: promptId === "new" ? uuidv4() : promptId,
+        user_id: currentSession.user.id,
         token_count: totalTokens,
         system_tokens: systemTokens,
         user_tokens: userTokens,
+        category_id: prompt.category_id || null,
+        performance: prompt.performance || 0,
       };
-
-      if (!promptData.id) {
-        toast.error("Failed to generate ID");
-        return;
-      }
 
       if (promptId === "new") {
         await createPrompt(promptData);
         toast.success("Prompt created successfully");
         onSave?.();
       } else {
-        await updatePrompt(promptId, promptData);
+        const { id, created_at, updated_at, ...updateData } = promptData;
+        await updatePrompt(promptId, updateData);
         toast.success("Prompt updated successfully");
       }
     } catch (error) {
@@ -208,17 +255,17 @@ export function PromptEditor({ promptId, onSave }: PromptEditorProps) {
   const handleDelete = async () => {
     if (!promptId) return;
 
-    setIsDeleting(true);
     try {
+      setIsDeleting(true);
       await deletePrompt(promptId);
       toast.success("Prompt deleted successfully");
       onSave?.();
-      setShowDeleteDialog(false);
     } catch (error) {
       console.error("Error deleting prompt:", error);
       toast.error("Failed to delete prompt");
     } finally {
       setIsDeleting(false);
+      setShowDeleteDialog(false);
     }
   };
 
@@ -264,6 +311,24 @@ export function PromptEditor({ promptId, onSave }: PromptEditorProps) {
     calculateTokens();
   }, [prompt.system_prompt, prompt.user_prompt]);
 
+  const renderCategorySelect = () => (
+    <select
+      className="w-full px-3 py-2 bg-white border border-gray-200 focus:ring-[#2C106A] focus:border-[#2C106A] hover:border-gray-300"
+      value={prompt.category_id || ""}
+      onChange={(e) => {
+        const newCategoryId = e.target.value || null;
+        setPrompt((prev) => ({ ...prev, category_id: newCategoryId }));
+      }}
+    >
+      <option value="">All Prompts</option>
+      {availableCategories.map((category) => (
+        <option key={category.id} value={category.id}>
+          {category.name}
+        </option>
+      ))}
+    </select>
+  );
+
   if (isLoading) {
     return (
       <div className="flex-1 h-full bg-gray-50 p-4">
@@ -280,6 +345,25 @@ export function PromptEditor({ promptId, onSave }: PromptEditorProps) {
               <Skeleton className="h-32 w-full animate-pulse" />
             </div>
           </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Add empty state when no prompt is selected
+  if (!promptId) {
+    return (
+      <div className="flex-1 h-full bg-gray-50 flex items-center justify-center">
+        <div className="text-center space-y-2 max-w-md mx-auto p-8">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 mx-auto text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={1.5}
+              d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+            />
+          </svg>
+          <p className="text-gray-500">Select a prompt from the list or create a new one to get started</p>
         </div>
       </div>
     );
@@ -302,7 +386,7 @@ export function PromptEditor({ promptId, onSave }: PromptEditorProps) {
             <Copy size={16} className="mr-1" />
             Copy
           </Button>
-          <Button variant="outline" size="sm" onClick={() => setShowDeleteDialog(true)} disabled={!promptId || isDeleting}>
+          <Button variant="outline" size="sm" onClick={() => setShowDeleteDialog(true)} disabled={!promptId || promptId === "new" || isDeleting}>
             <Trash2 size={16} className="mr-1" />
             Delete
           </Button>
@@ -312,6 +396,30 @@ export function PromptEditor({ promptId, onSave }: PromptEditorProps) {
           </Button>
         </div>
       </div>
+
+      <AlertDialog
+        open={showDeleteDialog}
+        onOpenChange={(open) => {
+          setShowDeleteDialog(open);
+          if (!open) {
+            setIsDeleting(false);
+          }
+        }}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you sure you want to delete this prompt?</AlertDialogTitle>
+            <AlertDialogDescription>This action cannot be undone. This will permanently delete the prompt and all its associated data.</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDelete} disabled={isDeleting}>
+              {isDeleting ? "Deleting..." : "Delete"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
       <div className="flex-1 overflow-y-auto">
         <div className="w-full px-2">
           <div className="space-y-4">
@@ -383,18 +491,7 @@ export function PromptEditor({ promptId, onSave }: PromptEditorProps) {
                 <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
                   <div className="lg:col-span-3">
                     <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
-                    <select
-                      className="w-full px-3 py-2 bg-white border border-gray-200 focus:ring-[#2C106A] focus:border-[#2C106A] hover:border-gray-300"
-                      value={prompt.category_id || ""}
-                      onChange={(e) => setPrompt({ ...prompt, category_id: e.target.value })}
-                    >
-                      <option value="">Select a category</option>
-                      {availableCategories.map((category) => (
-                        <option key={category.id} value={category.id}>
-                          {category.name}
-                        </option>
-                      ))}
-                    </select>
+                    {renderCategorySelect()}
                   </div>
                   <div className="lg:col-span-2">
                     <label className="block text-sm font-medium text-gray-700 mb-1">Tags</label>
@@ -633,7 +730,15 @@ export function PromptEditor({ promptId, onSave }: PromptEditorProps) {
         </div>
       </div>
 
-      <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+      <AlertDialog
+        open={showDeleteDialog}
+        onOpenChange={(open) => {
+          setShowDeleteDialog(open);
+          if (!open) {
+            setIsDeleting(false);
+          }
+        }}
+      >
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Are you sure you want to delete this prompt?</AlertDialogTitle>
