@@ -134,9 +134,21 @@ export const createTag = async (name: string) => {
     throw new Error("No user session");
   }
 
+  // First check if the tag already exists for this user
+  const { data: existingTag } = await supabase.from("tags").select("*").eq("user_id", session.data.session.user.id).eq("name", name).single();
+
+  if (existingTag) {
+    return existingTag;
+  }
+
   const { data, error } = await supabase
     .from("tags")
-    .insert([{ name, user_id: session.data.session.user.id }])
+    .insert([
+      {
+        name,
+        user_id: session.data.session.user.id,
+      },
+    ])
     .select()
     .single();
 
@@ -149,15 +161,45 @@ export const createTag = async (name: string) => {
 };
 
 export const addTagToPrompt = async (promptId: string, tagId: string) => {
+  const session = await supabase.auth.getSession();
+  if (!session.data.session?.user.id) {
+    throw new Error("No user session");
+  }
+
+  // Verify the tag belongs to the user
+  const { data: tagData } = await supabase.from("tags").select("*").eq("id", tagId).eq("user_id", session.data.session.user.id).single();
+
+  if (!tagData) {
+    throw new Error("Tag not found or not owned by user");
+  }
+
   const { error } = await supabase.from("prompt_tags").insert({ prompt_id: promptId, tag_id: tagId });
 
-  if (error) throw error;
+  if (error) {
+    console.error("Error adding tag to prompt:", error);
+    throw error;
+  }
 };
 
 export const removeTagFromPrompt = async (promptId: string, tagId: string) => {
+  const session = await supabase.auth.getSession();
+  if (!session.data.session?.user.id) {
+    throw new Error("No user session");
+  }
+
+  // Verify the tag belongs to the user
+  const { data: tagData } = await supabase.from("tags").select("*").eq("id", tagId).eq("user_id", session.data.session.user.id).single();
+
+  if (!tagData) {
+    throw new Error("Tag not found or not owned by user");
+  }
+
   const { error } = await supabase.from("prompt_tags").delete().eq("prompt_id", promptId).eq("tag_id", tagId);
 
-  if (error) throw error;
+  if (error) {
+    console.error("Error removing tag from prompt:", error);
+    throw error;
+  }
 };
 
 export const createPromptWithCategory = async (prompt: Omit<Prompt, "id" | "created_at" | "updated_at">, categoryName: string) => {
