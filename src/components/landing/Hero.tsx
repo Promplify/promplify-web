@@ -32,8 +32,25 @@ export const Hero = () => {
               Get Started <ArrowRight className="ml-2 h-4 w-4" />
             </Link>
           </Button>
-          <Button size="lg" variant="outline" className="border-[#2C106A] text-[#2C106A] hover:bg-[#2C106A]/5 shadow-md hover:shadow-lg transition-transform duration-300" asChild>
-            <a href="#features">Learn More</a>
+          <Button
+            size="lg"
+            variant="outline"
+            className="border-[#2C106A] text-[#2C106A] hover:bg-[#2C106A]/5 shadow-md hover:shadow-lg transition-transform duration-300"
+            onClick={(e) => {
+              e.preventDefault();
+              const element = document.getElementById("features");
+              if (element) {
+                const headerOffset = 80;
+                const elementPosition = element.getBoundingClientRect().top;
+                const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+                window.scrollTo({
+                  top: offsetPosition,
+                  behavior: "smooth",
+                });
+              }
+            }}
+          >
+            Learn More
           </Button>
         </div>
       </div>

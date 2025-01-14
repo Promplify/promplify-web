@@ -1,11 +1,12 @@
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { supabase } from "@/lib/supabase";
-import { createCategory, getCategories } from "@/services/promptService";
+import { createCategory, deleteCategory, getCategories, updatePrompt } from "@/services/promptService";
 import { Category } from "@/types/prompt";
-import { ChevronDown, ChevronLeft, ChevronRight, Folder, Plus } from "lucide-react";
+import { ChevronDown, ChevronLeft, ChevronRight, Folder, MoreVertical, Plus, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
@@ -103,6 +104,41 @@ export function Sidebar({ onCategorySelect, selectedCategoryId }: SidebarProps) 
 
   const toggleCollapse = () => setIsCollapsed(!isCollapsed);
 
+  const handleDeleteCategory = async (categoryId: string) => {
+    try {
+      // 获取所有提示
+      const { data: prompts } = await supabase.from("prompts").select("id").eq("category_id", categoryId);
+
+      // 获取默认分类（第一个分类）
+      const defaultCategory = categories.find((c) => !c.parent_id);
+      if (!defaultCategory) {
+        toast.error("No default category found");
+        return;
+      }
+
+      // 将该分类下的所有提示移动到默认分类
+      if (prompts && prompts.length > 0) {
+        for (const prompt of prompts) {
+          await updatePrompt(prompt.id, { category_id: defaultCategory.id });
+        }
+      }
+
+      // 删除分类
+      await deleteCategory(categoryId);
+
+      // 更新本地状态
+      setCategories(categories.filter((c) => c.id !== categoryId));
+      if (selectedCategoryId === categoryId) {
+        onCategorySelect?.(null);
+      }
+
+      toast.success("Category deleted successfully");
+    } catch (error) {
+      console.error("Error deleting category:", error);
+      toast.error("Failed to delete category");
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="w-[240px] h-full bg-gray-50 p-4">
@@ -185,26 +221,43 @@ export function Sidebar({ onCategorySelect, selectedCategoryId }: SidebarProps) 
           </button>
           {categories.map((category) => (
             <div key={category.id}>
-              <button
-                className={`w-full flex items-center gap-2 px-3 py-2 hover:bg-gray-100 rounded-md text-sm text-gray-700 ${selectedCategoryId === category.id ? "bg-gray-100" : ""}`}
-                onClick={() => {
-                  toggleCategory(category.id);
-                  onCategorySelect?.(category.id);
-                }}
-              >
-                <Folder size={20} className="text-gray-400 flex-shrink-0" />
+              <div className="flex items-center">
+                <button
+                  className={`flex-1 flex items-center gap-2 px-3 py-2 hover:bg-gray-100 rounded-md text-sm text-gray-700 ${selectedCategoryId === category.id ? "bg-gray-100" : ""}`}
+                  onClick={() => {
+                    toggleCategory(category.id);
+                    onCategorySelect?.(category.id);
+                  }}
+                >
+                  <Folder size={20} className="text-gray-400 flex-shrink-0" />
+                  {!isCollapsed && (
+                    <>
+                      <span className="flex-1 text-left">{category.name}</span>
+                      {category.subcategories?.length > 0 && (
+                        <>
+                          <span className="text-xs text-gray-400">{category.subcategories.length}</span>
+                          {expandedCategories.includes(category.id) ? <ChevronDown size={20} className="text-gray-400" /> : <ChevronRight size={20} className="text-gray-400" />}
+                        </>
+                      )}
+                    </>
+                  )}
+                </button>
                 {!isCollapsed && (
-                  <>
-                    <span className="flex-1 text-left">{category.name}</span>
-                    {category.subcategories?.length > 0 && (
-                      <>
-                        <span className="text-xs text-gray-400">{category.subcategories.length}</span>
-                        {expandedCategories.includes(category.id) ? <ChevronDown size={20} className="text-gray-400" /> : <ChevronRight size={20} className="text-gray-400" />}
-                      </>
-                    )}
-                  </>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" size="icon" className="h-8 w-8">
+                        <MoreVertical size={16} />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem className="text-red-600 focus:text-red-600" onClick={() => handleDeleteCategory(category.id)}>
+                        <Trash2 className="mr-2 h-4 w-4" />
+                        Delete
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 )}
-              </button>
+              </div>
               {!isCollapsed && expandedCategories.includes(category.id) && category.subcategories?.length > 0 && (
                 <div className="ml-6 mt-1 space-y-1">
                   {category.subcategories.map((subcategory) => (

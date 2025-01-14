@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Skeleton } from "@/components/ui/skeleton";
 import { supabase } from "@/lib/supabase";
 import { getPrompts, toggleFavorite } from "@/services/promptService";
 import { Prompt } from "@/types/prompt";
@@ -110,33 +111,33 @@ export function PromptList({ categoryId, onPromptSelect, selectedPromptId }: Pro
     return (
       <div className="w-[320px] h-full bg-white">
         <div className="p-4 border-b border-gray-200">
-          <div className="animate-pulse space-y-4">
+          <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <div className="h-6 bg-gray-200 rounded w-24"></div>
-              <div className="h-8 w-8 bg-gray-200 rounded"></div>
+              <Skeleton className="h-6 w-24 animate-pulse" />
+              <Skeleton className="h-9 w-28 animate-pulse" />
             </div>
-            <div className="h-10 bg-gray-200 rounded"></div>
+            <Skeleton className="h-10 w-full animate-pulse" />
             <div className="flex items-center justify-between">
-              <div className="h-4 bg-gray-200 rounded w-16"></div>
-              <div className="h-4 bg-gray-200 rounded w-24"></div>
+              <Skeleton className="h-6 w-16 animate-pulse" />
+              <Skeleton className="h-6 w-24 animate-pulse" />
             </div>
           </div>
         </div>
         <div className="p-2">
-          <div className="animate-pulse space-y-2">
+          <div className="space-y-2">
             {[1, 2, 3].map((i) => (
               <div key={i} className="p-3 border border-gray-100 rounded-lg space-y-3">
                 <div className="flex items-center justify-between">
-                  <div className="h-5 bg-gray-200 rounded w-32"></div>
+                  <Skeleton className="h-5 w-32 animate-pulse" />
                   <div className="flex items-center space-x-2">
-                    <div className="h-4 w-4 bg-gray-200 rounded"></div>
-                    <div className="h-4 bg-gray-200 rounded w-16"></div>
+                    <Skeleton className="h-4 w-4 animate-pulse" />
+                    <Skeleton className="h-4 w-16 animate-pulse" />
                   </div>
                 </div>
-                <div className="h-4 bg-gray-200 rounded w-full"></div>
+                <Skeleton className="h-4 w-full animate-pulse" />
                 <div className="flex items-center justify-between">
-                  <div className="h-4 bg-gray-200 rounded w-20"></div>
-                  <div className="h-4 bg-gray-200 rounded w-24"></div>
+                  <Skeleton className="h-4 w-20 animate-pulse" />
+                  <Skeleton className="h-4 w-24 animate-pulse" />
                 </div>
               </div>
             ))}

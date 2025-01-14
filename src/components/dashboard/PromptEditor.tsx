@@ -2,6 +2,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Textarea } from "@/components/ui/textarea";
 import { supabase } from "@/lib/supabase";
 import { addTagToPrompt, createPrompt, createTag, deletePrompt, getCategories, getPromptById, getTags, updatePrompt } from "@/services/promptService";
@@ -266,10 +267,19 @@ export function PromptEditor({ promptId, onSave }: PromptEditorProps) {
   if (isLoading) {
     return (
       <div className="flex-1 h-full bg-gray-50 p-4">
-        <div className="animate-pulse space-y-4">
-          <div className="h-8 bg-gray-200 rounded w-1/4"></div>
-          <div className="h-40 bg-gray-200 rounded"></div>
-          <div className="h-20 bg-gray-200 rounded"></div>
+        <div className="space-y-4">
+          <div className="bg-white p-4 rounded-lg">
+            <Skeleton className="h-8 w-1/4 mb-4 animate-pulse" />
+            <Skeleton className="h-40 w-full mb-4 animate-pulse" />
+            <Skeleton className="h-40 w-full animate-pulse" />
+          </div>
+          <div className="bg-white p-4 rounded-lg">
+            <Skeleton className="h-8 w-1/3 mb-4 animate-pulse" />
+            <div className="grid grid-cols-2 gap-4">
+              <Skeleton className="h-32 w-full animate-pulse" />
+              <Skeleton className="h-32 w-full animate-pulse" />
+            </div>
+          </div>
         </div>
       </div>
     );
@@ -610,11 +620,11 @@ export function PromptEditor({ promptId, onSave }: PromptEditorProps) {
                 <div className="space-y-4">
                   <div>
                     <Label>System Prompt</Label>
-                    <Textarea value={prompt.system_prompt} onChange={(e) => setPrompt({ ...prompt, system_prompt: e.target.value })} placeholder="Enter system prompt..." className="h-32 font-mono" />
+                    <Textarea value={prompt.system_prompt} onChange={(e) => setPrompt({ ...prompt, system_prompt: e.target.value })} placeholder="Enter system prompt..." className="h-48 font-mono" />
                   </div>
                   <div>
                     <Label>User Prompt</Label>
-                    <Textarea value={prompt.user_prompt} onChange={(e) => setPrompt({ ...prompt, user_prompt: e.target.value })} placeholder="Enter user prompt..." className="h-32 font-mono" />
+                    <Textarea value={prompt.user_prompt} onChange={(e) => setPrompt({ ...prompt, user_prompt: e.target.value })} placeholder="Enter user prompt..." className="h-48 font-mono" />
                   </div>
                 </div>
               </div>
