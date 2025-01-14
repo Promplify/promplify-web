@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { supabase } from "@/lib/supabase";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { z } from "zod";
 
@@ -94,35 +94,21 @@ export function LoginForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="grid gap-6">
-      <div className="grid gap-2">
-        <Label htmlFor="email" className="text-base">
-          Email
-        </Label>
-        <Input
-          id="email"
-          type="email"
-          placeholder="name@example.com"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-          className={`h-12 text-base ${errors.email ? "border-red-500" : ""}`}
-        />
-        {errors.email && <p className="text-sm text-red-500">{errors.email}</p>}
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div className="space-y-2">
+        <Label htmlFor="email">Email</Label>
+        <Input id="email" placeholder="m@example.com" type="email" autoCapitalize="none" autoComplete="email" autoCorrect="off" value={email} onChange={(e) => setEmail(e.target.value)} />
       </div>
-      <div className="grid gap-2">
+      <div className="space-y-2">
         <div className="flex items-center justify-between">
-          <Label htmlFor="password" className="text-base">
-            Password
-          </Label>
-          <a href="/reset-password" className="text-sm text-muted-foreground hover:text-primary">
+          <Label htmlFor="password">Password</Label>
+          <Link to="/reset-password" className="text-sm text-[#2C106A] hover:underline">
             Forgot password?
-          </a>
+          </Link>
         </div>
-        <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required className={`h-12 text-base ${errors.password ? "border-red-500" : ""}`} />
-        {errors.password && <p className="text-sm text-red-500">{errors.password}</p>}
+        <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
       </div>
-      <Button type="submit" className="w-full h-12 text-base mt-2" disabled={isLoading}>
+      <Button type="submit" className="w-full bg-[#2C106A] hover:bg-[#1F0B4C]" disabled={isLoading}>
         {isLoading ? "Signing in..." : "Sign in"}
       </Button>
     </form>
