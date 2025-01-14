@@ -28,7 +28,7 @@ export const Hero = () => {
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
           <Button asChild size="lg" className="bg-[#2C106A] hover:bg-[#2C106A]/90 text-white px-8 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
-            <Link to="/auth">
+            <Link to="/dashboard">
               Get Started <ArrowRight className="ml-2 h-4 w-4" />
             </Link>
           </Button>
