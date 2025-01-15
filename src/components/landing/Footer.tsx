@@ -1,26 +1,19 @@
-import { Github, Mail } from "lucide-react";
-import { Logo } from "./Logo";
+import { Link } from "react-router-dom";
 
 export const Footer = () => {
   return (
-    <footer className="w-full bg-black">
-      <div className="container mx-auto px-6 py-8">
-        <div className="flex flex-col md:flex-row justify-between items-center md:items-start">
-          <div className="flex flex-col items-center md:items-start mb-6 md:mb-0">
-            <Logo />
-            <p className="text-white/80 mt-2 text-sm text-center md:text-left">Amplify Your AI Potential</p>
+    <footer className="bg-black py-6 mt-auto">
+      <div className="container mx-auto px-6">
+        <div className="flex flex-col md:flex-row justify-between items-center">
+          <div className="text-white/60 text-sm">© {new Date().getFullYear()} Promplify. All rights reserved.</div>
+          <div className="flex items-center space-x-6 mt-4 md:mt-0">
+            <Link to="/privacy" className="text-white/60 hover:text-white text-sm transition-colors">
+              Privacy Policy
+            </Link>
+            <Link to="/terms" className="text-white/60 hover:text-white text-sm transition-colors">
+              Terms of Service
+            </Link>
           </div>
-          <div className="flex space-x-6 mt-4 md:mt-0">
-            <a href="https://github.com/promplify" target="_blank" rel="noopener noreferrer" className="text-white/80 hover:text-white transition-colors" title="Follow us on GitHub">
-              <Github className="w-6 h-6" />
-            </a>
-            <a href="mailto:support@promplify.com" className="text-white/80 hover:text-white transition-colors" title="Contact us">
-              <Mail className="w-6 h-6" />
-            </a>
-          </div>
-        </div>
-        <div className="mt-8 pt-6 border-t border-white/10 text-center text-white/60">
-          <p className="text-sm">&copy; {new Date().getFullYear()} Promplify. All rights reserved.</p>
         </div>
       </div>
     </footer>
