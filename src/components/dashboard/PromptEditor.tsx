@@ -1,5 +1,6 @@
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -8,7 +9,7 @@ import { supabase } from "@/lib/supabase";
 import { addTagToPrompt, createPrompt, createTag, deletePrompt, getCategories, getPromptById, getTags, updatePrompt } from "@/services/promptService";
 import { Category, Prompt, Tag } from "@/types/prompt";
 import { countTokens } from "gpt-tokenizer/model/gpt-4";
-import { AlertCircle, ChevronDown, ChevronUp, Copy, Gauge, Save, Trash2, X } from "lucide-react";
+import { AlertCircle, Copy, Save, Trash2, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { v4 as uuidv4 } from "uuid";
@@ -24,6 +25,15 @@ type PromptTag = {
 
 type PromptWithTags = Prompt & {
   prompt_tags?: { tags: Omit<Tag, "created_at"> }[];
+};
+
+type PromptVersion = {
+  version: string;
+  content: string;
+  system_prompt: string;
+  user_prompt: string;
+  token_count: number;
+  created_at: string;
 };
 
 interface PromptEditorProps {
@@ -61,6 +71,9 @@ export function PromptEditor({ promptId, onSave }: PromptEditorProps) {
     user_prompt: "",
   } as Prompt);
   const [session, setSession] = useState<any>(null);
+  const [showVersionHistory, setShowVersionHistory] = useState(false);
+  const [versionHistory, setVersionHistory] = useState<PromptVersion[]>([]);
+  const [isLoadingVersions, setIsLoadingVersions] = useState(false);
 
   useEffect(() => {
     const getSession = async () => {
@@ -224,6 +237,39 @@ export function PromptEditor({ promptId, onSave }: PromptEditorProps) {
       const userTokens = countTokens(prompt.user_prompt || "");
       const totalTokens = systemTokens + userTokens;
 
+      if (promptId && promptId !== "new") {
+        const { data: existingVersions } = await supabase.from("prompt_versions").select("version").eq("prompt_id", promptId);
+
+        const versions = existingVersions?.map((v) => v.version) || [];
+        if (versions.includes(prompt.version)) {
+          const [major, minor, patch] = prompt.version.split(".").map(Number);
+          let newPatch = patch;
+          let newVersion;
+          do {
+            newPatch++;
+            newVersion = `${major}.${minor}.${newPatch}`;
+          } while (versions.includes(newVersion));
+
+          setPrompt((prev) => ({ ...prev, version: newVersion }));
+          toast.info(`Version ${prompt.version} already exists, automatically incremented to ${newVersion}`);
+          prompt.version = newVersion;
+        }
+      }
+
+      if (promptId && promptId !== "new") {
+        const { error: versionError } = await supabase.from("prompt_versions").insert({
+          prompt_id: promptId,
+          version: prompt.version,
+          content: prompt.content,
+          system_prompt: prompt.system_prompt,
+          user_prompt: prompt.user_prompt,
+          token_count: totalTokens,
+          created_by: currentSession.user.id,
+        });
+
+        if (versionError) throw versionError;
+      }
+
       const promptData = {
         ...prompt,
         id: promptId === "new" ? uuidv4() : promptId,
@@ -329,6 +375,34 @@ export function PromptEditor({ promptId, onSave }: PromptEditorProps) {
     </select>
   );
 
+  const fetchVersionHistory = async () => {
+    if (!promptId || promptId === "new") return;
+
+    setIsLoadingVersions(true);
+    try {
+      const { data, error } = await supabase.rpc("get_prompt_versions", { p_prompt_id: promptId });
+
+      if (error) throw error;
+      setVersionHistory(data || []);
+    } catch (error) {
+      console.error("Error fetching version history:", error);
+      toast.error("Failed to load version history");
+    } finally {
+      setIsLoadingVersions(false);
+    }
+  };
+
+  const restoreVersion = (version: PromptVersion) => {
+    setPrompt((prev) => ({
+      ...prev,
+      content: version.content,
+      system_prompt: version.system_prompt,
+      user_prompt: version.user_prompt,
+    }));
+    setShowVersionHistory(false);
+    toast.success("Version restored");
+  };
+
   if (isLoading) {
     return (
       <div className="flex-1 h-full bg-gray-50 p-4">
@@ -374,7 +448,72 @@ export function PromptEditor({ promptId, onSave }: PromptEditorProps) {
       <div className="p-3 border-b border-gray-200 bg-white flex items-center justify-between">
         <div className="flex items-center space-x-4">
           <h2 className="font-medium">{prompt.title || "New Prompt"}</h2>
-          <span className="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-purple-100 text-purple-800">Version {prompt.version}</span>
+          <Dialog open={showVersionHistory} onOpenChange={setShowVersionHistory}>
+            <DialogTrigger asChild>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="space-x-1"
+                onClick={() => {
+                  fetchVersionHistory();
+                }}
+                disabled={!promptId || promptId === "new"}
+              >
+                <span className="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-purple-100 text-purple-800">Version {prompt.version}</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M12 20v-6M6 20V10M18 20V4" />
+                </svg>
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-2xl">
+              <DialogHeader>
+                <DialogTitle>Version History</DialogTitle>
+              </DialogHeader>
+              <div className="max-h-[60vh] overflow-y-auto">
+                {isLoadingVersions ? (
+                  <div className="space-y-4">
+                    {[1, 2, 3].map((i) => (
+                      <div key={i} className="animate-pulse">
+                        <div className="h-6 bg-gray-200 rounded w-1/4 mb-2"></div>
+                        <div className="h-20 bg-gray-200 rounded w-full"></div>
+                      </div>
+                    ))}
+                  </div>
+                ) : versionHistory.length === 0 ? (
+                  <div className="text-center py-8 text-gray-500">No version history available</div>
+                ) : (
+                  <div className="space-y-6">
+                    {versionHistory.map((version, index) => (
+                      <div key={index} className="border rounded-lg p-4">
+                        <div className="flex items-center justify-between mb-2">
+                          <div className="flex items-center space-x-3">
+                            <span className="font-medium">Version {version.version}</span>
+                            <span className="text-sm text-gray-500">{new Date(version.created_at).toLocaleString()}</span>
+                          </div>
+                          <Button variant="outline" size="sm" onClick={() => restoreVersion(version)}>
+                            Restore
+                          </Button>
+                        </div>
+                        <div className="space-y-2">
+                          {version.system_prompt && (
+                            <div>
+                              <Label className="text-xs text-gray-500">System Prompt</Label>
+                              <div className="bg-gray-50 p-2 rounded text-sm font-mono">{version.system_prompt}</div>
+                            </div>
+                          )}
+                          <div>
+                            <Label className="text-xs text-gray-500">User Prompt</Label>
+                            <div className="bg-gray-50 p-2 rounded text-sm font-mono">{version.user_prompt}</div>
+                          </div>
+                          <div className="text-xs text-gray-500">Token Count: {version.token_count}</div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </DialogContent>
+          </Dialog>
           <span className="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-blue-100 text-blue-800">Tokens: {prompt.token_count}</span>
         </div>
         <div className="flex items-center space-x-2">
@@ -385,6 +524,30 @@ export function PromptEditor({ promptId, onSave }: PromptEditorProps) {
           <Button variant="outline" size="sm" onClick={handleCopyContent}>
             <Copy size={16} className="mr-1" />
             Copy
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => {
+              const content = `${prompt.system_prompt ? prompt.system_prompt + "\n\n" : ""}${prompt.user_prompt}`;
+              window.open(`https://chat.openai.com/?prompt=${encodeURIComponent(content)}`, "_blank");
+            }}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="mr-1"
+            >
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+            </svg>
+            ChatGPT
           </Button>
           <Button variant="outline" size="sm" onClick={() => setShowDeleteDialog(true)} disabled={!promptId || promptId === "new" || isDeleting}>
             <Trash2 size={16} className="mr-1" />
@@ -606,94 +769,6 @@ export function PromptEditor({ promptId, onSave }: PromptEditorProps) {
                     </div>
                   </div>
                 </div>
-              </div>
-            </section>
-
-            {/* Model Configuration */}
-            <section className="bg-white border-b border-gray-200">
-              <div className="px-4 py-3 border-b border-gray-100">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-2">
-                    <h3 className="text-base font-medium text-gray-900">Model Configuration</h3>
-                  </div>
-                  <span className="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-purple-100 text-purple-800">Advanced</span>
-                </div>
-              </div>
-              <div>
-                <button onClick={() => setShowAdvanced(!showAdvanced)} className="w-full px-4 py-3 flex items-center justify-between text-left hover:bg-gray-50 transition-colors">
-                  <div className="flex items-center space-x-2">
-                    <Gauge size={18} className="text-gray-400" />
-                    <span className="text-sm text-gray-600">Configure model parameters</span>
-                  </div>
-                  {showAdvanced ? <ChevronUp size={18} className="text-gray-400" /> : <ChevronDown size={18} className="text-gray-400" />}
-                </button>
-                {showAdvanced && (
-                  <div className="px-4 py-3 border-t border-gray-100">
-                    <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
-                      <div className="md:col-span-2">
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Model</label>
-                        <div className="relative">
-                          <input
-                            list="model-options"
-                            className="w-full px-3 py-2 bg-white border border-gray-200 rounded-md focus:ring-[#2C106A] focus:border-[#2C106A] hover:border-gray-300"
-                            value={prompt.model || ""}
-                            onChange={(e) => setPrompt({ ...prompt, model: e.target.value })}
-                            placeholder="Select or enter model"
-                          />
-                          <datalist id="model-options">
-                            <option value="gpt-4">GPT-4</option>
-                            <option value="gpt-4-turbo">GPT-4 Turbo</option>
-                            <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
-                            <option value="gpt-3.5-turbo-16k">GPT-3.5 Turbo 16K</option>
-                            <option value="claude-2">Claude 2</option>
-                            <option value="claude-instant">Claude Instant</option>
-                            <option value="gemini-pro">Gemini Pro</option>
-                            <option value="llama-2">Llama 2</option>
-                            <option value="mistral">Mistral</option>
-                            <option value="mixtral">Mixtral</option>
-                          </datalist>
-                        </div>
-                      </div>
-                      <div className="md:col-span-2">
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Temperature</label>
-                        <div className="flex items-center gap-2">
-                          <input
-                            type="number"
-                            value={prompt.temperature}
-                            onChange={(e) => {
-                              const value = parseFloat(e.target.value);
-                              if (value >= 0 && value <= 1) {
-                                setPrompt({ ...prompt, temperature: value });
-                              }
-                            }}
-                            step="0.1"
-                            min="0"
-                            max="1"
-                            className="w-20 px-2 py-1 bg-white border border-gray-200 rounded-md focus:ring-[#2C106A] focus:border-[#2C106A] hover:border-gray-300"
-                          />
-                          <span className="text-sm text-gray-500">{prompt.temperature === 0 ? "More precise" : prompt.temperature === 1 ? "More creative" : "Balanced"}</span>
-                        </div>
-                        <p className="mt-1 text-xs text-gray-500">Controls randomness (0 = precise, 1 = creative)</p>
-                      </div>
-                      <div className="md:col-span-2">
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                          <div className="flex items-center justify-between">
-                            <span>Max Tokens</span>
-                            <span className="text-xs text-gray-500">{prompt.max_tokens}</span>
-                          </div>
-                        </label>
-                        <input
-                          type="number"
-                          value={prompt.max_tokens}
-                          onChange={(e) => setPrompt({ ...prompt, max_tokens: parseInt(e.target.value) })}
-                          className="w-full px-3 py-2 bg-white border border-gray-200 rounded-md focus:ring-[#2C106A] focus:border-[#2C106A] hover:border-gray-300"
-                          min="1"
-                          max="32000"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                )}
               </div>
             </section>
 

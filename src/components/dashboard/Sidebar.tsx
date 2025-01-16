@@ -229,7 +229,7 @@ export function Sidebar({ onCategorySelect, selectedCategoryId }: SidebarProps) 
         </div>
         <div className="space-y-1">
           <button
-            className={`w-full flex items-center gap-2 px-3 py-2 hover:bg-gray-100 rounded-md text-sm text-gray-700 ${selectedCategoryId === null ? "bg-gray-100" : ""}`}
+            className={`w-full flex items-center gap-2 px-3 py-2 hover:bg-gray-100 rounded-md text-sm text-gray-700 ${selectedCategoryId === null ? "bg-gray-200 hover:bg-gray-200" : ""}`}
             onClick={() => onCategorySelect?.(null)}
           >
             <Folder size={20} className="text-gray-400 flex-shrink-0" />
@@ -237,15 +237,15 @@ export function Sidebar({ onCategorySelect, selectedCategoryId }: SidebarProps) 
           </button>
           {categories.map((category) => (
             <div key={category.id}>
-              <div className="flex items-center">
+              <div className="flex items-center group">
                 <button
-                  className={`flex-1 flex items-center gap-2 px-3 py-2 hover:bg-gray-100 rounded-md text-sm text-gray-700 ${selectedCategoryId === category.id ? "bg-gray-100" : ""}`}
+                  className={`flex-1 flex items-center gap-2 px-3 py-2 hover:bg-gray-100 rounded-md text-sm text-gray-700 ${selectedCategoryId === category.id ? "bg-gray-200 hover:bg-gray-200" : ""}`}
                   onClick={() => {
                     toggleCategory(category.id);
                     onCategorySelect?.(category.id);
                   }}
                 >
-                  <Folder size={20} className="text-gray-400 flex-shrink-0" />
+                  <Folder size={20} className={`flex-shrink-0 ${selectedCategoryId === category.id ? "text-gray-700" : "text-gray-400"}`} />
                   {!isCollapsed && (
                     <>
                       <span className="flex-1 text-left">{category.name}</span>
@@ -259,19 +259,21 @@ export function Sidebar({ onCategorySelect, selectedCategoryId }: SidebarProps) 
                   )}
                 </button>
                 {!isCollapsed && (
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="icon" className="h-8 w-8">
-                        <MoreVertical size={16} />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuItem className="text-red-600 focus:text-red-600 cursor-pointer" onClick={() => handleDeleteCategory(category.id)}>
-                        <Trash2 className="mr-2 h-4 w-4" />
-                        Delete
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
+                  <div className={`px-1 rounded-r-md ${selectedCategoryId === category.id ? "bg-gray-200" : "hover:bg-gray-100"}`}>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="icon" className="h-8 w-8">
+                          <MoreVertical size={16} />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem className="text-red-600 focus:text-red-600 cursor-pointer" onClick={() => handleDeleteCategory(category.id)}>
+                          <Trash2 className="mr-2 h-4 w-4" />
+                          Delete
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
                 )}
               </div>
               {!isCollapsed && expandedCategories.includes(category.id) && category.subcategories?.length > 0 && (
@@ -279,10 +281,12 @@ export function Sidebar({ onCategorySelect, selectedCategoryId }: SidebarProps) 
                   {category.subcategories.map((subcategory) => (
                     <button
                       key={subcategory.id}
-                      className={`w-full flex items-center gap-2 px-2 py-1.5 hover:bg-gray-100 rounded-md text-sm text-gray-700 ${selectedCategoryId === subcategory.id ? "bg-gray-100" : ""}`}
+                      className={`w-full flex items-center gap-2 px-2 py-1.5 hover:bg-gray-100 rounded-md text-sm text-gray-700 ${
+                        selectedCategoryId === subcategory.id ? "bg-gray-200 hover:bg-gray-200" : ""
+                      }`}
                       onClick={() => onCategorySelect?.(subcategory.id)}
                     >
-                      <span className="text-gray-400">{subcategory.icon || <Folder size={16} />}</span>
+                      <span className={`text-gray-400 ${selectedCategoryId === subcategory.id ? "text-gray-700" : ""}`}>{subcategory.icon || <Folder size={16} />}</span>
                       <span className="flex-1 text-left">{subcategory.name}</span>
                     </button>
                   ))}

@@ -28,13 +28,15 @@ export interface Tag {
   created_at?: string;
 }
 
-export interface Category {
+export type Category = {
   id: string;
   name: string;
   user_id: string;
   created_at?: string;
-  updated_at?: string;
-}
+  parent_id?: string | null;
+  subcategories?: Category[];
+  icon?: string;
+};
 
 export interface PromptTag {
   prompt_id: string;
