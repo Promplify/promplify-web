@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Textarea } from "@/components/ui/textarea";
 import { supabase } from "@/lib/supabase";
@@ -371,21 +372,25 @@ export function PromptEditor({ promptId, onSave }: PromptEditorProps) {
   }, [prompt.system_prompt, prompt.user_prompt]);
 
   const renderCategorySelect = () => (
-    <select
-      className="w-full px-3 py-2 bg-white border border-gray-200 focus:ring-[#2C106A] focus:border-[#2C106A] hover:border-gray-300"
-      value={prompt.category_id || ""}
-      onChange={(e) => {
-        const newCategoryId = e.target.value || null;
+    <Select
+      value={prompt.category_id || "none"}
+      onValueChange={(value) => {
+        const newCategoryId = value === "none" ? null : value;
         setPrompt((prev) => ({ ...prev, category_id: newCategoryId }));
       }}
     >
-      <option value="">All Prompts</option>
-      {availableCategories.map((category) => (
-        <option key={category.id} value={category.id}>
-          {category.name}
-        </option>
-      ))}
-    </select>
+      <SelectTrigger className="w-full focus:ring-[#2C106A] focus:border-[#2C106A] hover:border-gray-300">
+        <SelectValue placeholder="All Prompts" />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectItem value="none">All Prompts</SelectItem>
+        {availableCategories.map((category) => (
+          <SelectItem key={category.id} value={category.id}>
+            {category.name}
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
   );
 
   const fetchVersionHistory = async () => {
