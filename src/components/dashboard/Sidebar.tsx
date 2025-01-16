@@ -229,65 +229,83 @@ export function Sidebar({ onCategorySelect, selectedCategoryId }: SidebarProps) 
         </div>
         <div className="space-y-1">
           <button
-            className={`w-full flex items-center gap-2 px-3 py-2 hover:bg-gray-100 rounded-md text-sm text-gray-700 ${selectedCategoryId === null ? "bg-gray-200 hover:bg-gray-200" : ""}`}
+            className={`w-full pr-[27px] flex items-center gap-2 px-3 py-2 rounded-md text-sm text-gray-700 transition-all duration-200 ${
+              selectedCategoryId === null ? "bg-gray-200 pr-[27px] text-gray-900 shadow-sm ring-1 ring-gray-300/50" : "hover:bg-gray-100/70"
+            }`}
             onClick={() => onCategorySelect?.(null)}
           >
-            <Folder size={20} className="text-gray-400 flex-shrink-0" />
-            {!isCollapsed && <span className="flex-1 text-left">All Prompts</span>}
+            <div className={`flex items-center gap-2 ${isCollapsed ? "mx-auto" : "w-full"}`}>
+              <Folder size={20} className={`flex-shrink-0 transition-colors ${selectedCategoryId === null ? "text-gray-700" : "text-gray-400"}`} />
+              {!isCollapsed && <span className="flex-1 text-left">All Prompts</span>}
+            </div>
           </button>
           {categories.map((category) => (
             <div key={category.id}>
-              <div className="flex items-center group">
-                <button
-                  className={`flex-1 flex items-center gap-2 px-3 py-2 hover:bg-gray-100 rounded-md text-sm text-gray-700 ${selectedCategoryId === category.id ? "bg-gray-200 hover:bg-gray-200" : ""}`}
-                  onClick={() => {
-                    toggleCategory(category.id);
-                    onCategorySelect?.(category.id);
-                  }}
+              <div className="flex items-center">
+                <div
+                  className={`w-full flex items-center rounded-md transition-all duration-200 ${
+                    selectedCategoryId === category.id ? "bg-gray-200 text-gray-900 shadow-sm ring-1 ring-gray-300/50" : "hover:bg-gray-100/70"
+                  }`}
                 >
-                  <Folder size={20} className={`flex-shrink-0 ${selectedCategoryId === category.id ? "text-gray-700" : "text-gray-400"}`} />
-                  {!isCollapsed && (
-                    <>
-                      <span className="flex-1 text-left">{category.name}</span>
-                      {category.subcategories?.length > 0 && (
+                  <button
+                    className="flex-1 flex items-center gap-2 px-3 py-2 text-sm text-gray-700"
+                    onClick={() => {
+                      toggleCategory(category.id);
+                      onCategorySelect?.(category.id);
+                    }}
+                  >
+                    <div className={`flex items-center gap-2 ${isCollapsed ? "mx-auto" : "w-full"}`}>
+                      <Folder size={20} className={`flex-shrink-0 transition-colors ${selectedCategoryId === category.id ? "text-gray-700" : "text-gray-400"}`} />
+                      {!isCollapsed && (
                         <>
-                          <span className="text-xs text-gray-400">{category.subcategories.length}</span>
-                          {expandedCategories.includes(category.id) ? <ChevronDown size={20} className="text-gray-400" /> : <ChevronRight size={20} className="text-gray-400" />}
+                          <span className="flex-1 text-left">{category.name}</span>
+                          {category.subcategories?.length > 0 && (
+                            <>
+                              <span className="text-xs text-gray-400">{category.subcategories.length}</span>
+                              {expandedCategories.includes(category.id) ? (
+                                <ChevronDown size={20} className="text-gray-400 transition-transform" />
+                              ) : (
+                                <ChevronRight size={20} className="text-gray-400 transition-transform" />
+                              )}
+                            </>
+                          )}
                         </>
                       )}
-                    </>
+                    </div>
+                  </button>
+                  {!isCollapsed && (
+                    <div className="flex items-center">
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" size="icon" className="h-8 w-8 rounded-none hover:bg-transparent">
+                            <MoreVertical size={16} className={`${selectedCategoryId === category.id ? "text-gray-700" : "text-gray-400"}`} />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="w-48">
+                          <DropdownMenuItem className="text-red-600 focus:text-red-600 cursor-pointer focus:bg-red-50/50" onClick={() => handleDeleteCategory(category.id)}>
+                            <Trash2 className="mr-2 h-4 w-4" />
+                            Delete
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </div>
                   )}
-                </button>
-                {!isCollapsed && (
-                  <div className={`px-1 rounded-r-md ${selectedCategoryId === category.id ? "bg-gray-200" : "hover:bg-gray-100"}`}>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon" className="h-8 w-8">
-                          <MoreVertical size={16} />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuItem className="text-red-600 focus:text-red-600 cursor-pointer" onClick={() => handleDeleteCategory(category.id)}>
-                          <Trash2 className="mr-2 h-4 w-4" />
-                          Delete
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </div>
-                )}
+                </div>
               </div>
               {!isCollapsed && expandedCategories.includes(category.id) && category.subcategories?.length > 0 && (
                 <div className="ml-6 mt-1 space-y-1">
                   {category.subcategories.map((subcategory) => (
                     <button
                       key={subcategory.id}
-                      className={`w-full flex items-center gap-2 px-2 py-1.5 hover:bg-gray-100 rounded-md text-sm text-gray-700 ${
-                        selectedCategoryId === subcategory.id ? "bg-gray-200 hover:bg-gray-200" : ""
+                      className={`w-full flex items-center gap-2 px-2 py-1.5 text-sm text-gray-700 rounded-md transition-all duration-200 ${
+                        selectedCategoryId === subcategory.id ? "bg-gray-200 text-gray-900 shadow-sm ring-1 ring-gray-300/50" : "hover:bg-gray-100/70"
                       }`}
                       onClick={() => onCategorySelect?.(subcategory.id)}
                     >
-                      <span className={`text-gray-400 ${selectedCategoryId === subcategory.id ? "text-gray-700" : ""}`}>{subcategory.icon || <Folder size={16} />}</span>
-                      <span className="flex-1 text-left">{subcategory.name}</span>
+                      <div className={`flex items-center gap-2 ${isCollapsed ? "mx-auto" : "w-full"}`}>
+                        <span className={`transition-colors ${selectedCategoryId === subcategory.id ? "text-gray-700" : "text-gray-400"}`}>{subcategory.icon || <Folder size={16} />}</span>
+                        {!isCollapsed && <span className="flex-1 text-left">{subcategory.name}</span>}
+                      </div>
                     </button>
                   ))}
                 </div>

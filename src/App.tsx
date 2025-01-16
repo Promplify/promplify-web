@@ -1,6 +1,5 @@
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import { Toaster } from "sonner";
-import { GoogleAnalytics } from "./components/GoogleAnalytics";
 import Auth from "./pages/Auth";
 import Callback from "./pages/auth/Callback";
 import Dashboard from "./pages/Dashboard";
@@ -13,7 +12,6 @@ import Terms from "./pages/Terms";
 function App() {
   return (
     <Router>
-      <GoogleAnalytics />
       <Toaster position="bottom-right" richColors />
       <Routes>
         <Route path="/" element={<Index />} />

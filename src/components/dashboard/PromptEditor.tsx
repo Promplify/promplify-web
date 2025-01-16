@@ -238,36 +238,49 @@ export function PromptEditor({ promptId, onSave }: PromptEditorProps) {
       const totalTokens = systemTokens + userTokens;
 
       if (promptId && promptId !== "new") {
-        const { data: existingVersions } = await supabase.from("prompt_versions").select("version").eq("prompt_id", promptId);
+        const { data: currentPrompt } = await supabase.from("prompts").select("system_prompt, user_prompt, version").eq("id", promptId).single();
 
-        const versions = existingVersions?.map((v) => v.version) || [];
-        if (versions.includes(prompt.version)) {
+        const contentChanged = currentPrompt && (currentPrompt.system_prompt !== prompt.system_prompt || currentPrompt.user_prompt !== prompt.user_prompt);
+
+        if (contentChanged && currentPrompt?.version === prompt.version) {
           const [major, minor, patch] = prompt.version.split(".").map(Number);
-          let newPatch = patch;
-          let newVersion;
-          do {
-            newPatch++;
-            newVersion = `${major}.${minor}.${newPatch}`;
-          } while (versions.includes(newVersion));
-
-          setPrompt((prev) => ({ ...prev, version: newVersion }));
-          toast.info(`Version ${prompt.version} already exists, automatically incremented to ${newVersion}`);
-          prompt.version = newVersion;
+          prompt.version = `${major}.${minor}.${patch + 1}`;
+          setPrompt((prev) => ({ ...prev, version: prompt.version }));
+          toast.info(`Content changed, version automatically incremented to ${prompt.version}`);
         }
-      }
 
-      if (promptId && promptId !== "new") {
-        const { error: versionError } = await supabase.from("prompt_versions").insert({
-          prompt_id: promptId,
-          version: prompt.version,
-          content: prompt.content,
-          system_prompt: prompt.system_prompt,
-          user_prompt: prompt.user_prompt,
-          token_count: totalTokens,
-          created_by: currentSession.user.id,
-        });
+        if (currentPrompt?.version !== prompt.version) {
+          const { data: existingVersions } = await supabase.from("prompt_versions").select("version").eq("prompt_id", promptId);
 
-        if (versionError) throw versionError;
+          const versions = existingVersions?.map((v) => v.version) || [];
+          if (versions.includes(prompt.version)) {
+            const [major, minor, patch] = prompt.version.split(".").map(Number);
+            let newPatch = patch;
+            let newVersion;
+            do {
+              newPatch++;
+              newVersion = `${major}.${minor}.${newPatch}`;
+            } while (versions.includes(newVersion));
+
+            setPrompt((prev) => ({ ...prev, version: newVersion }));
+            toast.info(`Version ${prompt.version} already exists, automatically incremented to ${newVersion}`);
+            prompt.version = newVersion;
+          }
+        }
+
+        if (currentPrompt?.version !== prompt.version) {
+          const { error: versionError } = await supabase.from("prompt_versions").insert({
+            prompt_id: promptId,
+            version: currentPrompt?.version,
+            content: prompt.content,
+            system_prompt: currentPrompt?.system_prompt,
+            user_prompt: currentPrompt?.user_prompt,
+            token_count: totalTokens,
+            created_by: currentSession.user.id,
+          });
+
+          if (versionError) throw versionError;
+        }
       }
 
       const promptData = {
@@ -453,16 +466,30 @@ export function PromptEditor({ promptId, onSave }: PromptEditorProps) {
               <Button
                 variant="ghost"
                 size="sm"
-                className="space-x-1"
+                className="group flex items-center gap-1.5 hover:bg-gray-100 px-2 py-1 h-auto"
                 onClick={() => {
                   fetchVersionHistory();
                 }}
                 disabled={!promptId || promptId === "new"}
               >
-                <span className="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-purple-100 text-purple-800">Version {prompt.version}</span>
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M12 20v-6M6 20V10M18 20V4" />
-                </svg>
+                <div className="flex items-center gap-1">
+                  <span className="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-purple-100 text-purple-800">Version {prompt.version}</span>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="text-gray-400 group-hover:text-gray-600 transition-colors"
+                  >
+                    <path d="M12 20v-6M6 20V10M18 20V4" />
+                  </svg>
+                </div>
+                <span className="text-xs text-gray-400 group-hover:text-gray-600 transition-colors">View History</span>
               </Button>
             </DialogTrigger>
             <DialogContent className="max-w-2xl">
@@ -484,28 +511,54 @@ export function PromptEditor({ promptId, onSave }: PromptEditorProps) {
                 ) : (
                   <div className="space-y-6">
                     {versionHistory.map((version, index) => (
-                      <div key={index} className="border rounded-lg p-4">
-                        <div className="flex items-center justify-between mb-2">
-                          <div className="flex items-center space-x-3">
-                            <span className="font-medium">Version {version.version}</span>
-                            <span className="text-sm text-gray-500">{new Date(version.created_at).toLocaleString()}</span>
+                      <div key={index} className="border rounded-lg p-4 hover:border-gray-300 transition-colors">
+                        <div className="flex items-center justify-between mb-4">
+                          <div className="flex items-center gap-3">
+                            <span className="inline-flex items-center px-2.5 py-1 rounded-md text-sm font-medium bg-purple-100 text-purple-800">v{version.version}</span>
+                            <div className="flex items-center gap-2">
+                              <span className="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-blue-100 text-blue-800">{version.token_count} tokens</span>
+                              <time className="text-sm text-gray-500" dateTime={version.created_at}>
+                                {new Date(version.created_at).toLocaleString()}
+                              </time>
+                            </div>
                           </div>
-                          <Button variant="outline" size="sm" onClick={() => restoreVersion(version)}>
-                            Restore
+                          <Button variant="secondary" size="sm" onClick={() => restoreVersion(version)} className="gap-1.5 text-gray-600 hover:text-gray-900 h-8 flex items-center">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="14"
+                              height="14"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              className="relative top-[-1px] mt-[7px]"
+                            >
+                              <path d="m3 2 1.3 12.4a2 2 0 0 0 2 1.6h11.4a2 2 0 0 0 2-1.6L21 2" />
+                              <path d="M12 10v6" />
+                              <path d="m8.7 12 3.3 3 3.3-3" />
+                            </svg>
+                            Restore this version
                           </Button>
                         </div>
-                        <div className="space-y-2">
+                        <div className="space-y-3">
                           {version.system_prompt && (
-                            <div>
-                              <Label className="text-xs text-gray-500">System Prompt</Label>
-                              <div className="bg-gray-50 p-2 rounded text-sm font-mono">{version.system_prompt}</div>
+                            <div className="space-y-1.5">
+                              <div className="flex items-center gap-2">
+                                <Label className="text-xs font-medium text-gray-700">System Prompt</Label>
+                                <span className="inline-flex items-center px-1.5 py-0.5 rounded-sm text-xs font-medium bg-gray-100 text-gray-600">System</span>
+                              </div>
+                              <div className="bg-gray-50 p-3 rounded-md text-sm font-mono border border-gray-100">{version.system_prompt}</div>
                             </div>
                           )}
-                          <div>
-                            <Label className="text-xs text-gray-500">User Prompt</Label>
-                            <div className="bg-gray-50 p-2 rounded text-sm font-mono">{version.user_prompt}</div>
+                          <div className="space-y-1.5">
+                            <div className="flex items-center gap-2">
+                              <Label className="text-xs font-medium text-gray-700">User Prompt</Label>
+                              <span className="inline-flex items-center px-1.5 py-0.5 rounded-sm text-xs font-medium bg-green-100 text-green-700">User</span>
+                            </div>
+                            <div className="bg-gray-50 p-3 rounded-md text-sm font-mono border border-gray-100">{version.user_prompt}</div>
                           </div>
-                          <div className="text-xs text-gray-500">Token Count: {version.token_count}</div>
                         </div>
                       </div>
                     ))}
@@ -517,14 +570,6 @@ export function PromptEditor({ promptId, onSave }: PromptEditorProps) {
           <span className="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-blue-100 text-blue-800">Tokens: {prompt.token_count}</span>
         </div>
         <div className="flex items-center space-x-2">
-          <span className="font-mono text-sm text-gray-500">
-            <b className="text-primary">#</b>
-            {promptId === "new" ? "NEW" : promptId?.toUpperCase()}
-          </span>
-          <Button variant="outline" size="sm" onClick={handleCopyContent}>
-            <Copy size={16} className="mr-1" />
-            Copy
-          </Button>
           <Button
             variant="outline"
             size="sm"
@@ -548,6 +593,10 @@ export function PromptEditor({ promptId, onSave }: PromptEditorProps) {
               <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
             </svg>
             ChatGPT
+          </Button>
+          <Button variant="outline" size="sm" onClick={handleCopyContent}>
+            <Copy size={16} className="mr-1" />
+            Copy
           </Button>
           <Button variant="outline" size="sm" onClick={() => setShowDeleteDialog(true)} disabled={!promptId || promptId === "new" || isDeleting}>
             <Trash2 size={16} className="mr-1" />
@@ -589,8 +638,12 @@ export function PromptEditor({ promptId, onSave }: PromptEditorProps) {
             {/* Basic Information */}
             <section className="bg-white border-b border-gray-200">
               <div className="px-4 py-3 border-b border-gray-100">
-                <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
                   <h3 className="text-base font-medium text-gray-900">Basic Information</h3>
+                  <span className="font-mono text-sm text-gray-500 flex-1">
+                    <b className="text-primary">#</b>
+                    {promptId === "new" ? "NEW" : promptId?.toUpperCase()}
+                  </span>
                   <span className="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-purple-100 text-purple-800">Required</span>
                 </div>
               </div>
@@ -600,7 +653,7 @@ export function PromptEditor({ promptId, onSave }: PromptEditorProps) {
                     <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
                     <input
                       type="text"
-                      className="w-full px-3 py-2 bg-white border border-gray-200 focus:ring-[#2C106A] focus:border-[#2C106A] hover:border-gray-300"
+                      className="w-full px-3 py-2 bg-white border border-gray-200 rounded-md focus:ring-[#2C106A] focus:border-[#2C106A] hover:border-gray-300 transition-colors"
                       placeholder="Enter prompt title"
                       value={prompt.title}
                       onChange={(e) => setPrompt({ ...prompt, title: e.target.value })}
@@ -610,7 +663,7 @@ export function PromptEditor({ promptId, onSave }: PromptEditorProps) {
                     <label className="block text-sm font-medium text-gray-700 mb-1">Version</label>
                     <input
                       type="text"
-                      className="w-full px-3 py-2 bg-white border border-gray-200 focus:ring-[#2C106A] focus:border-[#2C106A] hover:border-gray-300"
+                      className="w-full px-3 py-2 bg-white border border-gray-200 rounded-md focus:ring-[#2C106A] focus:border-[#2C106A] hover:border-gray-300 transition-colors font-mono"
                       placeholder="e.g., 1.0.0"
                       value={prompt.version}
                       onChange={(e) => {
@@ -626,14 +679,14 @@ export function PromptEditor({ promptId, onSave }: PromptEditorProps) {
                         }
                       }}
                     />
-                    <p className="mt-1 text-sm text-gray-500">Semantic versioning (major.minor.patch)</p>
+                    <p className="mt-1 text-xs text-gray-500">Semantic versioning (major.minor.patch)</p>
                   </div>
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
                   <input
                     type="text"
-                    className="w-full px-3 py-2 bg-white border border-gray-200 focus:ring-[#2C106A] focus:border-[#2C106A] hover:border-gray-300"
+                    className="w-full px-3 py-2 bg-white border border-gray-200 rounded-md focus:ring-[#2C106A] focus:border-[#2C106A] hover:border-gray-300 transition-colors"
                     placeholder="Briefly describe the purpose of this prompt"
                     value={prompt.description}
                     onChange={(e) => setPrompt({ ...prompt, description: e.target.value })}
@@ -749,8 +802,8 @@ export function PromptEditor({ promptId, onSave }: PromptEditorProps) {
                       </div>
                       <div className="flex flex-wrap gap-1.5">
                         {prompt.prompt_tags?.map(({ tags }) => (
-                          <span key={tags.id} className="inline-flex items-center px-2 py-1 bg-blue-50 text-blue-700 text-xs font-medium rounded-full group">
-                            {tags.name}
+                          <div key={tags.id} className="inline-flex items-center px-2.5 py-1 bg-blue-50 text-blue-700 text-xs font-medium rounded-full relative group/tag">
+                            <span>{tags.name}</span>
                             <button
                               onClick={() => {
                                 setPrompt({
@@ -759,11 +812,11 @@ export function PromptEditor({ promptId, onSave }: PromptEditorProps) {
                                 });
                                 toast.success(`Removed tag: ${tags.name}`);
                               }}
-                              className="ml-1.5 p-0.5 rounded-full hover:bg-blue-200 opacity-0 group-hover:opacity-100 transition-opacity"
+                              className="ml-1.5 w-3.5 h-3.5 rounded-full inline-flex items-center justify-center hover:bg-blue-100 absolute -right-1 -top-1 bg-white shadow-sm border border-blue-200 opacity-0 group-hover/tag:opacity-100 transition-opacity"
                             >
-                              <X size={12} />
+                              <X size={10} className="text-blue-600" />
                             </button>
-                          </span>
+                          </div>
                         ))}
                       </div>
                     </div>
@@ -792,11 +845,21 @@ export function PromptEditor({ promptId, onSave }: PromptEditorProps) {
                 <div className="space-y-4">
                   <div>
                     <Label>System Prompt</Label>
-                    <Textarea value={prompt.system_prompt} onChange={(e) => setPrompt({ ...prompt, system_prompt: e.target.value })} placeholder="Enter system prompt..." className="h-48 font-mono" />
+                    <Textarea
+                      value={prompt.system_prompt}
+                      onChange={(e) => setPrompt({ ...prompt, system_prompt: e.target.value })}
+                      placeholder="Enter system prompt..."
+                      className="h-64 font-mono resize-y min-h-[12rem] focus:ring-[#2C106A] focus:border-[#2C106A] hover:border-gray-300 transition-colors"
+                    />
                   </div>
                   <div>
                     <Label>User Prompt</Label>
-                    <Textarea value={prompt.user_prompt} onChange={(e) => setPrompt({ ...prompt, user_prompt: e.target.value })} placeholder="Enter user prompt..." className="h-48 font-mono" />
+                    <Textarea
+                      value={prompt.user_prompt}
+                      onChange={(e) => setPrompt({ ...prompt, user_prompt: e.target.value })}
+                      placeholder="Enter user prompt..."
+                      className="h-64 font-mono resize-y min-h-[12rem] focus:ring-[#2C106A] focus:border-[#2C106A] hover:border-gray-300 transition-colors"
+                    />
                   </div>
                 </div>
               </div>
