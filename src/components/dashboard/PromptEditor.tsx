@@ -586,7 +586,6 @@ export function PromptEditor({ promptId, onSave }: PromptEditorProps) {
               </div>
             </DialogContent>
           </Dialog>
-          <span className="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-blue-100 text-blue-800">Tokens: {prompt.token_count}</span>
         </div>
         <div className="flex items-center space-x-2">
           <Button variant="outline" size="sm" onClick={handleOpenInChatGPT}>
@@ -675,7 +674,7 @@ export function PromptEditor({ promptId, onSave }: PromptEditorProps) {
                     <label className="block text-sm font-medium text-gray-700 mb-1">Version</label>
                     <input
                       type="text"
-                      className="w-full px-3 py-2 bg-white border border-gray-200 rounded-md focus:ring-[#2C106A] focus:border-[#2C106A] hover:border-gray-300 transition-colors font-mono"
+                      className="w-full px-3 py-2 bg-white border border-gray-200 rounded-md focus:ring-[#2C106A] focus:border-[#2C106A] hover:border-gray-300 transition-colors"
                       placeholder="e.g., 1.0.0"
                       value={prompt.version}
                       onChange={(e) => {
