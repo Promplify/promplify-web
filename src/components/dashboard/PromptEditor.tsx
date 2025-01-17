@@ -421,6 +421,20 @@ export function PromptEditor({ promptId, onSave }: PromptEditorProps) {
     toast.success("Version restored");
   };
 
+  const handleOpenInChatGPT = () => {
+    const content = `${prompt.system_prompt ? prompt.system_prompt + "\n\n" : ""}${prompt.user_prompt}`;
+    const maxLength = 2000; // 设置一个安全的URL长度限制
+
+    if (encodeURIComponent(content).length > maxLength) {
+      // 如果内容太长，可以只发送部分内容或提示用户
+      const truncatedContent = content.slice(0, maxLength);
+      window.open(`https://chat.openai.com/?prompt=${encodeURIComponent(truncatedContent)}...`, "_blank");
+      toast.error("Prompt content was truncated due to length limitations");
+    } else {
+      window.open(`https://chat.openai.com/?prompt=${encodeURIComponent(content)}`, "_blank");
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="flex-1 h-full bg-gray-50 p-4">
@@ -575,14 +589,7 @@ export function PromptEditor({ promptId, onSave }: PromptEditorProps) {
           <span className="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-blue-100 text-blue-800">Tokens: {prompt.token_count}</span>
         </div>
         <div className="flex items-center space-x-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => {
-              const content = `${prompt.system_prompt ? prompt.system_prompt + "\n\n" : ""}${prompt.user_prompt}`;
-              window.open(`https://chat.openai.com/?prompt=${encodeURIComponent(content)}`, "_blank");
-            }}
-          >
+          <Button variant="outline" size="sm" onClick={handleOpenInChatGPT}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="16"
