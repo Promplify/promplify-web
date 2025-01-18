@@ -42,9 +42,10 @@ export const Navigation = () => {
     <nav className="fixed top-0 left-0 right-0 z-50 bg-black shadow-md">
       <div className="container mx-auto px-6">
         <div className="flex items-center justify-between" style={{ height: "68px" }}>
-          <Link to="/">
+          <Link to="/" className="flex items-center space-x-2">
             <Logo />
           </Link>
+
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center space-x-8">
             <a href="/" className="text-white/80 hover:text-white transition-colors">
@@ -97,16 +98,18 @@ export const Navigation = () => {
           </div>
 
           {/* Mobile Menu Button */}
-          <button className="md:hidden text-white p-2" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-            <svg className="w-6 h-6" fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" stroke="currentColor">
-              {isMenuOpen ? <path d="M6 18L18 6M6 6l12 12" /> : <path d="M4 6h16M4 12h16M4 18h16" />}
-            </svg>
+          <button className="md:hidden text-white p-2 rounded-lg hover:bg-white/10 transition-colors" onClick={() => setIsMenuOpen(!isMenuOpen)} aria-label="Toggle Menu">
+            <div className="relative w-6 h-6">
+              <span className={`absolute left-0 block w-full h-0.5 bg-current transform transition-all duration-300 ease-in-out ${isMenuOpen ? "rotate-45 top-3" : "top-1"}`} />
+              <span className={`absolute left-0 block w-full h-0.5 bg-current transform transition-all duration-300 ease-in-out top-3 ${isMenuOpen ? "opacity-0" : "opacity-100"}`} />
+              <span className={`absolute left-0 block w-full h-0.5 bg-current transform transition-all duration-300 ease-in-out ${isMenuOpen ? "-rotate-45 top-3" : "top-5"}`} />
+            </div>
           </button>
         </div>
 
         {/* Mobile Menu */}
-        {isMenuOpen && (
-          <div className="md:hidden bg-black border-t border-white/10 py-4">
+        <div className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${isMenuOpen ? "max-h-64 opacity-100" : "max-h-0 opacity-0"}`}>
+          <div className="border-t border-white/10 py-4">
             <div className="flex flex-col space-y-4 px-4">
               <a href="/" className="text-white/80 hover:text-white transition-colors py-2" onClick={() => setIsMenuOpen(false)}>
                 Home
@@ -117,7 +120,7 @@ export const Navigation = () => {
               {session ? (
                 <>
                   <Link to="/dashboard" onClick={() => setIsMenuOpen(false)}>
-                    <Button variant="ghost" className="w-full text-white hover:text-white/90">
+                    <Button variant="ghost" className="w-full text-white hover:text-white/90 justify-start">
                       Dashboard
                     </Button>
                   </Link>
@@ -127,7 +130,7 @@ export const Navigation = () => {
                       setIsMenuOpen(false);
                     }}
                     variant="ghost"
-                    className="w-full text-white hover:text-white/90 flex items-center justify-center gap-2"
+                    className="w-full text-white hover:text-white/90 flex items-center justify-start gap-2"
                   >
                     <LogOut className="w-4 h-4" />
                     Logout
@@ -140,7 +143,7 @@ export const Navigation = () => {
               )}
             </div>
           </div>
-        )}
+        </div>
       </div>
     </nav>
   );
