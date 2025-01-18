@@ -208,14 +208,14 @@ export function PromptList({ categoryId, onPromptSelect, selectedPromptId }: Pro
                 {prompt.prompt_tags && (
                   <div className="flex flex-wrap gap-2">
                     {prompt.prompt_tags.map(({ tags }) => (
-                      <span key={tags.id} className="px-2 py-1 bg-blue-50 text-blue-600 text-xs rounded-full">
+                      <span key={tags.id} className="px-2 py-1 bg-green-50 text-green-600 text-xs rounded-full">
                         {tags.name}
                       </span>
                     ))}
                   </div>
                 )}
                 <div className="mt-2 text-xs text-gray-400 flex items-center justify-between">
-                  <span className="px-1.5 py-0.5 bg-green-50 text-green-600 rounded">{prompt.token_count || 0} tokens</span>
+                  <span className="px-1.5 py-0.5 bg-blue-50 text-blue-600 rounded">{prompt.token_count || 0} tokens</span>
                   <span>Updated {new Date(prompt.updated_at).toLocaleDateString()}</span>
                 </div>
               </div>

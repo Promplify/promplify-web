@@ -85,10 +85,23 @@ export const toggleFavorite = async (id: string, isFavorite: boolean) => {
 
 // Categories
 export const getCategories = async (userId: string) => {
-  const { data, error } = await supabase.from("categories").select("*").eq("user_id", userId).order("name");
+  const { data: categories, error } = await supabase
+    .from("categories")
+    .select(
+      `
+      *,
+      prompts (count)
+    `
+    )
+    .eq("user_id", userId)
+    .order("name");
 
   if (error) throw error;
-  return data;
+
+  return categories.map((category) => ({
+    ...category,
+    prompt_count: category.prompts[0]?.count || 0,
+  }));
 };
 
 export const createCategory = async (category: { name: string; user_id: string }) => {
@@ -134,8 +147,30 @@ export const createTag = async (name: string) => {
     throw new Error("No user session");
   }
 
+  // 清理和验证 tag 名称
+  const cleanedName = name.trim();
+
+  // 检查是否是有效的 JSON 对象或数组
+  try {
+    const parsed = JSON.parse(cleanedName);
+    // 只有当解析结果是对象或数组时才认为是 JSON
+    if (typeof parsed === "object" && parsed !== null) {
+      throw new Error("Tag name cannot be a JSON object or array");
+    }
+  } catch (e) {
+    // JSON.parse 解析失败，说明不是 JSON 字符串，可以继续
+    if (e.message === "Tag name cannot be a JSON object or array") {
+      throw e;
+    }
+  }
+
+  // 检查特殊字符
+  if (/[{}[\]"']/.test(cleanedName)) {
+    throw new Error("Tag name cannot contain special characters like {}, [], \", or '");
+  }
+
   // First check if the tag already exists for this user
-  const { data: existingTag } = await supabase.from("tags").select("*").eq("user_id", session.data.session.user.id).eq("name", name).single();
+  const { data: existingTag } = await supabase.from("tags").select("*").eq("user_id", session.data.session.user.id).eq("name", cleanedName).single();
 
   if (existingTag) {
     return existingTag;
@@ -145,7 +180,7 @@ export const createTag = async (name: string) => {
     .from("tags")
     .insert([
       {
-        name,
+        name: cleanedName,
         user_id: session.data.session.user.id,
       },
     ])

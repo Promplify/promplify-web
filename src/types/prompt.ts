@@ -36,6 +36,7 @@ export type Category = {
   parent_id?: string | null;
   subcategories?: Category[];
   icon?: string;
+  prompt_count?: number;
 };
 
 export interface PromptTag {

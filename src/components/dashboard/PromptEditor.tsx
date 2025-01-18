@@ -421,6 +421,20 @@ export function PromptEditor({ promptId, onSave }: PromptEditorProps) {
     toast.success("Version restored");
   };
 
+  const handleOpenInChatGPT = () => {
+    const content = `${prompt.system_prompt ? prompt.system_prompt + "\n\n" : ""}${prompt.user_prompt}`;
+    const maxLength = 2000; // 设置一个安全的URL长度限制
+
+    if (encodeURIComponent(content).length > maxLength) {
+      // 如果内容太长，可以只发送部分内容或提示用户
+      const truncatedContent = content.slice(0, maxLength);
+      window.open(`https://chat.openai.com/?prompt=${encodeURIComponent(truncatedContent)}...`, "_blank");
+      toast.error("Prompt content was truncated due to length limitations");
+    } else {
+      window.open(`https://chat.openai.com/?prompt=${encodeURIComponent(content)}`, "_blank");
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="flex-1 h-full bg-gray-50 p-4">
@@ -572,17 +586,9 @@ export function PromptEditor({ promptId, onSave }: PromptEditorProps) {
               </div>
             </DialogContent>
           </Dialog>
-          <span className="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-blue-100 text-blue-800">Tokens: {prompt.token_count}</span>
         </div>
         <div className="flex items-center space-x-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => {
-              const content = `${prompt.system_prompt ? prompt.system_prompt + "\n\n" : ""}${prompt.user_prompt}`;
-              window.open(`https://chat.openai.com/?prompt=${encodeURIComponent(content)}`, "_blank");
-            }}
-          >
+          <Button variant="outline" size="sm" onClick={handleOpenInChatGPT}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="16"
@@ -668,7 +674,7 @@ export function PromptEditor({ promptId, onSave }: PromptEditorProps) {
                     <label className="block text-sm font-medium text-gray-700 mb-1">Version</label>
                     <input
                       type="text"
-                      className="w-full px-3 py-2 bg-white border border-gray-200 rounded-md focus:ring-[#2C106A] focus:border-[#2C106A] hover:border-gray-300 transition-colors font-mono"
+                      className="w-full px-3 py-2 bg-white border border-gray-200 rounded-md focus:ring-[#2C106A] focus:border-[#2C106A] hover:border-gray-300 transition-colors"
                       placeholder="e.g., 1.0.0"
                       value={prompt.version}
                       onChange={(e) => {
