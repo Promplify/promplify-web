@@ -84,7 +84,7 @@ export const Hero = () => {
 
       {/* Wave transition */}
       <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-b from-transparent to-white/80" />
-      <div className="absolute -bottom-1 left-0 right-0 animate-wave">
+      <div className="absolute -bottom-[4.25rem] left-0 right-0 animate-wave">
         <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path
             d="M0 30L60 25C120 20 240 10 360 15C480 20 600 40 720 45C840 50 960 40 1080 35C1200 30 1320 30 1380 30L1440 30V120H1380C1320 120 1200 120 1080 120C960 120 840 120 720 120C600 120 480 120 360 120C240 120 120 120 60 120H0V30Z"
