@@ -13,9 +13,9 @@ export const Navigation = () => {
   const navigate = useNavigate();
   const [session, setSession] = useState(null);
   const location = useLocation();
-  const isDashboard = location.pathname === "/dashboard";
 
-  // Check auth state on component mount
+  const isActive = (path: string) => location.pathname === path;
+
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
@@ -41,24 +41,37 @@ export const Navigation = () => {
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-black shadow-md">
       <div className="container mx-auto px-6">
-        <div className="flex items-center justify-between" style={{ height: "68px" }}>
-          <Link to="/" className="flex items-center space-x-2">
+        <div className="flex items-center justify-between h-16">
+          <Link to="/" className="flex items-center space-x-2 hover:opacity-80 transition-opacity">
             <Logo />
           </Link>
 
           {/* Desktop Menu */}
-          <div className="hidden md:flex items-center space-x-8">
-            <a href="/" className="text-white/80 hover:text-white transition-colors">
+          <div className="hidden md:flex items-center space-x-6">
+            <Link to="/" className={`transition-colors text-sm relative group ${isActive("/") ? "text-white" : "text-gray-400 hover:text-white"}`}>
               Home
-            </a>
-            <a href="https://github.com/promplify" target="_blank" rel="noopener noreferrer" className="text-white/80 hover:text-white transition-colors">
+              <span
+                className={`absolute -bottom-1 left-0 w-full h-0.5 bg-white transform origin-left transition-transform duration-200 ${
+                  isActive("/") ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
+                }`}
+              />
+            </Link>
+            <a href="https://github.com/promplify" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors text-sm relative group">
               GitHub
+              <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-white transform origin-left transition-transform duration-200 scale-x-0 group-hover:scale-x-100" />
             </a>
+            {session && (
+              <Link to="/dashboard" className={`transition-colors text-sm relative group ${isActive("/dashboard") ? "text-white" : "text-gray-400 hover:text-white"}`}>
+                Dashboard
+                <span
+                  className={`absolute -bottom-1 left-0 w-full h-0.5 bg-white transform origin-left transition-transform duration-200 ${
+                    isActive("/dashboard") ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
+                  }`}
+                />
+              </Link>
+            )}
             {session ? (
-              <div className="flex items-center gap-4 !ml-4">
-                <Link to="/dashboard">
-                  <Button className={`bg-black hover:text-white hover:bg-white/10 text-white/80 text-[16px] ${isDashboard ? "bg-white text-black" : ""}`}>Dashboard</Button>
-                </Link>
+              <div className="flex items-center gap-4 ml-4">
                 <DropdownMenu>
                   <DropdownMenuTrigger className="focus:outline-none">
                     <Avatar className="w-10 h-10 border-2 border-white/20 hover:border-white/40 transition-colors">
@@ -111,31 +124,29 @@ export const Navigation = () => {
         <div className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${isMenuOpen ? "max-h-64 opacity-100" : "max-h-0 opacity-0"}`}>
           <div className="border-t border-white/10 py-4">
             <div className="flex flex-col space-y-4 px-4">
-              <a href="/" className="text-white/80 hover:text-white transition-colors py-2" onClick={() => setIsMenuOpen(false)}>
+              <Link to="/" className="text-white/80 hover:text-white transition-colors py-2" onClick={() => setIsMenuOpen(false)}>
                 Home
-              </a>
+              </Link>
               <a href="https://github.com/promplify" target="_blank" rel="noopener noreferrer" className="text-white/80 hover:text-white transition-colors py-2" onClick={() => setIsMenuOpen(false)}>
                 GitHub
               </a>
+              {session && (
+                <Link to="/dashboard" className="text-white/80 hover:text-white transition-colors py-2" onClick={() => setIsMenuOpen(false)}>
+                  Dashboard
+                </Link>
+              )}
               {session ? (
-                <>
-                  <Link to="/dashboard" onClick={() => setIsMenuOpen(false)}>
-                    <Button variant="ghost" className="w-full text-white hover:text-white/90 justify-start">
-                      Dashboard
-                    </Button>
-                  </Link>
-                  <Button
-                    onClick={() => {
-                      handleLogout();
-                      setIsMenuOpen(false);
-                    }}
-                    variant="ghost"
-                    className="w-full text-white hover:text-white/90 flex items-center justify-start gap-2"
-                  >
-                    <LogOut className="w-4 h-4" />
-                    Logout
-                  </Button>
-                </>
+                <Button
+                  onClick={() => {
+                    handleLogout();
+                    setIsMenuOpen(false);
+                  }}
+                  variant="ghost"
+                  className="w-full text-white hover:text-white/90 flex items-center justify-start gap-2"
+                >
+                  <LogOut className="w-4 h-4" />
+                  Logout
+                </Button>
               ) : (
                 <Link to="/auth" onClick={() => setIsMenuOpen(false)}>
                   <Button className="w-full bg-primary text-white hover:bg-primary/90">Sign In</Button>

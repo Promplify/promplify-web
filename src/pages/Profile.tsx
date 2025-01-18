@@ -119,67 +119,76 @@ export default function Profile() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen">
+      <div className="flex flex-col min-h-screen">
         <Navigation />
-        <div className="flex items-center justify-center h-[calc(100vh-200px)]">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
+        <div className="flex-1 flex items-center justify-center">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto mb-4"></div>
+            <p className="text-lg text-gray-600">Loading profile...</p>
+          </div>
         </div>
-        <Footer />
+        <div className="mt-auto">
+          <Footer />
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen">
+    <div className="flex flex-col min-h-screen">
       <Navigation />
-      <main className="container max-w-2xl mx-auto p-6 pt-32">
-        <div className="bg-white shadow-sm rounded-lg p-8">
-          <h1 className="text-2xl font-bold mb-6">Profile Settings</h1>
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="space-y-2">
-              <Label htmlFor="full_name">Full Name</Label>
-              <Input id="full_name" value={profile.full_name} onChange={(e) => setProfile({ ...profile, full_name: e.target.value })} className="max-w-md" placeholder="Your full name" />
-            </div>
+      <div className="flex-1">
+        <main className="container max-w-2xl mx-auto p-6 pt-32">
+          <div className="bg-white shadow-sm rounded-lg p-8">
+            <h1 className="text-2xl font-bold mb-6">Profile Settings</h1>
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="space-y-2">
+                <Label htmlFor="full_name">Full Name</Label>
+                <Input id="full_name" value={profile.full_name} onChange={(e) => setProfile({ ...profile, full_name: e.target.value })} className="max-w-md" placeholder="Your full name" />
+              </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="username">Username</Label>
-              <Input id="username" value={profile.username} onChange={(e) => setProfile({ ...profile, username: e.target.value })} className="max-w-md" placeholder="Your username" />
-            </div>
+              <div className="space-y-2">
+                <Label htmlFor="username">Username</Label>
+                <Input id="username" value={profile.username} onChange={(e) => setProfile({ ...profile, username: e.target.value })} className="max-w-md" placeholder="Your username" />
+              </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="bio">Bio</Label>
-              <Input id="bio" value={profile.bio} onChange={(e) => setProfile({ ...profile, bio: e.target.value })} className="max-w-md" placeholder="A short bio about yourself" />
-            </div>
+              <div className="space-y-2">
+                <Label htmlFor="bio">Bio</Label>
+                <Input id="bio" value={profile.bio} onChange={(e) => setProfile({ ...profile, bio: e.target.value })} className="max-w-md" placeholder="A short bio about yourself" />
+              </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="company">Company</Label>
-              <Input id="company" value={profile.company} onChange={(e) => setProfile({ ...profile, company: e.target.value })} className="max-w-md" placeholder="Your company name" />
-            </div>
+              <div className="space-y-2">
+                <Label htmlFor="company">Company</Label>
+                <Input id="company" value={profile.company} onChange={(e) => setProfile({ ...profile, company: e.target.value })} className="max-w-md" placeholder="Your company name" />
+              </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="location">Location</Label>
-              <Input id="location" value={profile.location} onChange={(e) => setProfile({ ...profile, location: e.target.value })} className="max-w-md" placeholder="Your location" />
-            </div>
+              <div className="space-y-2">
+                <Label htmlFor="location">Location</Label>
+                <Input id="location" value={profile.location} onChange={(e) => setProfile({ ...profile, location: e.target.value })} className="max-w-md" placeholder="Your location" />
+              </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="website">Website</Label>
-              <Input
-                id="website"
-                type="url"
-                value={profile.website}
-                onChange={(e) => setProfile({ ...profile, website: e.target.value })}
-                className="max-w-md"
-                placeholder="https://your-website.com"
-              />
-            </div>
+              <div className="space-y-2">
+                <Label htmlFor="website">Website</Label>
+                <Input
+                  id="website"
+                  type="url"
+                  value={profile.website}
+                  onChange={(e) => setProfile({ ...profile, website: e.target.value })}
+                  className="max-w-md"
+                  placeholder="https://your-website.com"
+                />
+              </div>
 
-            <Button type="submit" disabled={isSaving} className="w-full md:w-auto">
-              {isSaving ? "Saving..." : "Save Changes"}
-            </Button>
-          </form>
-        </div>
-      </main>
-      <Footer />
+              <Button type="submit" disabled={isSaving} className="w-full md:w-auto bg-[#2C106A] hover:bg-[#1F0B4C]">
+                {isSaving ? "Saving..." : "Save Changes"}
+              </Button>
+            </form>
+          </div>
+        </main>
+      </div>
+      <div className="mt-auto">
+        <Footer />
+      </div>
     </div>
   );
 }

@@ -3,7 +3,7 @@ import { Github, Mail } from "lucide-react";
 export function DashboardFooter() {
   return (
     <footer className="w-full bg-black border-t border-white/10">
-      <div className="h-12 px-4 flex items-center justify-between w-full max-w-7xl mx-auto">
+      <div className="h-12 px-8 flex items-center justify-between w-full">
         <div className="flex items-center space-x-2 text-sm text-gray-400">
           <span className="hover:text-white transition-colors">Promplify, Amplify Your AI Potential.</span>
         </div>
