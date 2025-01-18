@@ -136,17 +136,16 @@ export const Navigation = () => {
                 </Link>
               )}
               {session ? (
-                <Button
+                <button
                   onClick={() => {
                     handleLogout();
                     setIsMenuOpen(false);
                   }}
-                  variant="ghost"
-                  className="w-full text-white hover:text-white/90 flex items-center justify-start gap-2"
+                  className="flex items-center space-x-2 text-white/80 hover:text-white transition-colors py-2 text-left"
                 >
                   <LogOut className="w-4 h-4" />
-                  Logout
-                </Button>
+                  <span>Logout</span>
+                </button>
               ) : (
                 <Link to="/auth" onClick={() => setIsMenuOpen(false)}>
                   <Button className="w-full bg-primary text-white hover:bg-primary/90">Sign In</Button>
