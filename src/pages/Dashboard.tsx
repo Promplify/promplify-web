@@ -7,12 +7,12 @@ import { supabase } from "@/lib/supabase";
 import { updateMeta } from "@/utils/meta";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { toast } from "sonner";
 
 export default function Dashboard() {
   const navigate = useNavigate();
   const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
   const [selectedPromptId, setSelectedPromptId] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     updateMeta("Dashboard", "Manage and optimize your AI prompts with Promplify's intuitive dashboard.", "AI prompt management, prompt organization, prompt optimization, AI workflow");
@@ -24,9 +24,10 @@ export default function Dashboard() {
         data: { session },
       } = await supabase.auth.getSession();
       if (!session) {
-        toast.error("Please login to access the dashboard");
         navigate("/auth");
+        return;
       }
+      setIsLoading(false);
     };
 
     checkAuth();
@@ -39,6 +40,10 @@ export default function Dashboard() {
   const handlePromptSelect = (promptId: string) => {
     setSelectedPromptId(promptId);
   };
+
+  if (isLoading) {
+    return null;
+  }
 
   return (
     <div className="flex flex-col h-screen">
