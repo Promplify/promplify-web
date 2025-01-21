@@ -1,4 +1,4 @@
-import { ExternalLink, Github, Mail } from "lucide-react";
+import { Github, Mail } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export function Footer() {
@@ -17,12 +17,9 @@ export function Footer() {
             <div className="h-4 w-px bg-white/20" />
             <a href="mailto:support@promplify.com" className="text-white/60 hover:text-white text-sm transition-colors inline-flex items-center gap-1.5">
               <Mail className="w-4 h-4" />
-              Contact
             </a>
             <a href="https://github.com/promplify" target="_blank" rel="noopener noreferrer" className="text-white/60 hover:text-white text-sm transition-colors inline-flex items-center gap-1.5">
               <Github className="w-4 h-4" />
-              GitHub
-              <ExternalLink className="w-3.5 h-3.5 opacity-50" />
             </a>
           </div>
         </div>
