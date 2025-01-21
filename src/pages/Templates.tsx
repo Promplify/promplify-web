@@ -2,11 +2,12 @@ import { Footer } from "@/components/landing/Footer";
 import { Navigation } from "@/components/landing/Navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import { supabase } from "@/lib/supabase";
 import { createPrompt } from "@/services/promptService";
 import { updateMeta } from "@/utils/meta";
 import { countTokens } from "gpt-tokenizer/model/gpt-4";
-import { ArrowRight, Copy, Tag } from "lucide-react";
+import { ArrowRight, Copy, Search, Tag, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import { useNavigate } from "react-router-dom";
@@ -27,6 +28,8 @@ export default function Templates() {
   const [loading, setLoading] = useState(true);
   const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(0);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isSearching, setIsSearching] = useState(false);
   const navigate = useNavigate();
   const { ref, inView } = useInView({
     threshold: 0.5,
@@ -42,7 +45,13 @@ export default function Templates() {
       const from = page * 30;
       const to = from + 29;
 
-      const { data, error } = await supabase.from("prompt_template").select("*").range(from, to).order("created_at", { ascending: false });
+      let query = supabase.from("prompt_template").select("*");
+
+      if (searchQuery) {
+        query = query.or(`title.ilike.%${searchQuery}%,system_prompt.ilike.%${searchQuery}%,category.ilike.%${searchQuery}%`);
+      }
+
+      const { data, error } = await query.range(from, to).order("created_at", { ascending: false });
 
       if (error) throw error;
 
@@ -50,24 +59,35 @@ export default function Templates() {
         setHasMore(false);
       }
 
-      setTemplates((prev) => [...prev, ...data]);
+      if (page === 0) {
+        setTemplates(data);
+      } else {
+        setTemplates((prev) => [...prev, ...data]);
+      }
     } catch (error) {
       console.error("Error fetching templates:", error);
       toast.error("Failed to load templates");
     } finally {
       setLoading(false);
+      setIsSearching(false);
     }
   };
 
   useEffect(() => {
     fetchTemplates();
-  }, [page]);
+  }, [page, searchQuery]);
 
   useEffect(() => {
     if (inView && hasMore && !loading) {
       setPage((prev) => prev + 1);
     }
   }, [inView, hasMore]);
+
+  useEffect(() => {
+    setPage(0);
+    setHasMore(true);
+    setLoading(true);
+  }, [searchQuery]);
 
   const handleUseTemplate = async (template: Template) => {
     try {
@@ -122,30 +142,58 @@ export default function Templates() {
 
       <main className="flex-1 pt-24 pb-16">
         <div className="container mx-auto px-4">
-          <div className="max-w-3xl mx-auto text-center mb-16">
+          <div className="max-w-3xl mx-auto text-center mb-6">
             <div className="inline-block mb-6 px-4 py-1.5 rounded-full bg-[#2C106A]/5 text-[#2C106A] text-sm font-medium border border-[#2C106A]/10">
               <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#2C106A] to-purple-600">Discover AI Prompt Templates</span>
             </div>
-            <h1 className="text-4xl font-bold tracking-tight mb-6 bg-clip-text text-transparent bg-gradient-to-r from-[#2C106A] to-purple-600 sm:text-5xl">Prompt Templates</h1>
-            <p className="text-gray-600 text-lg mb-6 font-medium">Browse and use our curated collection of prompt templates</p>
-            <div className="flex items-center justify-center gap-2 text-sm text-gray-500">
-              <span>Templates are sourced from</span>
-              <a
-                href="https://github.com/f/awesome-chatgpt-prompts"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1 text-[#2C106A] hover:text-[#2C106A]/80 font-medium transition-colors"
-              >
-                awesome-chatgpt-prompts
-                <svg className="w-3.5 h-3.5 opacity-50" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M7 7h10v10M7 17L17 7" />
-                </svg>
-              </a>
-              <span className="px-2 text-gray-300">•</span>
-              <span>an open-source collection of ChatGPT prompts</span>
-            </div>
+            <h1 className="text-4xl font-bold tracking-tight mb-5 bg-clip-text text-transparent bg-gradient-to-r from-[#2C106A] to-purple-600 sm:text-5xl">Prompt Templates</h1>
+            <p className="text-gray-600 text-lg mb-5 font-medium">Browse and use our curated collection of prompt templates</p>
           </div>
 
+          {/* Search Section */}
+          <div className="max-w-2xl mx-auto mb-6">
+            <div className="relative group">
+              <div className="absolute inset-0 bg-gradient-to-r from-[#2C106A] to-purple-600 rounded-full blur-md opacity-25 group-hover:opacity-30 transition-opacity" />
+              <div className="relative flex items-center bg-white rounded-full border border-gray-200 shadow-sm transition-shadow group-hover:shadow-md">
+                <div className="flex-none pl-5">
+                  {isSearching ? <div className="w-5 h-5 border-2 border-[#2C106A] border-t-transparent rounded-full animate-spin" /> : <Search className="w-5 h-5 text-gray-400" />}
+                </div>
+                <Input
+                  type="text"
+                  placeholder="Search templates by title, content, or category..."
+                  value={searchQuery}
+                  onChange={(e) => {
+                    setSearchQuery(e.target.value);
+                    setIsSearching(true);
+                  }}
+                  className="flex-1 h-14 px-4 py-4 bg-transparent border-0 focus:ring-0 focus:outline-none text-base placeholder:text-gray-400"
+                  style={{ boxShadow: "none" }}
+                />
+                {searchQuery && (
+                  <button onClick={() => setSearchQuery("")} className="flex-none pr-5 text-gray-400 hover:text-gray-600 transition-colors">
+                    <X className="w-5 h-5" />
+                  </button>
+                )}
+              </div>
+            </div>
+            {searchQuery && !loading && templates.length === 0 && <div className="text-center mt-4 text-sm text-gray-500">No templates found for "{searchQuery}"</div>}
+          </div>
+          <div className="flex items-center justify-center gap-2 text-sm text-gray-500 mb-10">
+            <span>Templates are sourced from</span>
+            <a
+              href="https://github.com/f/awesome-chatgpt-prompts"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1 text-[#2C106A] hover:text-[#2C106A]/80 font-medium transition-colors"
+            >
+              awesome-chatgpt-prompts
+              <svg className="w-3.5 h-3.5 opacity-50" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M7 7h10v10M7 17L17 7" />
+              </svg>
+            </a>
+            <span className="px-2 text-gray-300">•</span>
+            <span>an open-source collection of ChatGPT prompts</span>
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8 max-w-7xl mx-auto">
             {templates.map((template) => (
               <Card
