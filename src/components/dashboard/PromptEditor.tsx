@@ -625,24 +625,22 @@ export function PromptEditor({ promptId, onSave }: PromptEditorProps) {
         </div>
       </div>
 
-      <AlertDialog
-        open={showDeleteDialog}
-        onOpenChange={(open) => {
-          setShowDeleteDialog(open);
-          if (!open) {
-            setIsDeleting(false);
-          }
-        }}
-      >
+      <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Are you sure you want to delete this prompt?</AlertDialogTitle>
             <AlertDialogDescription>This action cannot be undone. This will permanently delete the prompt and all its associated data.</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDelete} className="bg-red-600 hover:bg-red-700 text-white" disabled={isDeleting}>
-              {isDeleting ? "Deleting..." : "Delete"}
+            <AlertDialogCancel asChild>
+              <Button variant="outline" className="border-gray-200">
+                Cancel
+              </Button>
+            </AlertDialogCancel>
+            <AlertDialogAction asChild>
+              <Button onClick={handleDelete} className="bg-red-600 hover:bg-red-700 text-white" disabled={isDeleting}>
+                {isDeleting ? "Deleting..." : "Delete"}
+              </Button>
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -883,29 +881,6 @@ export function PromptEditor({ promptId, onSave }: PromptEditorProps) {
           </div>
         </div>
       </div>
-
-      <AlertDialog
-        open={showDeleteDialog}
-        onOpenChange={(open) => {
-          setShowDeleteDialog(open);
-          if (!open) {
-            setIsDeleting(false);
-          }
-        }}
-      >
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Are you sure you want to delete this prompt?</AlertDialogTitle>
-            <AlertDialogDescription>This action cannot be undone. This will permanently delete the prompt and all its associated data.</AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDelete} className="bg-red-600 hover:bg-red-700 text-white" disabled={isDeleting}>
-              {isDeleting ? "Deleting..." : "Delete"}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
     </div>
   );
 }

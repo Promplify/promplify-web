@@ -1,8 +1,22 @@
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import { ArrowRight } from "lucide-react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 export const Hero = () => {
+  const [productHuntLoaded, setProductHuntLoaded] = useState(false);
+  const [productHuntError, setProductHuntError] = useState(false);
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      if (!productHuntLoaded) {
+        setProductHuntError(true);
+      }
+    }, 5000);
+    return () => clearTimeout(timeoutId);
+  }, [productHuntLoaded]);
+
   return (
     <div className="relative min-h-[50vh] flex flex-col items-center justify-center text-center px-4 overflow-hidden pt-6">
       {/* Background Effects */}
@@ -30,30 +44,12 @@ export const Hero = () => {
           <p className="bg-clip-text text-transparent bg-gradient-to-r from-[#2C106A] to-purple-600">Amplify Your AI Potential</p>
         </h1>
 
-        {/* Product Hunt Badge */}
-        <div className="flex justify-center mb-6 mt-2 hover:opacity-95 transition-opacity">
-          <a
-            href="https://www.producthunt.com/posts/promplify?embed=true&utm_source=badge-featured&utm_medium=badge&utm_souce=badge-promplify"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="transform hover:scale-[1.02] transition-transform duration-200"
-          >
-            <img
-              src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=785256&theme=light&t=1737199216475"
-              alt="Promplify - Amplify Your AI Potential | Product Hunt"
-              width="250"
-              height="54"
-              style={{ width: "250px", height: "54px" }}
-            />
-          </a>
-        </div>
-
         <p className="text-xl md:text-2xl font-semibold text-gray-700 mb-3 max-w-2xl mx-auto">Your Professional AI Prompt Management Platform</p>
         <p className="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto mb-8">
           Create, organize, and optimize your AI prompts with our intelligent platform. Track tokens, manage versions, and collaborate with your team seamlessly.
         </p>
 
-        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-32">
+        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-6">
           <Button asChild size="lg" className="group bg-[#2C106A] hover:bg-[#2C106A]/90 text-white px-8 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
             <Link to="/dashboard">
               Get Started <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
@@ -79,6 +75,48 @@ export const Hero = () => {
           >
             Learn More <span className="ml-1 group-hover:opacity-100 opacity-0 transition-opacity">↓</span>
           </Button>
+        </div>
+
+        {/* Product Hunt Badge */}
+        <div className="flex justify-center mb-6 ">
+          <div className="relative min-h-[54px]">
+            {!productHuntError ? (
+              <a
+                href="https://www.producthunt.com/posts/promplify?embed=true&utm_source=badge-featured&utm_medium=badge&utm_souce=badge-promplify"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={cn("transform hover:scale-[1.02] transition-transform duration-200", !productHuntLoaded && "opacity-0")}
+              >
+                <img
+                  src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=785256&theme=light&t=1737199216475"
+                  alt="Promplify - Amplify Your AI Potential | Product Hunt"
+                  width="250"
+                  height="54"
+                  style={{ width: "250px", height: "54px" }}
+                  onError={() => setProductHuntError(true)}
+                  onLoad={() => setProductHuntLoaded(true)}
+                />
+              </a>
+            ) : (
+              <a
+                href="https://www.producthunt.com/posts/promplify"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center px-4 py-2 rounded-md bg-[#EA532A] text-white hover:bg-[#EA532A]/90 transition-colors"
+              >
+                <svg className="w-5 h-5 mr-2" viewBox="0 0 40 40" fill="currentColor">
+                  <path d="M20 0C8.95 0 0 8.95 0 20c0 11.05 8.95 20 20 20s20-8.95 20-20C40 8.95 31.05 0 20 0zm0 36c-8.82 0-16-7.18-16-16S11.18 4 20 4s16 7.18 16 16-7.18 16-16 16z" />
+                  <path d="M22.5 20H17v-6h5.5c1.65 0 3 1.35 3 3s-1.35 3-3 3zM17 26v-6h5.5c1.65 0 3 1.35 3 3s-1.35 3-3 3H17z" />
+                </svg>
+                View on Product Hunt
+              </a>
+            )}
+            {!productHuntLoaded && !productHuntError && (
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="w-5 h-5 border-2 border-[#EA532A] border-t-transparent rounded-full animate-spin" />
+              </div>
+            )}
+          </div>
         </div>
       </div>
 

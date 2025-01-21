@@ -2,7 +2,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { supabase } from "@/lib/supabase";
-import { LogOut } from "lucide-react";
+import { ExternalLink, LogOut } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -56,8 +56,22 @@ export const Navigation = () => {
                 }`}
               />
             </Link>
-            <a href="https://github.com/promplify" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors text-sm relative group">
+            <Link to="/templates" className={`transition-colors text-sm relative group ${isActive("/templates") ? "text-white" : "text-gray-400 hover:text-white"}`}>
+              Templates
+              <span
+                className={`absolute -bottom-1 left-0 w-full h-0.5 bg-white transform origin-left transition-transform duration-200 ${
+                  isActive("/templates") ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
+                }`}
+              />
+            </Link>
+            <a
+              href="https://github.com/promplify"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-gray-400 hover:text-white transition-colors text-sm relative group inline-flex items-center gap-1"
+            >
               GitHub
+              <ExternalLink className="w-3.5 h-3.5 opacity-50 group-hover:opacity-100 transition-opacity" />
               <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-white transform origin-left transition-transform duration-200 scale-x-0 group-hover:scale-x-100" />
             </a>
             {session && (
@@ -127,8 +141,18 @@ export const Navigation = () => {
               <Link to="/" className="text-white/80 hover:text-white transition-colors py-2" onClick={() => setIsMenuOpen(false)}>
                 Home
               </Link>
-              <a href="https://github.com/promplify" target="_blank" rel="noopener noreferrer" className="text-white/80 hover:text-white transition-colors py-2" onClick={() => setIsMenuOpen(false)}>
+              <Link to="/templates" className="text-white/80 hover:text-white transition-colors py-2" onClick={() => setIsMenuOpen(false)}>
+                Templates
+              </Link>
+              <a
+                href="https://github.com/promplify"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-white/80 hover:text-white transition-colors py-2 inline-flex items-center gap-1"
+                onClick={() => setIsMenuOpen(false)}
+              >
                 GitHub
+                <ExternalLink className="w-3.5 h-3.5 opacity-50" />
               </a>
               {session && (
                 <Link to="/dashboard" className="text-white/80 hover:text-white transition-colors py-2" onClick={() => setIsMenuOpen(false)}>
