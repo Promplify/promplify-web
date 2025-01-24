@@ -851,7 +851,7 @@ export function PromptEditor({ promptId, onSave }: PromptEditorProps) {
                   </div>
                   <div className="flex items-center text-xs text-gray-500">
                     <AlertCircle size={14} className="mr-1" />
-                    Supports Markdown format
+                    Supports XML / Markdown format
                   </div>
                 </div>
               </div>
