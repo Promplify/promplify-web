@@ -1,4 +1,5 @@
 import { Logo } from "@/components/landing/Logo";
+import { SEO } from "@/components/SEO";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -151,6 +152,7 @@ export default function ResetPassword() {
 
   return (
     <div className="container relative h-screen flex-col items-center justify-center md:grid lg:max-w-none lg:grid-cols-[2fr_3fr] lg:px-0">
+      <SEO canonicalPath="/reset-password" />
       <div className="relative hidden h-full flex-col bg-muted p-8 text-white lg:flex dark:border-r">
         <div className="absolute inset-0 bg-black" />
         <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]" />

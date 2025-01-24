@@ -1,5 +1,6 @@
 import { LoginForm } from "@/components/auth/LoginForm";
 import { SignUpForm } from "@/components/auth/SignUpForm";
+import { SEO } from "@/components/SEO";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -34,7 +35,8 @@ export default function Auth() {
   };
 
   return (
-    <div className="container relative min-h-screen flex-col items-center justify-center grid lg:max-w-none lg:grid-cols-[2fr_3fr] lg:px-0">
+    <div className="container relative h-screen flex-col items-center justify-center md:grid lg:max-w-none lg:grid-cols-[2fr_3fr] lg:px-0">
+      <SEO canonicalPath="/auth" />
       <div className="relative hidden h-full flex-col bg-muted p-8 text-white lg:flex dark:border-r">
         <div className="absolute inset-0 bg-[#000000]" />
         <div className="relative z-20 flex items-center text-2xl font-medium">

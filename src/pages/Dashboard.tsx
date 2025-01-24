@@ -3,6 +3,7 @@ import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
 import { PromptEditor } from "@/components/dashboard/PromptEditor";
 import { PromptList } from "@/components/dashboard/PromptList";
 import { Sidebar } from "@/components/dashboard/Sidebar";
+import { SEO } from "@/components/SEO";
 import { supabase } from "@/lib/supabase";
 import { updateMeta } from "@/utils/meta";
 import { useEffect, useState } from "react";
@@ -57,6 +58,7 @@ export default function Dashboard() {
 
   return (
     <div className="flex flex-col h-screen">
+      <SEO canonicalPath="/dashboard" />
       {/* Fixed Header */}
       <div className="flex-none">
         <DashboardHeader />

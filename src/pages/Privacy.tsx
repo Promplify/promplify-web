@@ -1,15 +1,17 @@
 import { Footer } from "@/components/landing/Footer";
 import { Navigation } from "@/components/landing/Navigation";
+import { SEO } from "@/components/SEO";
 import { updateMeta } from "@/utils/meta";
 import { useEffect } from "react";
 
 export default function Privacy() {
   useEffect(() => {
-    updateMeta("Privacy Policy", "Learn about Promplify's privacy policy and data protection practices.", "privacy policy, data protection, security, user privacy");
+    updateMeta("Privacy Policy", "Promplify's Privacy Policy - Learn how we protect your data and privacy.", "privacy policy, data protection, user privacy");
   }, []);
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <SEO canonicalPath="/privacy" />
       <Navigation />
       <main className="container max-w-4xl mx-auto p-6 pt-32">
         <div className="bg-white shadow-sm rounded-lg p-8 md:p-12">

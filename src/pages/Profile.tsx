@@ -1,5 +1,6 @@
 import { Footer } from "@/components/landing/Footer";
 import { Navigation } from "@/components/landing/Navigation";
+import { SEO } from "@/components/SEO";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -120,6 +121,7 @@ export default function Profile() {
   if (isLoading) {
     return (
       <div className="flex flex-col min-h-screen">
+        <SEO canonicalPath="/profile" />
         <Navigation />
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center">
@@ -136,6 +138,7 @@ export default function Profile() {
 
   return (
     <div className="flex flex-col min-h-screen">
+      <SEO canonicalPath="/profile" />
       <Navigation />
       <div className="flex-1">
         <main className="container max-w-2xl mx-auto p-6 pt-32">

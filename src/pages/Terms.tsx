@@ -1,15 +1,17 @@
 import { Footer } from "@/components/landing/Footer";
 import { Navigation } from "@/components/landing/Navigation";
+import { SEO } from "@/components/SEO";
 import { updateMeta } from "@/utils/meta";
 import { useEffect } from "react";
 
 export default function Terms() {
   useEffect(() => {
-    updateMeta("Terms of Service", "Read Promplify's terms of service and usage conditions.", "terms of service, legal, conditions, usage terms");
+    updateMeta("Terms of Service", "Promplify's Terms of Service - Understand our service agreement.", "terms of service, user agreement, legal terms");
   }, []);
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <SEO canonicalPath="/terms" />
       <Navigation />
       <main className="container max-w-4xl mx-auto p-6 pt-32">
         <div className="bg-white shadow-sm rounded-lg p-8 md:p-12">
