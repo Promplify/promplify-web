@@ -605,12 +605,12 @@ export function PromptEditor({ promptId, onSave }: PromptEditorProps) {
           <Button variant="outline" size="sm" onClick={handleOpenInChatGPT} className="group">
             <img src="/logo-model-chatgpt.png" alt="ChatGPT" className="w-4 mr-0" />
             ChatGPT
-            <ExternalLink className="w-3.5 h-3.5 ml-0.5 opacity-50 group-hover:opacity-100 transition-opacity" />
+            <ExternalLink className="w-2 h-2 ml-0.5 opacity-50 group-hover:opacity-100 transition-opacity" />
           </Button>
           <Button variant="outline" size="sm" onClick={handleOpenInClaude} className="group">
             <img src="/logo-model-claude.png" alt="Claude" className="w-4 mr-0" />
             Claude
-            <ExternalLink className="w-3.5 h-3.5 ml-0.5 opacity-50 group-hover:opacity-100 transition-opacity" />
+            <ExternalLink className="w-2 h-2 ml-0.5 opacity-50 group-hover:opacity-100 transition-opacity" />
           </Button>
           <Button variant="outline" size="sm" onClick={handleCopyContent}>
             <Copy size={16} className="mr-1" />
