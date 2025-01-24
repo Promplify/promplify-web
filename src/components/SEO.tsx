@@ -3,9 +3,11 @@ import { useLocation } from "react-router-dom";
 
 interface SEOProps {
   canonicalPath?: string;
+  title?: string;
+  description?: string;
 }
 
-export function SEO({ canonicalPath }: SEOProps) {
+export function SEO({ canonicalPath, title, description }: SEOProps) {
   const location = useLocation();
   const baseUrl = "https://promplify.com";
 
@@ -24,6 +26,23 @@ export function SEO({ canonicalPath }: SEOProps) {
     // 添加到 head 中
     document.head.appendChild(link);
 
+    // 更新 title 和 description
+    if (title) {
+      document.title = title;
+    }
+
+    if (description) {
+      const metaDescription = document.querySelector('meta[name="description"]');
+      if (metaDescription) {
+        metaDescription.setAttribute("content", description);
+      } else {
+        const meta = document.createElement("meta");
+        meta.name = "description";
+        meta.content = description;
+        document.head.appendChild(meta);
+      }
+    }
+
     // 清理函数
     return () => {
       const canonical = document.querySelector('link[rel="canonical"]');
@@ -31,7 +50,7 @@ export function SEO({ canonicalPath }: SEOProps) {
         canonical.remove();
       }
     };
-  }, [location.pathname, canonicalPath]);
+  }, [location.pathname, canonicalPath, title, description]);
 
   return null;
 }
