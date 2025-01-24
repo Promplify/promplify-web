@@ -10,7 +10,7 @@ import { supabase } from "@/lib/supabase";
 import { addTagToPrompt, createPrompt, createTag, deletePrompt, getCategories, getPromptById, getTags, updatePrompt } from "@/services/promptService";
 import { Category, Prompt, Tag } from "@/types/prompt";
 import { countTokens } from "gpt-tokenizer/model/gpt-4";
-import { AlertCircle, Copy, Save, Trash2, X } from "lucide-react";
+import { AlertCircle, Copy, ExternalLink, Save, Trash2, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { v4 as uuidv4 } from "uuid";
@@ -602,13 +602,15 @@ export function PromptEditor({ promptId, onSave }: PromptEditorProps) {
           </Dialog>
         </div>
         <div className="flex items-center space-x-2">
-          <Button variant="outline" size="sm" onClick={handleOpenInChatGPT}>
-            <img src="/logo-model-chatgpt.png" alt="ChatGPT" className="w-4" />
+          <Button variant="outline" size="sm" onClick={handleOpenInChatGPT} className="group">
+            <img src="/logo-model-chatgpt.png" alt="ChatGPT" className="w-4 mr-0" />
             ChatGPT
+            <ExternalLink className="w-3.5 h-3.5 ml-0.5 opacity-50 group-hover:opacity-100 transition-opacity" />
           </Button>
-          <Button variant="outline" size="sm" onClick={handleOpenInClaude}>
-            <img src="/logo-model-claude.png" alt="Claude" className="w-4" />
+          <Button variant="outline" size="sm" onClick={handleOpenInClaude} className="group">
+            <img src="/logo-model-claude.png" alt="Claude" className="w-4 mr-0" />
             Claude
+            <ExternalLink className="w-3.5 h-3.5 ml-0.5 opacity-50 group-hover:opacity-100 transition-opacity" />
           </Button>
           <Button variant="outline" size="sm" onClick={handleCopyContent}>
             <Copy size={16} className="mr-1" />
@@ -851,7 +853,7 @@ export function PromptEditor({ promptId, onSave }: PromptEditorProps) {
                   </div>
                   <div className="flex items-center text-xs text-gray-500">
                     <AlertCircle size={14} className="mr-1" />
-                    Supports XML / Markdown format
+                    Supports XML/Markdown format
                   </div>
                 </div>
               </div>
