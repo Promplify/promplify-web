@@ -10,7 +10,7 @@ import { supabase } from "@/lib/supabase";
 import { addTagToPrompt, createPrompt, createTag, deletePrompt, getCategories, getPromptById, getTags, updatePrompt } from "@/services/promptService";
 import { Category, Prompt, Tag } from "@/types/prompt";
 import { countTokens } from "gpt-tokenizer/model/gpt-4";
-import { AlertCircle, Copy, Save, Trash2, X } from "lucide-react";
+import { AlertCircle, Copy, ExternalLink, Save, Trash2, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { v4 as uuidv4 } from "uuid";
@@ -435,6 +435,20 @@ export function PromptEditor({ promptId, onSave }: PromptEditorProps) {
     }
   };
 
+  const handleOpenInClaude = () => {
+    const content = `${prompt.system_prompt ? prompt.system_prompt + "\n\n" : ""}${prompt.user_prompt}`;
+    const maxLength = 2000; // 设置一个安全的URL长度限制
+
+    if (encodeURIComponent(content).length > maxLength) {
+      // 如果内容太长，可以只发送部分内容或提示用户
+      const truncatedContent = content.slice(0, maxLength);
+      window.open(`https://claude.ai/new?q=${encodeURIComponent(truncatedContent)}...`, "_blank");
+      toast.error("Prompt content was truncated due to length limitations");
+    } else {
+      window.open(`https://claude.ai/new?q=${encodeURIComponent(content)}`, "_blank");
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="flex-1 h-full bg-gray-50 p-4">
@@ -492,7 +506,7 @@ export function PromptEditor({ promptId, onSave }: PromptEditorProps) {
                 disabled={!promptId || promptId === "new"}
               >
                 <div className="flex items-center gap-1">
-                  <span className="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-purple-100 text-purple-800">Version {prompt.version}</span>
+                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-sm text-xs font-medium bg-purple-100 text-purple-800">Version {prompt.version}</span>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="16"
@@ -588,22 +602,15 @@ export function PromptEditor({ promptId, onSave }: PromptEditorProps) {
           </Dialog>
         </div>
         <div className="flex items-center space-x-2">
-          <Button variant="outline" size="sm" onClick={handleOpenInChatGPT}>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="mr-1"
-            >
-              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-            </svg>
+          <Button variant="outline" size="sm" onClick={handleOpenInChatGPT} className="group">
+            <img src="/logo-model-chatgpt.png" alt="ChatGPT" className="w-4 mr-0" />
             ChatGPT
+            <ExternalLink className="w-2 h-2 ml-0.5 opacity-50 group-hover:opacity-100 transition-opacity" />
+          </Button>
+          <Button variant="outline" size="sm" onClick={handleOpenInClaude} className="group">
+            <img src="/logo-model-claude.png" alt="Claude" className="w-4 mr-0" />
+            Claude
+            <ExternalLink className="w-2 h-2 ml-0.5 opacity-50 group-hover:opacity-100 transition-opacity" />
           </Button>
           <Button variant="outline" size="sm" onClick={handleCopyContent}>
             <Copy size={16} className="mr-1" />
@@ -620,24 +627,22 @@ export function PromptEditor({ promptId, onSave }: PromptEditorProps) {
         </div>
       </div>
 
-      <AlertDialog
-        open={showDeleteDialog}
-        onOpenChange={(open) => {
-          setShowDeleteDialog(open);
-          if (!open) {
-            setIsDeleting(false);
-          }
-        }}
-      >
+      <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Are you sure you want to delete this prompt?</AlertDialogTitle>
             <AlertDialogDescription>This action cannot be undone. This will permanently delete the prompt and all its associated data.</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDelete} className="bg-red-600 hover:bg-red-700 text-white" disabled={isDeleting}>
-              {isDeleting ? "Deleting..." : "Delete"}
+            <AlertDialogCancel asChild>
+              <Button variant="outline" className="border-gray-200">
+                Cancel
+              </Button>
+            </AlertDialogCancel>
+            <AlertDialogAction asChild>
+              <Button onClick={handleDelete} className="bg-red-600 hover:bg-red-700 text-white" disabled={isDeleting}>
+                {isDeleting ? "Deleting..." : "Delete"}
+              </Button>
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -848,7 +853,7 @@ export function PromptEditor({ promptId, onSave }: PromptEditorProps) {
                   </div>
                   <div className="flex items-center text-xs text-gray-500">
                     <AlertCircle size={14} className="mr-1" />
-                    Supports Markdown format
+                    Supports XML/Markdown format
                   </div>
                 </div>
               </div>
@@ -878,29 +883,6 @@ export function PromptEditor({ promptId, onSave }: PromptEditorProps) {
           </div>
         </div>
       </div>
-
-      <AlertDialog
-        open={showDeleteDialog}
-        onOpenChange={(open) => {
-          setShowDeleteDialog(open);
-          if (!open) {
-            setIsDeleting(false);
-          }
-        }}
-      >
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Are you sure you want to delete this prompt?</AlertDialogTitle>
-            <AlertDialogDescription>This action cannot be undone. This will permanently delete the prompt and all its associated data.</AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDelete} className="bg-red-600 hover:bg-red-700 text-white" disabled={isDeleting}>
-              {isDeleting ? "Deleting..." : "Delete"}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
     </div>
   );
 }

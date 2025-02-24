@@ -7,6 +7,7 @@ import Index from "./pages/Index";
 import Privacy from "./pages/Privacy";
 import Profile from "./pages/Profile";
 import ResetPassword from "./pages/ResetPassword";
+import Templates from "./pages/Templates";
 import Terms from "./pages/Terms";
 
 function App() {
@@ -22,6 +23,7 @@ function App() {
         <Route path="/profile" element={<Profile />} />
         <Route path="/terms" element={<Terms />} />
         <Route path="/privacy" element={<Privacy />} />
+        <Route path="/templates" element={<Templates />} />
       </Routes>
     </Router>
   );

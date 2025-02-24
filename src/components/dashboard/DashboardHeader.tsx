@@ -1,4 +1,5 @@
 import { Logo } from "@/components/landing/Logo";
+import { ExternalLink } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { UserNav } from "../landing/UserNav";
 
@@ -23,8 +24,22 @@ export function DashboardHeader() {
                 }`}
               />
             </Link>
-            <a href="https://github.com/promplify" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors text-sm relative group">
+            <Link to="/templates" className={`transition-colors text-sm relative group ${isActive("/templates") ? "text-white" : "text-gray-400 hover:text-white"}`}>
+              Templates
+              <span
+                className={`absolute -bottom-1 left-0 w-full h-0.5 bg-white transform origin-left transition-transform duration-200 ${
+                  isActive("/templates") ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
+                }`}
+              />
+            </Link>
+            <a
+              href="https://github.com/promplify"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-gray-400 hover:text-white transition-colors text-sm relative group inline-flex items-center gap-1"
+            >
               GitHub
+              <ExternalLink className="w-3.5 h-3.5 opacity-50 group-hover:opacity-100 transition-opacity" />
               <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-white transform origin-left transition-transform duration-200 scale-x-0 group-hover:scale-x-100" />
             </a>
             <Link to="/dashboard" className={`transition-colors text-sm relative group ${isActive("/dashboard") ? "text-white" : "text-gray-400 hover:text-white"}`}>
