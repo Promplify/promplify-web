@@ -11,7 +11,7 @@ export function DashboardFooter() {
           <a href="https://github.com/promptify" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors group">
             <Github size={18} className="transform group-hover:scale-110 transition-transform" />
           </a>
-          <a href="mailto:support@promptify.com" className="text-gray-400 hover:text-white transition-colors group">
+          <a href="mailto:support@promplify.com" className="text-gray-400 hover:text-white transition-colors group">
             <Mail size={18} className="transform group-hover:scale-110 transition-transform" />
           </a>
           <span className="text-gray-400 text-sm">&copy; {new Date().getFullYear()} Promplify.</span>
