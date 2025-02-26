@@ -18,7 +18,12 @@ export function Footer() {
             <a href="mailto:support@promplify.com" className="text-white/60 hover:text-white text-sm transition-colors inline-flex items-center gap-1.5">
               <Mail className="w-4 h-4" />
             </a>
-            <a href="https://github.com/promplify" target="_blank" rel="noopener noreferrer" className="text-white/60 hover:text-white text-sm transition-colors inline-flex items-center gap-1.5">
+            <a
+              href="https://github.com/Promplify/promplify-issues"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-white/60 hover:text-white text-sm transition-colors inline-flex items-center gap-1.5"
+            >
               <Github className="w-4 h-4" />
             </a>
           </div>

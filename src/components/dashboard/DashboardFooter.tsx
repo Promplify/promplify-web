@@ -8,7 +8,7 @@ export function DashboardFooter() {
           <span className="hover:text-white transition-colors">Promplify, Amplify Your AI Potential.</span>
         </div>
         <div className="flex items-center space-x-6">
-          <a href="https://github.com/promptify" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors group">
+          <a href="https://github.com/Promplify/promplify-issues" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors group">
             <Github size={18} className="transform group-hover:scale-110 transition-transform" />
           </a>
           <a href="mailto:support@promplify.com" className="text-gray-400 hover:text-white transition-colors group">

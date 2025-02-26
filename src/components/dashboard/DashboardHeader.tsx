@@ -33,7 +33,7 @@ export function DashboardHeader() {
               />
             </Link>
             <a
-              href="https://github.com/promplify"
+              href="https://github.com/Promplify/promplify-issues"
               target="_blank"
               rel="noopener noreferrer"
               className="text-gray-400 hover:text-white transition-colors text-sm relative group inline-flex items-center gap-1"
