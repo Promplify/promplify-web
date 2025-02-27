@@ -58,7 +58,7 @@ export const Hero = () => {
           <Button
             size="lg"
             variant="outline"
-            className="border-[#2C106A] text-[#2C106A] hover:bg-[#2C106A]/5 shadow-md hover:shadow-lg transition-all duration-300 group"
+            className="border-[#2C106A] text-[#2C106A] hover:bg-[#2C106A]/5 shadow-md hover:shadow-lg transition-all duration-300 group relative px-8"
             onClick={(e) => {
               e.preventDefault();
               const element = document.getElementById("features");
@@ -73,7 +73,7 @@ export const Hero = () => {
               }
             }}
           >
-            Learn More <span className="ml-1 group-hover:opacity-100 opacity-0 transition-opacity">↓</span>
+            Learn More
           </Button>
         </div>
 
