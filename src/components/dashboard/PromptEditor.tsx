@@ -7,7 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Skeleton } from "@/components/ui/skeleton";
 import { Textarea } from "@/components/ui/textarea";
 import { supabase } from "@/lib/supabase";
-import { addTagToPrompt, createPrompt, createTag, deletePrompt, getCategories, getPromptById, getTags, updatePrompt } from "@/services/promptService";
+import { addTagToPrompt, createPrompt, createTag, deletePrompt, getCategories, getPromptById, getTags, optimizeSystemPrompt, updatePrompt } from "@/services/promptService";
 import { Category, Prompt, Tag } from "@/types/prompt";
 import { countTokens } from "gpt-tokenizer/model/gpt-4";
 import { AlertCircle, Copy, ExternalLink, Save, Trash2, X } from "lucide-react";
@@ -75,6 +75,8 @@ export function PromptEditor({ promptId, onSave }: PromptEditorProps) {
   const [showVersionHistory, setShowVersionHistory] = useState(false);
   const [versionHistory, setVersionHistory] = useState<PromptVersion[]>([]);
   const [isLoadingVersions, setIsLoadingVersions] = useState(false);
+  const [isOptimizing, setIsOptimizing] = useState(false);
+  const [previousSystemPrompt, setPreviousSystemPrompt] = useState<string | null>(null);
 
   useEffect(() => {
     const getSession = async () => {
@@ -448,6 +450,82 @@ export function PromptEditor({ promptId, onSave }: PromptEditorProps) {
       window.open(`https://claude.ai/new?q=${encodeURIComponent(content)}`, "_blank");
     }
   };
+
+  const handleOptimizeSystemPrompt = async () => {
+    if (!prompt.system_prompt) {
+      toast.error("System prompt is empty");
+      return;
+    }
+
+    try {
+      setIsOptimizing(true);
+      setPreviousSystemPrompt(prompt.system_prompt);
+
+      const optimizedPrompt = await optimizeSystemPrompt(prompt.system_prompt);
+
+      setPrompt((prev) => ({
+        ...prev,
+        system_prompt: optimizedPrompt,
+      }));
+
+      toast.success("System prompt optimized successfully");
+    } catch (error) {
+      console.error("Error optimizing system prompt:", error);
+      toast.error("Failed to optimize system prompt");
+    } finally {
+      setIsOptimizing(false);
+    }
+  };
+
+  const handleUndoOptimization = () => {
+    if (previousSystemPrompt) {
+      setPrompt((prev) => ({
+        ...prev,
+        system_prompt: previousSystemPrompt,
+      }));
+      setPreviousSystemPrompt(null);
+      toast.success("Optimization undone");
+    }
+  };
+
+  const renderSystemPromptSection = () => (
+    <div>
+      <div className="flex items-center justify-between mb-1">
+        <Label>System Prompt</Label>
+        <div className="flex items-center space-x-2">
+          {previousSystemPrompt && (
+            <Button variant="outline" size="sm" onClick={handleUndoOptimization} className="h-7 px-2 text-xs">
+              Undo Optimization
+            </Button>
+          )}
+          <Button variant="outline" size="sm" onClick={handleOptimizeSystemPrompt} disabled={isOptimizing || !prompt.system_prompt} className="h-7 px-2 text-xs flex items-center gap-1">
+            {isOptimizing ? (
+              <>
+                <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-primary" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Optimizing...
+              </>
+            ) : (
+              <>
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
+                </svg>
+                AI Optimize
+              </>
+            )}
+          </Button>
+        </div>
+      </div>
+      <Textarea
+        value={prompt.system_prompt}
+        onChange={(e) => setPrompt({ ...prompt, system_prompt: e.target.value })}
+        placeholder="Enter system prompt..."
+        className="h-64 font-mono resize-y min-h-[12rem] focus:ring-[#2C106A] focus:border-[#2C106A] hover:border-gray-300 transition-colors"
+      />
+    </div>
+  );
 
   if (isLoading) {
     return (
@@ -859,15 +937,7 @@ export function PromptEditor({ promptId, onSave }: PromptEditorProps) {
               </div>
               <div className="p-4">
                 <div className="space-y-4">
-                  <div>
-                    <Label>System Prompt</Label>
-                    <Textarea
-                      value={prompt.system_prompt}
-                      onChange={(e) => setPrompt({ ...prompt, system_prompt: e.target.value })}
-                      placeholder="Enter system prompt..."
-                      className="h-64 font-mono resize-y min-h-[12rem] focus:ring-[#2C106A] focus:border-[#2C106A] hover:border-gray-300 transition-colors"
-                    />
-                  </div>
+                  {renderSystemPromptSection()}
                   <div>
                     <Label>User Prompt</Label>
                     <Textarea

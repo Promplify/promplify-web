@@ -15,7 +15,7 @@ const steps = [
     icon: Sparkles,
     title: "Optimize & Improve",
     description: "Get AI-powered suggestions to enhance your prompts and improve their effectiveness",
-    comingSoon: true,
+    comingSoon: false,
   },
   {
     number: "03",

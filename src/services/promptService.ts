@@ -255,3 +255,22 @@ export const createPromptWithCategory = async (prompt: Omit<Prompt, "id" | "crea
 
   return createPrompt(promptWithValidCategory);
 };
+
+export const optimizeSystemPrompt = async (systemPrompt: string) => {
+  const session = await supabase.auth.getSession();
+  if (!session.data.session?.user.id) {
+    throw new Error("No user session");
+  }
+
+  try {
+    const { data, error } = await supabase.functions.invoke("optimize-system-prompt", {
+      body: { systemPrompt },
+    });
+
+    if (error) throw error;
+    return data.optimizedPrompt;
+  } catch (error) {
+    console.error("Error optimizing system prompt:", error);
+    throw error;
+  }
+};
