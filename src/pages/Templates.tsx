@@ -2,7 +2,6 @@ import { Footer } from "@/components/landing/Footer";
 import { Navigation } from "@/components/landing/Navigation";
 import { SEO } from "@/components/SEO";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { supabase } from "@/lib/supabase";
 import { createPrompt } from "@/services/promptService";
@@ -197,72 +196,63 @@ export default function Templates() {
               <span className="px-2 text-gray-300">•</span>
               <span>an open-source collection of ChatGPT prompts</span>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8 max-w-7xl mx-auto">
+            <div className="max-w-6xl mx-auto space-y-3">
               {templates.map((template) => (
-                <Card
-                  key={template.id}
-                  className="group relative overflow-hidden border border-gray-200/75 hover:border-[#2C106A]/20 bg-white hover:shadow-lg transition-all duration-300 rounded-lg will-change-transform hover:-translate-y-0.5"
-                >
-                  <CardHeader className="pb-3 px-5 pt-5 border-b border-gray-100">
-                    <div className="space-y-2.5">
-                      <CardTitle className="text-lg font-semibold leading-tight tracking-tight text-gray-900">{template.title}</CardTitle>
-                      {template.category && (
-                        <div className="flex items-center gap-2">
-                          <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-[#2C106A]/5 text-[#2C106A] border border-[#2C106A]/10">
-                            <Tag className="w-3 h-3 mr-1.5 stroke-[2.5]" />
-                            {template.category}
-                          </span>
+                <div key={template.id} className="group relative bg-white border border-gray-200 hover:border-[#2C106A]/20 rounded-lg p-5 transition-all duration-300 hover:shadow-md">
+                  {/* Header Section with Title and Actions */}
+                  <div className="flex items-start justify-between gap-4 mb-4">
+                    <div className="flex-1">
+                      <h3 className="text-xl font-semibold text-gray-900 leading-tight mb-3">{template.title}</h3>
+                      <div className="flex items-center flex-wrap gap-2.5 text-sm">
+                        <div className="inline-flex items-center px-2.5 py-1 rounded-md bg-gradient-to-r from-purple-50 to-purple-50/50 text-purple-700 border border-purple-100/80 shadow-sm shadow-purple-100/50">
+                          <span className="font-semibold">{countTokens(template.system_prompt)}</span>
+                          <span className="ml-1 text-purple-500 font-medium">tokens</span>
                         </div>
-                      )}
-                    </div>
-                  </CardHeader>
-
-                  <CardContent className="px-5 pt-4 pb-2">
-                    <div className="relative">
-                      <div
-                        className="font-mono text-[13px] leading-relaxed bg-gray-50/50 px-4 py-3.5 rounded-lg border border-gray-100 h-[220px] overflow-y-auto custom-scrollbar"
-                        style={{
-                          WebkitLineClamp: 10,
-                          display: "-webkit-box",
-                          WebkitBoxOrient: "vertical",
-                          overflow: "hidden",
-                          textOverflow: "ellipsis",
-                        }}
-                      >
-                        {template.system_prompt}
+                        <span className="w-1 h-1 rounded-full bg-gray-200"></span>
+                        <div className="inline-flex items-center px-2.5 py-1 rounded-md bg-gradient-to-r from-blue-50 to-blue-50/50 text-blue-700 border border-blue-100/80 shadow-sm shadow-blue-100/50">
+                          <span className="font-medium">{new Date(template.created_at).toLocaleDateString()}</span>
+                        </div>
+                        {template.category && (
+                          <>
+                            <span className="w-1 h-1 rounded-full bg-gray-200"></span>
+                            <div className="inline-flex items-center px-2.5 py-1 rounded-md bg-gradient-to-r from-[#2C106A]/5 to-purple-50/30 text-[#2C106A] border border-[#2C106A]/10 shadow-sm shadow-purple-100/30">
+                              <Tag className="w-3.5 h-3.5 mr-1.5 stroke-[2.5] opacity-80" />
+                              <span className="font-medium">{template.category}</span>
+                            </div>
+                          </>
+                        )}
                       </div>
-                      <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-gray-50/95 via-gray-50/80 to-transparent pointer-events-none" />
                     </div>
-                  </CardContent>
-
-                  <CardFooter className="px-5 pt-3 pb-5">
-                    <div className="w-full flex items-center gap-2.5">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="flex-1 border-gray-200 hover:border-[#2C106A]/30 transition-colors font-medium group/copy"
+                    <div className="flex items-center gap-2">
+                      <button
                         onClick={() => {
                           navigator.clipboard.writeText(template.system_prompt);
                           toast.success("Prompt copied to clipboard");
                         }}
+                        className="p-2 rounded-md hover:bg-gray-50 border border-transparent hover:border-gray-200 transition-all duration-200 hover:shadow-sm"
+                        title="Copy prompt"
                       >
-                        <Copy className="w-3.5 h-3.5 mr-1.5 stroke-[2.5] group-hover/copy:scale-110 transition-transform" />
-                        Copy
-                      </Button>
+                        <Copy className="w-4.5 h-4.5 text-gray-500 hover:text-[#2C106A]" />
+                      </button>
                       <Button
                         onClick={() => handleUseTemplate(template)}
-                        size="sm"
-                        className="flex-[2] bg-[#2C106A] hover:bg-[#2C106A]/90 text-white font-medium shadow-sm hover:shadow transition-all duration-200 group/use relative overflow-hidden"
+                        className="bg-[#2C106A] hover:bg-[#2C106A]/90 text-white font-medium shadow-sm hover:shadow transition-all duration-200 px-5 h-9 rounded-md whitespace-nowrap"
                       >
-                        <span className="relative z-10 flex items-center">
+                        <span className="flex items-center gap-1.5">
                           Use Template
-                          <ArrowRight className="w-3.5 h-3.5 ml-1.5 stroke-[2.5] group-hover/use:translate-x-0.5 transition-transform" />
+                          <ArrowRight className="w-4 h-4 stroke-[2.5]" />
                         </span>
-                        <span className="absolute inset-0 bg-white transform -translate-x-full group-hover/use:translate-x-0 transition-transform duration-300 opacity-10" />
                       </Button>
                     </div>
-                  </CardFooter>
-                </Card>
+                  </div>
+
+                  {/* Prompt Content */}
+                  <div className="relative">
+                    <div className="font-mono text-sm text-gray-600 bg-gray-50/70 px-5 py-4 rounded-md border border-gray-200/80">
+                      <div className="leading-relaxed whitespace-pre-wrap">{template.system_prompt}</div>
+                    </div>
+                  </div>
+                </div>
               ))}
             </div>
 
