@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Github } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
@@ -55,25 +55,11 @@ export const Hero = () => {
               Get Started <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
             </Link>
           </Button>
-          <Button
-            size="lg"
-            variant="outline"
-            className="border-[#2C106A] text-[#2C106A] hover:bg-[#2C106A]/5 shadow-md hover:shadow-lg transition-all duration-300 group relative px-8"
-            onClick={(e) => {
-              e.preventDefault();
-              const element = document.getElementById("features");
-              if (element) {
-                const headerOffset = 64;
-                const elementPosition = element.getBoundingClientRect().top;
-                const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-                window.scrollTo({
-                  top: offsetPosition,
-                  behavior: "smooth",
-                });
-              }
-            }}
-          >
-            Learn More
+          <Button asChild size="lg" variant="outline" className="border-[#2C106A] text-[#2C106A] hover:bg-[#2C106A]/5 shadow-md hover:shadow-lg transition-all duration-300 group relative px-4">
+            <a href="https://github.com/Promplify/promplify-issues" target="_blank" rel="noopener noreferrer" className="inline-flex items-center">
+              <Github className="h-4 w-4" />
+              Feedback & Issues
+            </a>
           </Button>
         </div>
 

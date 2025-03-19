@@ -89,6 +89,7 @@ export const Navigation = () => {
               target="_blank"
               rel="noopener noreferrer"
               className="text-gray-400 hover:text-white transition-colors text-sm relative group inline-flex items-center gap-1"
+              title="Issue Tracker & Contributions Repository"
             >
               GitHub
               <ExternalLink className="w-3.5 h-3.5 opacity-50 group-hover:opacity-100 transition-opacity" />
