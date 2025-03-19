@@ -2,7 +2,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { supabase } from "@/lib/supabase";
-import { ExternalLink, LogOut } from "lucide-react";
+import { exportUserData } from "@/services/promptService";
+import { Download, ExternalLink, LogOut } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -35,6 +36,25 @@ export const Navigation = () => {
     } catch (error) {
       console.error("Logout error:", error);
       toast.error("Failed to logout");
+    }
+  };
+
+  const handleExport = async () => {
+    try {
+      const data = await exportUserData(session.user.id);
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `promplify-export-${new Date().toISOString().split("T")[0]}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      toast.success("Data exported successfully");
+    } catch (error) {
+      console.error("Error exporting data:", error);
+      toast.error("Failed to export data");
     }
   };
 
@@ -87,30 +107,54 @@ export const Navigation = () => {
             {session ? (
               <div className="flex items-center gap-4 ml-4">
                 <DropdownMenu>
-                  <DropdownMenuTrigger className="focus:outline-none">
-                    <Avatar className="w-10 h-10 border-2 border-white/20 hover:border-white/40 transition-colors">
-                      <AvatarImage
-                        src={session.user.user_metadata?.avatar_url || session.user.user_metadata?.picture}
-                        onError={(e) => {
-                          e.currentTarget.style.display = "none";
-                          e.currentTarget.nextElementSibling?.classList.remove("hidden");
-                        }}
-                      />
-                      <AvatarFallback className="bg-primary/20 text-white text-lg">
-                        {(session.user.user_metadata?.full_name || session.user.user_metadata?.name || session.user.email)?.charAt(0).toUpperCase()}
-                      </AvatarFallback>
-                    </Avatar>
+                  <DropdownMenuTrigger asChild>
+                    <button className="focus:outline-none">
+                      <Avatar className="w-10 h-10 border-2 border-white/20 hover:border-white/40 transition-colors">
+                        <AvatarImage
+                          src={session.user.user_metadata?.avatar_url || session.user.user_metadata?.picture}
+                          onError={(e) => {
+                            e.currentTarget.style.display = "none";
+                            e.currentTarget.nextElementSibling?.classList.remove("hidden");
+                          }}
+                        />
+                        <AvatarFallback className="bg-primary/20 text-white text-lg">
+                          {(session.user.user_metadata?.full_name || session.user.user_metadata?.name || session.user.email)?.charAt(0).toUpperCase()}
+                        </AvatarFallback>
+                      </Avatar>
+                    </button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent className="w-56 mt-3" align="end">
+                  <DropdownMenuContent className="w-56 mt-2" align="end">
                     <div className="flex flex-col space-y-1 p-2">
                       <p className="text-sm font-medium leading-none">{session.user.user_metadata?.full_name || session.user.user_metadata?.name || session.user.email}</p>
                       <p className="text-xs leading-none text-muted-foreground">{session.user.email}</p>
                     </div>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem asChild>
-                      <Link to="/profile">Profile</Link>
+                      <Link to="/profile" className="flex items-center">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="16"
+                          height="16"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          className="mr-2 h-4 w-4"
+                        >
+                          <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                          <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                        <span>Profile</span>
+                      </Link>
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={handleLogout} className="cursor-pointer text-red-600 focus:text-red-600">
+                    <DropdownMenuItem onSelect={handleExport}>
+                      <Download className="mr-2 h-4 w-4" />
+                      <span>Export Data</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onSelect={handleLogout} className="text-red-600">
                       <LogOut className="mr-2 h-4 w-4" />
                       <span>Log out</span>
                     </DropdownMenuItem>
@@ -160,16 +204,28 @@ export const Navigation = () => {
                 </Link>
               )}
               {session ? (
-                <button
-                  onClick={() => {
-                    handleLogout();
-                    setIsMenuOpen(false);
-                  }}
-                  className="flex items-center space-x-2 text-white/80 hover:text-white transition-colors py-2 text-left"
-                >
-                  <LogOut className="w-4 h-4" />
-                  <span>Logout</span>
-                </button>
+                <>
+                  <button
+                    onClick={() => {
+                      handleExport();
+                      setIsMenuOpen(false);
+                    }}
+                    className="flex items-center space-x-2 text-white/80 hover:text-white transition-colors py-2 text-left"
+                  >
+                    <Download className="w-4 h-4" />
+                    <span>Export Data</span>
+                  </button>
+                  <button
+                    onClick={() => {
+                      handleLogout();
+                      setIsMenuOpen(false);
+                    }}
+                    className="flex items-center space-x-2 text-white/80 hover:text-white transition-colors py-2 text-left"
+                  >
+                    <LogOut className="w-4 h-4" />
+                    <span>Logout</span>
+                  </button>
+                </>
               ) : (
                 <Link to="/auth" onClick={() => setIsMenuOpen(false)}>
                   <Button className="w-full bg-primary text-white hover:bg-primary/90">Sign In</Button>

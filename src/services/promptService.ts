@@ -274,3 +274,48 @@ export const optimizeSystemPrompt = async (systemPrompt: string) => {
     throw error;
   }
 };
+
+export const exportUserData = async (userId: string) => {
+  // Get all categories
+  const { data: categories, error: categoriesError } = await supabase.from("categories").select("*").eq("user_id", userId).order("name");
+
+  if (categoriesError) throw categoriesError;
+
+  // Get all prompts with their tags
+  const { data: prompts, error: promptsError } = await supabase
+    .from("prompts")
+    .select(
+      `
+      *,
+      prompt_tags(tags(*))
+    `
+    )
+    .eq("user_id", userId)
+    .order("updated_at", { ascending: false });
+
+  if (promptsError) throw promptsError;
+
+  // Get all tags
+  const { data: tags, error: tagsError } = await supabase.from("tags").select("*").eq("user_id", userId);
+
+  if (tagsError) throw tagsError;
+
+  // Remove sensitive fields
+  const cleanedCategories = categories.map(({ id, user_id, ...rest }) => rest);
+  const cleanedPrompts = prompts.map(({ id, user_id, category_id, ...rest }) => ({
+    ...rest,
+    prompt_tags: rest.prompt_tags?.map((pt) => ({
+      tags: {
+        name: pt.tags.name,
+      },
+    })),
+  }));
+  const cleanedTags = tags.map(({ id, user_id, ...rest }) => rest);
+
+  return {
+    categories: cleanedCategories,
+    prompts: cleanedPrompts,
+    tags: cleanedTags,
+    exported_at: new Date().toISOString(),
+  };
+};

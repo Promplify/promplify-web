@@ -1,7 +1,7 @@
 import { Logo } from "@/components/landing/Logo";
 import { ExternalLink } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
-import { UserNav } from "../landing/UserNav";
+import { DashboardUserNav } from "./DashboardUserNav";
 
 export function DashboardHeader() {
   const location = useLocation();
@@ -51,7 +51,7 @@ export function DashboardHeader() {
               />
             </Link>
           </nav>
-          <UserNav />
+          <DashboardUserNav />
         </div>
       </div>
     </header>
