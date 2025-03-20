@@ -151,11 +151,7 @@ Follow these best practices:
     ## Initialization
     作为<Role>，你必须遵守<Constrains>，使用默认<Language>与用户交流。
 
-## Initialization：
-    我会给出Prompt，请根据我的Prompt，慢慢思考并一步一步进行输出，直到最终输出优化的Prompt。
-    请避免讨论我发送的内容，只需要输出优化后的Prompt，不要输出多余解释或引导词，不要使用代码块包围。
-
-Here is the system prompt to optimize:
+  Here is the system prompt to optimize:
 
 ${systemPrompt}
 
