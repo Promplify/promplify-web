@@ -63,25 +63,37 @@ export const Hero = () => {
           </Button>
         </div>
 
+        {/* Product Hunt Notice */}
+        <div className="relative mb-2">
+          <div className="px-6 py-2.5 bg-[#EA532A]/5 backdrop-blur-sm rounded-full border border-[#EA532A]/20 shadow-lg">
+            🎉&nbsp;<span className="text-sm font-medium bg-gradient-to-r from-[#EA532A] to-[#EA532A]/70 bg-clip-text text-transparent">We're live on Product Hunt, support us with your vote!</span>
+          </div>
+          <div className="w-0.5 h-6 from-[#EA532A]/20 to-transparent mx-auto mt-2"></div>
+        </div>
+
         {/* Product Hunt Badge */}
-        <div className="flex justify-center mb-6 ">
-          <div className="relative min-h-[54px]">
+        <div className="flex justify-center mb-6">
+          <div className="relative min-h-[54px] group">
             {!productHuntError ? (
               <a
                 href="https://www.producthunt.com/posts/promplify?embed=true&utm_source=badge-featured&utm_medium=badge&utm_souce=badge-promplify"
                 target="_blank"
                 rel="noopener noreferrer"
-                className={cn("transform hover:scale-[1.02] transition-transform duration-200", !productHuntLoaded && "opacity-0")}
+                className={cn("transform hover:scale-[1.02] transition-all duration-300 relative block", !productHuntLoaded && "opacity-0")}
               >
-                <img
-                  src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=785256&theme=light&t=1737199216475"
-                  alt="Promplify - Amplify Your AI Potential | Product Hunt"
-                  width="250"
-                  height="54"
-                  style={{ width: "250px", height: "54px" }}
-                  onError={() => setProductHuntError(true)}
-                  onLoad={() => setProductHuntLoaded(true)}
-                />
+                <div className="absolute -inset-2.5 rounded-lg blur-sm group-hover:blur transition-all duration-300"></div>
+                <div className="relative">
+                  <img
+                    src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=785256&theme=light&t=1737199216475"
+                    alt="Promplify - Amplify Your AI Potential | Product Hunt"
+                    width="250"
+                    height="54"
+                    style={{ width: "250px", height: "54px" }}
+                    onError={() => setProductHuntError(true)}
+                    onLoad={() => setProductHuntLoaded(true)}
+                    className="rounded"
+                  />
+                </div>
               </a>
             ) : (
               <a
