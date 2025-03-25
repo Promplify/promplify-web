@@ -68,7 +68,7 @@ export const Hero = () => {
           <div className="px-6 py-2.5 bg-[#EA532A]/5 backdrop-blur-sm rounded-full border border-[#EA532A]/20 shadow-lg">
             🎉&nbsp;<span className="text-sm font-medium bg-gradient-to-r from-[#EA532A] to-[#EA532A]/70 bg-clip-text text-transparent">We're live on Product Hunt, support us with your vote!</span>
           </div>
-          <div className="w-0.5 h-6 from-[#EA532A]/20 to-transparent mx-auto mt-2"></div>
+          <div className="w-0.5 h-2 from-[#EA532A]/20 to-transparent mx-auto mt-2"></div>
         </div>
 
         {/* Product Hunt Badge */}
