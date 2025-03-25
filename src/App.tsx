@@ -7,6 +7,7 @@ import Index from "./pages/Index";
 import Privacy from "./pages/Privacy";
 import Profile from "./pages/Profile";
 import ResetPassword from "./pages/ResetPassword";
+import SharedPromptPage from "./pages/share/SharedPrompt";
 import Templates from "./pages/Templates";
 import Terms from "./pages/Terms";
 
@@ -24,6 +25,7 @@ function App() {
         <Route path="/terms" element={<Terms />} />
         <Route path="/privacy" element={<Privacy />} />
         <Route path="/templates" element={<Templates />} />
+        <Route path="/share/:token" element={<SharedPromptPage />} />
       </Routes>
     </Router>
   );

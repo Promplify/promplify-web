@@ -1,6 +1,7 @@
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -8,9 +9,10 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Textarea } from "@/components/ui/textarea";
 import { supabase } from "@/lib/supabase";
 import { addTagToPrompt, createPrompt, createTag, deletePrompt, getCategories, getPromptById, getTags, optimizeSystemPrompt, updatePrompt } from "@/services/promptService";
+import { createShareLink } from "@/services/shareService";
 import { Category, Prompt, Tag } from "@/types/prompt";
 import { countTokens } from "gpt-tokenizer/model/gpt-4";
-import { AlertCircle, Copy, ExternalLink, Save, Trash2, X } from "lucide-react";
+import { AlertCircle, Copy, ExternalLink, Save, Share2, Trash2, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { v4 as uuidv4 } from "uuid";
@@ -77,6 +79,9 @@ export function PromptEditor({ promptId, onSave }: PromptEditorProps) {
   const [isLoadingVersions, setIsLoadingVersions] = useState(false);
   const [isOptimizing, setIsOptimizing] = useState(false);
   const [previousSystemPrompt, setPreviousSystemPrompt] = useState<string | null>(null);
+  const [showShareDialog, setShowShareDialog] = useState(false);
+  const [shareUrl, setShareUrl] = useState<string>("");
+  const [isSharing, setIsSharing] = useState(false);
 
   useEffect(() => {
     const getSession = async () => {
@@ -527,6 +532,27 @@ export function PromptEditor({ promptId, onSave }: PromptEditorProps) {
     </div>
   );
 
+  const handleShare = async () => {
+    if (!promptId || !session?.user?.id) return;
+
+    try {
+      setIsSharing(true);
+      const { shareUrl } = await createShareLink(promptId, session.user.id);
+      setShareUrl(shareUrl);
+      setShowShareDialog(true);
+    } catch (error) {
+      console.error("Error sharing prompt:", error);
+      toast.error("Failed to create share link");
+    } finally {
+      setIsSharing(false);
+    }
+  };
+
+  const handleCopyShareLink = () => {
+    navigator.clipboard.writeText(shareUrl);
+    toast.success("Share link copied to clipboard");
+  };
+
   if (isLoading) {
     return (
       <div className="flex-1 h-full bg-gray-50 p-4">
@@ -680,15 +706,28 @@ export function PromptEditor({ promptId, onSave }: PromptEditorProps) {
           </Dialog>
         </div>
         <div className="flex items-center space-x-2">
-          <Button variant="outline" size="sm" onClick={handleOpenInChatGPT} className="group">
-            <img src="/logo-model-chatgpt.png" alt="ChatGPT" className="w-4 mr-0" />
-            ChatGPT
-            <ExternalLink className="w-2 h-2 ml-0.5 opacity-50 group-hover:opacity-100 transition-opacity" />
-          </Button>
-          <Button variant="outline" size="sm" onClick={handleOpenInClaude} className="group">
-            <img src="/logo-model-claude.png" alt="Claude" className="w-4 mr-0" />
-            Claude
-            <ExternalLink className="w-2 h-2 ml-0.5 opacity-50 group-hover:opacity-100 transition-opacity" />
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="sm" className="group">
+                <img src="/logo-model-chatgpt.png" alt="ChatGPT" className="w-4 mr-1" />
+                Try in AI
+                <ExternalLink className="w-3 h-3 ml-1 opacity-50 group-hover:opacity-100 transition-opacity" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={handleOpenInChatGPT} className="gap-2 cursor-pointer">
+                <img src="/logo-model-chatgpt.png" alt="ChatGPT" className="w-4" />
+                ChatGPT
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={handleOpenInClaude} className="gap-2 cursor-pointer">
+                <img src="/logo-model-claude.png" alt="Claude" className="w-4" />
+                Claude
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <Button variant="outline" size="sm" onClick={handleShare} disabled={!promptId || promptId === "new" || isSharing} className="group">
+            <Share2 size={16} className="mr-1" />
+            {isSharing ? "Sharing..." : "Share"}
           </Button>
           <Button variant="outline" size="sm" onClick={handleCopyContent}>
             <Copy size={16} className="mr-1" />
@@ -725,6 +764,27 @@ export function PromptEditor({ promptId, onSave }: PromptEditorProps) {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      <Dialog open={showShareDialog} onOpenChange={setShowShareDialog}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Share Prompt</DialogTitle>
+          </DialogHeader>
+          <div className="flex items-center space-x-2">
+            <div className="grid flex-1 gap-2">
+              <Label htmlFor="share-link" className="sr-only">
+                Share Link
+              </Label>
+              <Input id="share-link" value={shareUrl} readOnly className="h-9" />
+            </div>
+            <Button size="sm" onClick={handleCopyShareLink}>
+              <Copy className="h-4 w-4" />
+              <span className="sr-only">Copy share link</span>
+            </Button>
+          </div>
+          <p className="text-sm text-muted-foreground mt-2">Anyone with this link will be able to view and save this prompt.</p>
+        </DialogContent>
+      </Dialog>
 
       <div className="flex-1 overflow-y-auto">
         <div className="w-full px-2">
