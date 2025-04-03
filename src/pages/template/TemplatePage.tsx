@@ -1,6 +1,7 @@
 import { Footer } from "@/components/landing/Footer";
 import { Navigation } from "@/components/landing/Navigation";
 import { SEO } from "@/components/SEO";
+import { SocialShare } from "@/components/share/SocialShare";
 import { Badge } from "@/components/ui/badge";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage } from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
@@ -272,6 +273,7 @@ export default function TemplatePage() {
                   <Eye className="w-4 h-4" />
                   <span>{viewCount}</span>
                 </div>
+                <SocialShare title={templateData.title} url={window.location.href} description={templateData.description || "A prompt template from Promplify"} image="/og-image.png" />
                 <Button onClick={handleSavePrompt} disabled={isSaving} className="bg-purple-600 hover:bg-purple-700">
                   {isSaving ? "Saving..." : "Save to My Prompts"}
                 </Button>

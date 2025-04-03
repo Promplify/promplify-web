@@ -5,9 +5,10 @@ interface SEOProps {
   canonicalPath?: string;
   title?: string;
   description?: string;
+  keywords?: string;
 }
 
-export function SEO({ canonicalPath, title, description }: SEOProps) {
+export function SEO({ canonicalPath, title, description, keywords }: SEOProps) {
   const location = useLocation();
   const baseUrl = "https://promplify.com";
 
@@ -43,6 +44,19 @@ export function SEO({ canonicalPath, title, description }: SEOProps) {
       }
     }
 
+    // 更新 keywords
+    if (keywords) {
+      const metaKeywords = document.querySelector('meta[name="keywords"]');
+      if (metaKeywords) {
+        metaKeywords.setAttribute("content", keywords);
+      } else {
+        const meta = document.createElement("meta");
+        meta.name = "keywords";
+        meta.content = keywords;
+        document.head.appendChild(meta);
+      }
+    }
+
     // 清理函数
     return () => {
       const canonical = document.querySelector('link[rel="canonical"]');
@@ -50,7 +64,7 @@ export function SEO({ canonicalPath, title, description }: SEOProps) {
         canonical.remove();
       }
     };
-  }, [location.pathname, canonicalPath, title, description]);
+  }, [location.pathname, canonicalPath, title, description, keywords]);
 
   return null;
 }

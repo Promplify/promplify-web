@@ -3,6 +3,7 @@
 import { Footer } from "@/components/landing/Footer";
 import { Navigation } from "@/components/landing/Navigation";
 import { SEO } from "@/components/SEO";
+import { SocialShare } from "@/components/share/SocialShare";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -255,6 +256,7 @@ export default function SharedPromptPage() {
                   <Eye className="w-4 h-4" />
                   <span>{viewCount}</span>
                 </div>
+                <SocialShare title={promptData.title} url={window.location.href} description={promptData.description || "A shared AI prompt from Promplify"} image="/og-image.png" />
                 <Button onClick={handleSavePrompt} disabled={isSaving} className="bg-purple-600 hover:bg-purple-700">
                   {isSaving ? "Saving..." : "Save to My Prompts"}
                 </Button>
