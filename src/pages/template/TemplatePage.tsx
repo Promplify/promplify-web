@@ -42,8 +42,6 @@ export default function TemplatePage() {
         setTemplateData(template);
         setViewCount(template.views || 0);
 
-        console.log("当前查看数:", template.views);
-
         // Update view count
         try {
           // 执行更新操作
@@ -53,22 +51,17 @@ export default function TemplatePage() {
             .eq("id", template.id);
 
           if (updateError) {
-            console.error("更新查看数错误:", updateError);
           } else {
             // 更新后重新获取数据确认更新成功
             const { data: refreshData, error: refreshError } = await supabase.from("prompt_template").select("views").eq("id", template.id).single();
 
             if (!refreshError && refreshData) {
-              console.log("更新后查看数:", refreshData.views);
               setViewCount(refreshData.views);
             } else {
-              console.log("无法获取更新后的数据，使用计算值");
               setViewCount((template.views || 0) + 1);
             }
           }
-        } catch (updateErr) {
-          console.error("更新查看数异常:", updateErr);
-        }
+        } catch (updateErr) {}
       } catch (err: any) {
         setError(err.message || "Failed to load template");
       } finally {
