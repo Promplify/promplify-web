@@ -7,7 +7,7 @@ import { supabase } from "@/lib/supabase";
 import { createPrompt } from "@/services/promptService";
 import { updateMeta } from "@/utils/meta";
 import { countTokens } from "gpt-tokenizer/model/gpt-4";
-import { ArrowRight, Copy, Search, Tag, X } from "lucide-react";
+import { ArrowRight, Search, Tag, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import { useNavigate } from "react-router-dom";
@@ -198,11 +198,15 @@ export default function Templates() {
             </div>
             <div className="max-w-6xl mx-auto space-y-3">
               {templates.map((template) => (
-                <div key={template.id} className="group relative bg-white border border-gray-200 hover:border-[#2C106A]/20 rounded-lg p-5 transition-all duration-300 hover:shadow-md">
+                <div
+                  key={template.id}
+                  className="group relative bg-white border border-gray-200 hover:border-[#2C106A]/20 rounded-lg p-5 transition-all duration-300 hover:shadow-md cursor-pointer"
+                  onClick={() => navigate(`/template/${template.id}`)}
+                >
                   {/* Header Section with Title and Actions */}
                   <div className="flex items-start justify-between gap-4 mb-4">
                     <div className="flex-1">
-                      <h3 className="text-xl font-semibold text-gray-900 leading-tight mb-3">{template.title}</h3>
+                      <h3 className="text-xl font-semibold text-gray-900 leading-tight mb-3 line-clamp-1 group-hover:text-[#2C106A] transition-colors">{template.title}</h3>
                       <div className="flex items-center flex-wrap gap-2.5 text-sm">
                         <div className="inline-flex items-center px-2.5 py-1 rounded-md bg-gradient-to-r from-purple-50 to-purple-50/50 text-purple-700 border border-purple-100/80 shadow-sm shadow-purple-100/50">
                           <span className="font-semibold">{countTokens(template.system_prompt)}</span>
@@ -223,17 +227,7 @@ export default function Templates() {
                         )}
                       </div>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <button
-                        onClick={() => {
-                          navigator.clipboard.writeText(template.system_prompt);
-                          toast.success("Prompt copied to clipboard");
-                        }}
-                        className="p-2 rounded-md hover:bg-gray-50 border border-transparent hover:border-gray-200 transition-all duration-200 hover:shadow-sm"
-                        title="Copy prompt"
-                      >
-                        <Copy className="w-4.5 h-4.5 text-gray-500 hover:text-[#2C106A]" />
-                      </button>
+                    <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
                       <Button
                         onClick={() => handleUseTemplate(template)}
                         className="bg-[#2C106A] hover:bg-[#2C106A]/90 text-white font-medium shadow-sm hover:shadow transition-all duration-200 px-5 h-9 rounded-md whitespace-nowrap"
@@ -248,8 +242,9 @@ export default function Templates() {
 
                   {/* Prompt Content */}
                   <div className="relative">
-                    <div className="font-mono text-sm text-gray-600 bg-gray-50/70 px-5 py-4 rounded-md border border-gray-200/80">
-                      <div className="leading-relaxed whitespace-pre-wrap">{template.system_prompt}</div>
+                    <div className="font-mono text-sm text-gray-600 bg-gray-50/70 px-5 py-4 rounded-md border border-gray-200/80 h-32 overflow-hidden">
+                      <div className="leading-relaxed whitespace-pre-wrap line-clamp-4">{template.system_prompt}</div>
+                      <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-gray-50 via-gray-50/95 to-transparent pointer-events-none"></div>
                     </div>
                   </div>
                 </div>

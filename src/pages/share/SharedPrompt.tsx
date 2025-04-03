@@ -8,9 +8,9 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { supabase } from "@/lib/supabase";
 import { updateMeta } from "@/utils/meta";
-import { Copy, Eye } from "lucide-react";
+import { ChevronRight, Copy, Eye } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { toast } from "sonner";
 
 export default function SharedPromptPage() {
@@ -25,24 +25,20 @@ export default function SharedPromptPage() {
     const fetchData = async () => {
       try {
         setIsLoading(true);
-        console.log("Loading shared prompt with token:", token);
 
         // 1. Get the share record first
         const { data: shareRecord, error: shareError } = await supabase.from("prompt_shares").select("*").eq("share_token", token).single();
 
         if (shareError) {
-          console.error("Error fetching share record:", shareError);
           setError(shareError.message || "Share not found");
           return;
         }
 
         if (!shareRecord) {
-          console.error("No share record found for token:", token);
           setError("Share not found");
           return;
         }
 
-        console.log("Found share record:", shareRecord);
         setViewCount(shareRecord.views || 0);
 
         // 2. Get the prompt data
@@ -64,18 +60,15 @@ export default function SharedPromptPage() {
           .single();
 
         if (promptError) {
-          console.error("Error fetching prompt:", promptError);
           setError(promptError.message || "Prompt not found");
           return;
         }
 
         if (!prompt) {
-          console.error("No prompt found for id:", shareRecord.prompt_id);
           setError("Prompt not found");
           return;
         }
 
-        console.log("Found prompt:", prompt);
         setPromptData(prompt);
 
         // 3. Increment view count
@@ -84,13 +77,10 @@ export default function SharedPromptPage() {
           .update({ views: (shareRecord.views || 0) + 1 })
           .eq("id", shareRecord.id);
 
-        if (updateError) {
-          console.error("Error updating view count:", updateError);
-        } else {
+        if (!updateError) {
           setViewCount((shareRecord.views || 0) + 1);
         }
       } catch (err: any) {
-        console.error("Error loading shared prompt:", err);
         setError(err.message || "Failed to load shared prompt");
       } finally {
         setIsLoading(false);
@@ -169,11 +159,29 @@ export default function SharedPromptPage() {
       <div className="min-h-screen bg-black">
         <SEO title="Loading Shared Prompt - Promplify" description="Loading a shared AI prompt from Promplify" canonicalPath={`/share/${token}`} />
         <Navigation />
-        <div className="flex items-center justify-center py-32">
-          <div className="animate-pulse space-y-4">
-            <div className="h-8 bg-white/10 rounded w-64"></div>
-            <div className="h-32 bg-white/10 rounded w-96"></div>
-            <div className="text-gray-400 mt-4 text-center">Loading prompt data...</div>
+        <div className="max-w-7xl mx-auto py-20 px-4 sm:px-6 lg:px-8">
+          <div className="mb-8">
+            <div className="flex items-center space-x-2 text-gray-400">
+              <Link to="/" className="hover:text-white transition-colors">
+                Home
+              </Link>
+              <ChevronRight className="w-4 h-4" />
+              <span className="animate-pulse">Loading...</span>
+            </div>
+          </div>
+          <div className="bg-white/5 backdrop-blur-lg border border-white/10 shadow-2xl rounded-lg overflow-hidden">
+            <div className="px-8 py-6 border-b border-white/10">
+              <div className="animate-pulse space-y-4">
+                <div className="h-8 bg-white/10 rounded w-64"></div>
+                <div className="h-4 bg-white/10 rounded w-96"></div>
+              </div>
+            </div>
+            <div className="px-8 py-6 space-y-6">
+              <div className="animate-pulse space-y-4">
+                <div className="h-32 bg-white/10 rounded"></div>
+                <div className="h-32 bg-white/10 rounded"></div>
+              </div>
+            </div>
           </div>
         </div>
         <Footer />
@@ -186,13 +194,24 @@ export default function SharedPromptPage() {
       <div className="min-h-screen bg-black">
         <SEO title="Prompt Not Found - Promplify" description="The shared prompt you're looking for might have been removed or is no longer accessible" canonicalPath={`/share/${token}`} />
         <Navigation />
-        <div className="flex items-center justify-center py-32">
-          <div className="text-center">
-            <h2 className="text-2xl font-semibold text-white mb-2">Prompt Not Found</h2>
-            <p className="text-gray-400 mb-4">{error || "The prompt you're looking for might have been removed or is no longer accessible."}</p>
-            <Button variant="outline" onClick={() => (window.location.href = "/")}>
-              Return to Homepage
-            </Button>
+        <div className="max-w-7xl mx-auto py-20 px-4 sm:px-6 lg:px-8">
+          <div className="mb-8">
+            <div className="flex items-center space-x-2 text-gray-400">
+              <Link to="/" className="hover:text-white transition-colors">
+                Home
+              </Link>
+              <ChevronRight className="w-4 h-4" />
+              <span>Error</span>
+            </div>
+          </div>
+          <div className="bg-white/5 backdrop-blur-lg border border-white/10 shadow-2xl rounded-lg overflow-hidden p-8">
+            <div className="text-center">
+              <h2 className="text-2xl font-semibold text-white mb-2">Prompt Not Found</h2>
+              <p className="text-gray-400 mb-4">{error || "The prompt you're looking for might have been removed or is no longer accessible."}</p>
+              <Button variant="outline" onClick={() => (window.location.href = "/")}>
+                Return to Homepage
+              </Button>
+            </div>
           </div>
         </div>
         <Footer />
@@ -210,6 +229,15 @@ export default function SharedPromptPage() {
       />
       <Navigation />
       <div className="max-w-7xl mx-auto py-20 px-4 sm:px-6 lg:px-8">
+        <div className="mb-8">
+          <div className="flex items-center space-x-2 text-gray-400">
+            <Link to="/" className="hover:text-white transition-colors">
+              Home
+            </Link>
+            <ChevronRight className="w-4 h-4" />
+            <span className="text-white">Shared Prompt</span>
+          </div>
+        </div>
         <div className="bg-white/5 backdrop-blur-lg border border-white/10 shadow-2xl rounded-lg overflow-hidden">
           <div className="px-8 py-6 border-b border-white/10">
             <div className="flex items-center justify-between">
