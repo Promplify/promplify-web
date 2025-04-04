@@ -5,27 +5,34 @@ import { supabase } from "@/lib/supabase";
 import { getPrompts, toggleFavorite } from "@/services/promptService";
 import { Prompt } from "@/types/prompt";
 import { ArrowDownUp, Heart, Plus, Search } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 
 interface PromptListProps {
   categoryId?: string | null;
   onPromptSelect?: (promptId: string) => void;
   selectedPromptId?: string | null;
+  onTotalPromptsChange?: (total: number) => void;
 }
 
-export function PromptList({ categoryId, onPromptSelect, selectedPromptId }: PromptListProps) {
-  const [prompts, setPrompts] = useState<Prompt[]>([]);
+export function PromptList({ categoryId, onPromptSelect, selectedPromptId, onTotalPromptsChange }: PromptListProps) {
+  const [localPrompts, setLocalPrompts] = useState<Prompt[]>([]);
   const [sortByDate, setSortByDate] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(searchTerm);
 
-  const fetchPrompts = async () => {
+  const fetchPrompts = useCallback(async () => {
+    setIsLoading(true);
     try {
       const session = await supabase.auth.getSession();
       if (session.data.session?.user.id) {
-        const data = await getPrompts(session.data.session.user.id, categoryId || undefined);
+        const userId = session.data.session.user.id;
+
+        const { count } = await supabase.from("prompts").select("*", { count: "exact", head: true }).eq("user_id", userId);
+        onTotalPromptsChange?.(count || 0);
+
+        const data = await getPrompts(userId, categoryId || undefined);
 
         if (selectedPromptId === "new") {
           const newPrompt = {
@@ -35,7 +42,7 @@ export function PromptList({ categoryId, onPromptSelect, selectedPromptId }: Pro
             created_at: new Date().toISOString(),
             updated_at: new Date().toISOString(),
             is_favorite: false,
-            user_id: session.data.session.user.id,
+            user_id: userId,
             content: "",
             system_prompt: "",
             user_prompt: "",
@@ -48,27 +55,35 @@ export function PromptList({ categoryId, onPromptSelect, selectedPromptId }: Pro
             max_tokens: 2000,
             prompt_tags: [],
           } as Prompt;
-          setPrompts([newPrompt, ...data]);
-          return;
+          setLocalPrompts([newPrompt, ...data]);
+        } else {
+          setLocalPrompts(data);
         }
 
-        setPrompts(data);
-
-        if ((!selectedPromptId || !data.find((p) => p.id === selectedPromptId)) && data.length > 0) {
-          onPromptSelect?.(data[0].id);
+        if (!selectedPromptId && data.length > 0) {
+          const firstItem = data.sort((a, b) => {
+            if (a.is_favorite !== b.is_favorite) return a.is_favorite ? -1 : 1;
+            return sortByDate ? new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime() : new Date(a.updated_at).getTime() - new Date(b.updated_at).getTime();
+          })[0];
+          onPromptSelect?.(firstItem.id);
         }
+      } else {
+        setLocalPrompts([]);
+        onTotalPromptsChange?.(0);
       }
     } catch (error) {
       console.error("Error fetching prompts:", error);
       toast.error("Failed to load prompts");
+      setLocalPrompts([]);
+      onTotalPromptsChange?.(0);
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [categoryId, selectedPromptId, onTotalPromptsChange, onPromptSelect, sortByDate]);
 
   useEffect(() => {
     fetchPrompts();
-  }, [categoryId, selectedPromptId]);
+  }, [fetchPrompts]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -81,7 +96,7 @@ export function PromptList({ categoryId, onPromptSelect, selectedPromptId }: Pro
     e.stopPropagation();
     try {
       await toggleFavorite(id, !currentFavorite);
-      setPrompts(prompts.map((p) => (p.id === id ? { ...p, is_favorite: !currentFavorite } : p)));
+      setLocalPrompts((prevPrompts) => prevPrompts.map((p) => (p.id === id ? { ...p, is_favorite: !currentFavorite } : p)));
       toast.success(currentFavorite ? "Removed from favorites" : "Added to favorites");
     } catch (error) {
       console.error("Error toggling favorite:", error);
@@ -89,25 +104,65 @@ export function PromptList({ categoryId, onPromptSelect, selectedPromptId }: Pro
     }
   };
 
-  const filteredPrompts = prompts.filter(
+  const filteredPrompts = localPrompts.filter(
     (prompt) =>
+      prompt.id === "new" ||
       prompt.title.toLowerCase().includes(debouncedSearchTerm.toLowerCase()) ||
       prompt.description?.toLowerCase().includes(debouncedSearchTerm.toLowerCase()) ||
       prompt.content.toLowerCase().includes(debouncedSearchTerm.toLowerCase())
   );
 
   const sortedPrompts = [...filteredPrompts].sort((a, b) => {
+    if (a.id === "new") return -1;
+    if (b.id === "new") return 1;
     if (a.is_favorite !== b.is_favorite) {
       return a.is_favorite ? -1 : 1;
     }
-    return sortByDate ? new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime() : new Date(a.updated_at).getTime() - new Date(b.updated_at).getTime();
+    const dateA = new Date(a.updated_at || a.created_at).getTime();
+    const dateB = new Date(b.updated_at || b.created_at).getTime();
+    return sortByDate ? dateB - dateA : dateA - dateB;
   });
 
   const handleNewPrompt = () => {
-    onPromptSelect?.("new");
+    if (localPrompts.find((p) => p.id === "new")) {
+      onPromptSelect?.("new");
+    } else {
+      const userId = supabase.auth.getSession().then((s) => s.data.session?.user.id);
+      userId.then((id) => {
+        if (!id) return;
+        const newPromptPlaceholder = {
+          id: "new",
+          title: "",
+          description: "",
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+          is_favorite: false,
+          user_id: id,
+          content: "",
+          system_prompt: "",
+          user_prompt: "",
+          version: "1.0.0",
+          token_count: 0,
+          performance: 0,
+          category_id: categoryId || "",
+          model: "gpt-4",
+          temperature: 0.7,
+          max_tokens: 2000,
+          prompt_tags: [],
+        } as Prompt;
+        setLocalPrompts((prev) => [newPromptPlaceholder, ...prev]);
+        onPromptSelect?.("new");
+      });
+    }
   };
 
-  if (isLoading) {
+  useEffect(() => {
+    if (selectedPromptId !== "new") {
+      setLocalPrompts((prev) => prev.filter((p) => p.id !== "new"));
+    }
+  }, [selectedPromptId, categoryId]);
+
+  if (isLoading && localPrompts.length === 0) {
     return (
       <div className="w-[320px] h-full bg-white">
         <div className="p-4 border-b border-gray-200">
@@ -168,7 +223,7 @@ export function PromptList({ categoryId, onPromptSelect, selectedPromptId }: Pro
           />
         </div>
         <div className="flex items-center justify-between text-sm text-gray-500">
-          <span className="bg-gray-100 px-2 py-1 rounded-md transition-colors duration-200">{sortedPrompts.length} prompts</span>
+          <span className="bg-gray-100 px-2 py-1 rounded-md transition-colors duration-200">{sortedPrompts.filter((p) => p.id !== "new").length} prompts</span>
           <button
             onClick={() => setSortByDate(!sortByDate)}
             className="flex items-center space-x-1 min-w-[100px] justify-center hover:text-gray-900 bg-gray-50 px-2 py-1 rounded-md transition-all duration-200 hover:bg-gray-100"
@@ -187,39 +242,51 @@ export function PromptList({ categoryId, onPromptSelect, selectedPromptId }: Pro
                 className={`p-3 hover:bg-gray-50 rounded-lg cursor-pointer border border-gray-100 hover:border-gray-200 group relative transition-all duration-200 ${
                   selectedPromptId === prompt.id ? "bg-gray-50 border-gray-200 ring-1 ring-[#2C106A] shadow-sm" : ""
                 }`}
-                onClick={() => onPromptSelect?.(prompt.id)}
+                onClick={() => (prompt.id !== "new" ? onPromptSelect?.(prompt.id) : null)}
               >
-                <div className="flex items-center justify-between gap-2 mb-1">
-                  <h3 className="font-medium text-gray-900 truncate flex-1">{prompt.title}</h3>
-                  <div className="flex items-center gap-3 flex-shrink-0">
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleToggleFavorite(e, prompt.id, prompt.is_favorite);
-                      }}
-                      className={`transition-opacity ${prompt.is_favorite ? "opacity-100" : "opacity-0 group-hover:opacity-100"}`}
-                    >
-                      <Heart size={14} className={`transition-colors hover:text-red-500 ${prompt.is_favorite ? "text-red-500 fill-current" : "text-gray-400"}`} />
-                    </button>
-                    <span className="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-purple-100 text-purple-800">Version {prompt.version}</span>
+                {prompt.id === "new" ? (
+                  <div>
+                    <h3 className="font-medium text-gray-900 truncate flex-1 italic">New Prompt...</h3>
                   </div>
-                </div>
-                {prompt.description && <p className="text-sm text-gray-500 mb-2 line-clamp-2">{prompt.description}</p>}
-                {prompt.prompt_tags && (
-                  <div className="flex flex-wrap gap-2">
-                    {prompt.prompt_tags.map(({ tags }) => (
-                      <span key={tags.id} className="px-2 py-1 bg-green-50 text-green-600 text-xs rounded-full">
-                        {tags.name}
-                      </span>
-                    ))}
-                  </div>
+                ) : (
+                  <>
+                    <div className="flex items-center justify-between gap-2 mb-1">
+                      <h3 className="font-medium text-gray-900 truncate flex-1">{prompt.title}</h3>
+                      <div className="flex items-center gap-3 flex-shrink-0">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleToggleFavorite(e, prompt.id, prompt.is_favorite);
+                          }}
+                          className={`transition-opacity ${prompt.is_favorite ? "opacity-100" : "opacity-0 group-hover:opacity-100"}`}
+                        >
+                          <Heart size={14} className={`transition-colors hover:text-red-500 ${prompt.is_favorite ? "text-red-500 fill-current" : "text-gray-400"}`} />
+                        </button>
+                        <span className="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-purple-100 text-purple-800">Version {prompt.version}</span>
+                      </div>
+                    </div>
+                    {prompt.description && <p className="text-sm text-gray-500 mb-2 line-clamp-2">{prompt.description}</p>}
+                    {prompt.prompt_tags && prompt.prompt_tags.length > 0 && (
+                      <div className="flex flex-wrap gap-2 mt-2">
+                        {prompt.prompt_tags.map(
+                          ({ tags }) =>
+                            tags && (
+                              <span key={tags.id} className="px-2 py-1 bg-green-50 text-green-600 text-xs rounded-full">
+                                {tags.name}
+                              </span>
+                            )
+                        )}
+                      </div>
+                    )}
+                    <div className="mt-2 text-xs text-gray-400 flex items-center justify-between">
+                      <span className="px-1.5 py-0.5 bg-blue-50 text-blue-600 rounded">{prompt.token_count || 0} tokens</span>
+                      <span>Updated {new Date(prompt.updated_at || prompt.created_at).toLocaleDateString()}</span>
+                    </div>
+                  </>
                 )}
-                <div className="mt-2 text-xs text-gray-400 flex items-center justify-between">
-                  <span className="px-1.5 py-0.5 bg-blue-50 text-blue-600 rounded">{prompt.token_count || 0} tokens</span>
-                  <span>Updated {new Date(prompt.updated_at).toLocaleDateString()}</span>
-                </div>
               </div>
             ))}
+            {sortedPrompts.filter((p) => p.id !== "new").length === 0 && !isLoading && <div className="text-center text-gray-500 py-4">No prompts found.</div>}
           </div>
         </div>
       </div>

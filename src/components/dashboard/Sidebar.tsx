@@ -5,14 +5,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { supabase } from "@/lib/supabase";
 import { cn } from "@/lib/utils";
-import { createCategory, deleteCategory, getCategories, updatePrompt } from "@/services/promptService";
+import { createCategory, deleteCategory, getCategories } from "@/services/promptService";
 import { Category } from "@/types/prompt";
 import { ChevronLeft, ChevronRight, Folder, Plus, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 interface SidebarProps {
-  onCategorySelect?: (categoryId: string) => void;
+  onCategorySelect?: (categoryId: string | null) => void;
   selectedCategoryId?: string | null;
 }
 
@@ -25,63 +25,29 @@ export function Sidebar({ onCategorySelect, selectedCategoryId }: SidebarProps) 
   const [categoryToDelete, setCategoryToDelete] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [totalPromptsCount, setTotalPromptsCount] = useState(0);
 
-  // 处理分类点击
-  const handleCategoryClick = (categoryId: string) => {
-    onCategorySelect?.(categoryId);
-  };
-
-  const toggleCollapse = () => setIsCollapsed(!isCollapsed);
-
-  const handleDeleteCategory = async (categoryId: string) => {
-    setCategoryToDelete(categoryId);
-    setShowDeleteDialog(true);
-  };
-
-  const confirmDelete = async () => {
-    if (!categoryToDelete) return;
-
-    setIsDeleting(true);
-    try {
-      // 获取所有提示
-      const { data: prompts } = await supabase.from("prompts").select("id").eq("category_id", categoryToDelete);
-
-      // 获取默认分类（第一个分类）
-      const defaultCategory = categories[0];
-      if (!defaultCategory) {
-        toast.error("No default category found");
-        return;
-      }
-
-      // 将该分类下的所有提示移动到默认分类
-      if (prompts && prompts.length > 0) {
-        for (const prompt of prompts) {
-          await updatePrompt(prompt.id, { category_id: defaultCategory.id });
+  useEffect(() => {
+    const fetchTotalCount = async () => {
+      try {
+        const session = await supabase.auth.getSession();
+        if (session.data.session?.user.id) {
+          const { count } = await supabase.from("prompts").select("*", { count: "exact", head: true }).eq("user_id", session.data.session.user.id);
+          setTotalPromptsCount(count || 0);
+        } else {
+          setTotalPromptsCount(0);
         }
+      } catch (error) {
+        console.error("Error fetching total prompt count:", error);
+        setTotalPromptsCount(0);
       }
-
-      // 删除分类
-      await deleteCategory(categoryToDelete);
-
-      // 更新本地状态
-      setCategories(categories.filter((c) => c.id !== categoryToDelete));
-      if (selectedCategoryId === categoryToDelete) {
-        onCategorySelect?.(null);
-      }
-
-      toast.success("Category deleted successfully");
-    } catch (error) {
-      console.error("Error deleting category:", error);
-      toast.error("Failed to delete category");
-    } finally {
-      setIsDeleting(false);
-      setShowDeleteDialog(false);
-      setCategoryToDelete(null);
-    }
-  };
+    };
+    fetchTotalCount();
+  }, []);
 
   useEffect(() => {
     const fetchCategories = async () => {
+      setIsLoading(true);
       try {
         const session = await supabase.auth.getSession();
         if (session.data.session?.user.id) {
@@ -95,31 +61,85 @@ export function Sidebar({ onCategorySelect, selectedCategoryId }: SidebarProps) 
         setIsLoading(false);
       }
     };
-
     fetchCategories();
   }, []);
+
+  const handleCategoryClick = (categoryId: string | null) => {
+    onCategorySelect?.(categoryId);
+  };
+
+  const toggleCollapse = () => setIsCollapsed(!isCollapsed);
+
+  const handleDeleteCategory = async (categoryId: string) => {
+    setCategoryToDelete(categoryId);
+    setShowDeleteDialog(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!categoryToDelete) return;
+    setIsDeleting(true);
+    try {
+      const session = await supabase.auth.getSession();
+      if (!session.data.session?.user.id) throw new Error("User not logged in");
+      const userId = session.data.session.user.id;
+
+      const targetCategory = categories.find((c) => c.id !== categoryToDelete);
+      if (!targetCategory && categories.length > 1) {
+        toast.error("Cannot delete the last category without a target category.");
+        setIsDeleting(false);
+        setShowDeleteDialog(false);
+        return;
+      }
+      let promptsMoved = false;
+      if (targetCategory) {
+        const { data: promptsToMove, error: selectError } = await supabase.from("prompts").select("id").eq("user_id", userId).eq("category_id", categoryToDelete);
+
+        if (selectError) throw selectError;
+
+        if (promptsToMove && promptsToMove.length > 0) {
+          const updates = promptsToMove.map((p) => supabase.from("prompts").update({ category_id: targetCategory.id }).match({ id: p.id }));
+          await Promise.all(updates);
+          promptsMoved = true;
+        }
+      }
+
+      await deleteCategory(categoryToDelete);
+
+      const updatedCategories = categories.filter((c) => c.id !== categoryToDelete);
+      setCategories(updatedCategories);
+
+      if (selectedCategoryId === categoryToDelete) {
+        handleCategoryClick(null);
+      }
+
+      const { count } = await supabase.from("prompts").select("*", { count: "exact", head: true }).eq("user_id", userId);
+      setTotalPromptsCount(count || 0);
+
+      toast.success(`Category deleted ${promptsMoved ? "and prompts moved" : ""}.`);
+    } catch (error) {
+      console.error("Error deleting category:", error);
+      toast.error(`Failed to delete category: ${error.message}`);
+    } finally {
+      setIsDeleting(false);
+      setShowDeleteDialog(false);
+      setCategoryToDelete(null);
+    }
+  };
 
   const handleAddCategory = async () => {
     if (!newCategoryName.trim()) {
       toast.error("Category name is required");
       return;
     }
-
     try {
       const session = await supabase.auth.getSession();
       if (!session.data.session?.user.id) {
         toast.error("Please login to add categories");
         return;
       }
-
-      const newCategory = {
-        name: newCategoryName.trim(),
-        user_id: session.data.session.user.id,
-      };
-
-      const createdCategory = await createCategory(newCategory);
-      setCategories([...categories, createdCategory]);
-
+      const newCategoryData = { name: newCategoryName.trim(), user_id: session.data.session.user.id };
+      const createdCategory = await createCategory(newCategoryData);
+      setCategories([...categories, { ...createdCategory, prompt_count: 0 }]);
       setNewCategoryName("");
       setIsAddCategoryOpen(false);
       toast.success("Category added successfully");
@@ -131,19 +151,16 @@ export function Sidebar({ onCategorySelect, selectedCategoryId }: SidebarProps) 
 
   if (isLoading) {
     return (
-      <div className="w-[240px] h-full bg-gray-50 p-4">
-        <div className="animate-pulse space-y-4">
-          <div className="flex items-center justify-between">
+      <div className={`transition-all duration-300 ease-in-out ${isCollapsed ? "w-[60px]" : "w-[240px]"}`}>
+        <div className="w-full h-full bg-gray-50 p-4 animate-pulse">
+          <div className="flex items-center justify-between mb-6">
             <div className="h-6 bg-gray-200 rounded w-20"></div>
             <div className="h-8 w-8 bg-gray-200 rounded"></div>
           </div>
           <div className="space-y-2">
-            <div className="h-10 bg-gray-200 rounded"></div>
-            {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="flex items-center space-x-2">
-                <div className="h-4 w-4 bg-gray-200 rounded"></div>
-                <div className="h-4 bg-gray-200 rounded w-24"></div>
-              </div>
+            <div className="h-10 bg-gray-200 rounded w-full"></div>
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="h-8 bg-gray-200 rounded w-full"></div>
             ))}
           </div>
         </div>
@@ -185,21 +202,29 @@ export function Sidebar({ onCategorySelect, selectedCategoryId }: SidebarProps) 
             </Button>
           </div>
         </div>
+
         <div className="space-y-1">
           <button
             className={cn(
               "w-full text-left px-2 py-1.5 rounded-md text-sm flex items-center group hover:bg-gray-100 transition-colors cursor-pointer",
               selectedCategoryId === null && "bg-gray-100 text-primary"
             )}
-            onClick={() => onCategorySelect?.(null)}
+            onClick={() => handleCategoryClick(null)}
           >
             <div className="flex items-center gap-2 flex-1 min-w-0">
               <Folder size={18} className={cn("flex-shrink-0", selectedCategoryId === null ? "text-primary" : "text-gray-400 group-hover:text-gray-500")} />
-              {!isCollapsed && <span className="truncate">All Prompts</span>}
+              {!isCollapsed && (
+                <>
+                  <span className="truncate">All Prompts</span>
+                  <span className={cn("ml-auto text-xs px-2 py-0.5 rounded-md font-medium", selectedCategoryId === null ? "bg-primary/10 text-primary" : "bg-gray-100 text-gray-500")}>
+                    {totalPromptsCount}
+                  </span>
+                </>
+              )}
             </div>
           </button>
           {categories.map((category) => (
-            <div key={category.id} className="relative">
+            <div key={category.id} className="relative group">
               <div
                 onClick={() => handleCategoryClick(category.id)}
                 className={cn(
@@ -209,15 +234,17 @@ export function Sidebar({ onCategorySelect, selectedCategoryId }: SidebarProps) 
               >
                 <div className="flex items-center gap-2 flex-1 min-w-0">
                   <Folder size={18} className={cn("flex-shrink-0", selectedCategoryId === category.id ? "text-primary" : "text-gray-400 group-hover:text-gray-500")} />
-                  <span className="truncate">{category.name}</span>
+                  {!isCollapsed && <span className="truncate flex-1">{category.name}</span>}
                   {!isCollapsed && (
-                    <span className={cn("text-xs px-1.5 py-0.5 rounded-full", selectedCategoryId === category.id ? "bg-primary/10 text-primary" : "bg-gray-100 text-gray-500")}>
+                    <span
+                      className={cn("ml-1 text-xs px-2 py-0.5 rounded-md font-medium flex-shrink-0", selectedCategoryId === category.id ? "bg-primary/10 text-primary" : "bg-gray-100 text-gray-500")}
+                    >
                       {category.prompt_count || 0}
                     </span>
                   )}
                 </div>
                 {!isCollapsed && (
-                  <div className="flex items-center opacity-0 group-hover:opacity-100 transition-opacity">
+                  <div className="flex items-center opacity-0 group-hover:opacity-100 transition-opacity ml-2">
                     <button
                       type="button"
                       onClick={(e) => {
