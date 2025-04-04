@@ -86,12 +86,23 @@ const config: Config = {
             transform: "translate(0px, 0px) scale(1)",
           },
         },
+        "gradient-x": {
+          "0%, 100%": {
+            "background-size": "200% 200%",
+            "background-position": "left center",
+          },
+          "50%": {
+            "background-size": "200% 200%",
+            "background-position": "right center",
+          },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "fade-up": "fade-up 0.5s ease-out forwards",
         blob: "blob 7s infinite",
+        "gradient-x": "gradient-x 3s ease infinite",
       },
     },
   },

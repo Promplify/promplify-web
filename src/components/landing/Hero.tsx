@@ -33,8 +33,10 @@ export const Hero = () => {
 
       <div className="relative animate-fade-up z-10 max-w-4xl mx-auto will-change-transform">
         <div className="mb-4 animate-bounce-slow">
-          <span className="inline-block px-4 py-1.5 text-sm font-semibold rounded-full bg-gradient-to-r from-[#2C106A]/10 to-purple-500/10 text-[#2C106A] border border-[#2C106A]/20">
-            AI Prompt Management Made Simple
+          <span className="inline-block px-4 py-1.5 text-sm font-semibold rounded-full bg-gradient-to-r from-[#2C106A]/10 to-purple-500/10 border border-[#2C106A]/20">
+            <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#2C106A] via-purple-600 via-pink-500 via-rose-400 to-indigo-500 animate-gradient-x bg-[length:200%_auto]">
+              AI Prompt Management Made Simple
+            </span>
           </span>
         </div>
         <h1 className="text-4xl md:text-6xl font-bold mb-3 leading-tight">
