@@ -106,7 +106,15 @@ export const getSharedPrompt = async (shareToken: string) => {
 
     if (shareError) {
       console.error("[getSharedPrompt] Error fetching share record:", shareError);
+      if (shareError.code === "PGRST116") {
+        throw new Error("Share link not found or has been removed");
+      }
       throw shareError;
+    }
+
+    if (!shareRecord) {
+      console.error("[getSharedPrompt] No share record found for token:", shareToken);
+      throw new Error("Share link not found or has been removed");
     }
 
     console.log("[getSharedPrompt] Retrieved share record:", JSON.stringify(shareRecord, null, 2));
@@ -131,7 +139,15 @@ export const getSharedPrompt = async (shareToken: string) => {
 
     if (promptError) {
       console.error("[getSharedPrompt] Error fetching prompt:", promptError);
+      if (promptError.code === "PGRST116") {
+        throw new Error("The shared prompt has been removed or is no longer accessible");
+      }
       throw promptError;
+    }
+
+    if (!promptData) {
+      console.error("[getSharedPrompt] No prompt found for ID:", shareRecord.prompt_id);
+      throw new Error("The shared prompt has been removed or is no longer accessible");
     }
 
     console.log("[getSharedPrompt] Retrieved prompt data:", JSON.stringify(promptData, null, 2));

@@ -26,17 +26,22 @@ export default function SharedPromptPage() {
     const fetchData = async () => {
       try {
         setIsLoading(true);
+        setError(null);
 
         // 1. Get the share record first
         const { data: shareRecord, error: shareError } = await supabase.from("prompt_shares").select("*").eq("share_token", token).single();
 
         if (shareError) {
-          setError(shareError.message || "Share not found");
+          if (shareError.code === "PGRST116") {
+            setError("Share link not found or has been removed");
+          } else {
+            setError(shareError.message || "Failed to load shared prompt");
+          }
           return;
         }
 
         if (!shareRecord) {
-          setError("Share not found");
+          setError("Share link not found or has been removed");
           return;
         }
 
@@ -61,12 +66,16 @@ export default function SharedPromptPage() {
           .single();
 
         if (promptError) {
-          setError(promptError.message || "Prompt not found");
+          if (promptError.code === "PGRST116") {
+            setError("The shared prompt has been removed or is no longer accessible");
+          } else {
+            setError(promptError.message || "Failed to load prompt data");
+          }
           return;
         }
 
         if (!prompt) {
-          setError("Prompt not found");
+          setError("The shared prompt has been removed or is no longer accessible");
           return;
         }
 
@@ -82,6 +91,7 @@ export default function SharedPromptPage() {
           setViewCount((shareRecord.views || 0) + 1);
         }
       } catch (err: any) {
+        console.error("Error loading shared prompt:", err);
         setError(err.message || "Failed to load shared prompt");
       } finally {
         setIsLoading(false);
@@ -209,9 +219,19 @@ export default function SharedPromptPage() {
             <div className="text-center">
               <h2 className="text-2xl font-semibold text-white mb-2">Prompt Not Found</h2>
               <p className="text-gray-400 mb-4">{error || "The prompt you're looking for might have been removed or is no longer accessible."}</p>
-              <Button variant="outline" onClick={() => (window.location.href = "/")}>
-                Return to Homepage
-              </Button>
+              <div className="space-y-4">
+                <Button variant="outline" onClick={() => (window.location.href = "/")}>
+                  Return to Homepage
+                </Button>
+                <div className="text-sm text-gray-500">
+                  <p>If you believe this is an error, please try:</p>
+                  <ul className="list-disc list-inside mt-2">
+                    <li>Refreshing the page</li>
+                    <li>Checking if the share link is correct</li>
+                    <li>Contacting the person who shared this prompt</li>
+                  </ul>
+                </div>
+              </div>
             </div>
           </div>
         </div>
