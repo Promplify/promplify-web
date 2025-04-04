@@ -68,6 +68,16 @@ export const Navigation = () => {
 
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center space-x-6">
+            <a
+              href="https://www.producthunt.com/posts/promplify"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sm bg-[#EA532A]/10 hover:bg-[#EA532A]/20 text-[#EA532A] transition-all group inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-[#EA532A]/20"
+            >
+              <span>🎉</span>
+              <span>Vote on Product Hunt</span>
+              <ExternalLink className="w-3.5 h-3.5 opacity-70 group-hover:opacity-100 transition-opacity" />
+            </a>
             <Link to="/" className={`transition-colors text-sm relative group ${isActive("/") ? "text-white" : "text-gray-400 hover:text-white"}`}>
               Home
               <span
@@ -183,6 +193,17 @@ export const Navigation = () => {
         <div className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${isMenuOpen ? "max-h-64 opacity-100" : "max-h-0 opacity-0"}`}>
           <div className="border-t border-white/10 py-4">
             <div className="flex flex-col space-y-4 px-4">
+              <a
+                href="https://www.producthunt.com/posts/promplify"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm bg-[#EA532A]/10 hover:bg-[#EA532A]/20 text-[#EA532A] transition-all group inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-[#EA532A]/20"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                <span>🎉</span>
+                <span>Vote on Product Hunt</span>
+                <ExternalLink className="w-3.5 h-3.5 opacity-70 group-hover:opacity-100 transition-opacity" />
+              </a>
               <Link to="/" className="text-white/80 hover:text-white transition-colors py-2" onClick={() => setIsMenuOpen(false)}>
                 Home
               </Link>

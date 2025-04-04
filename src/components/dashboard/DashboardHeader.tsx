@@ -16,6 +16,16 @@ export function DashboardHeader() {
         </Link>
         <div className="flex items-center space-x-6">
           <nav className="flex items-center space-x-6">
+            <a
+              href="https://www.producthunt.com/posts/promplify"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sm bg-[#EA532A]/10 hover:bg-[#EA532A]/20 text-[#EA532A] transition-all group inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-[#EA532A]/20"
+            >
+              <span>🎉</span>
+              <span>Vote on Product Hunt</span>
+              <ExternalLink className="w-3.5 h-3.5 opacity-70 group-hover:opacity-100 transition-opacity" />
+            </a>
             <Link to="/" className={`transition-colors text-sm relative group ${isActive("/") ? "text-white" : "text-gray-400 hover:text-white"}`}>
               Home
               <span
