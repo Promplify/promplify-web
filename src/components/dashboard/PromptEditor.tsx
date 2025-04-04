@@ -795,8 +795,9 @@ export function PromptEditor({ promptId, onSave }: PromptEditorProps) {
                 <div className="flex items-center gap-4">
                   <h3 className="text-base font-medium text-gray-900">Basic Information</h3>
                   <span className="font-mono text-sm text-gray-500 flex-1">
-                    <b className="text-primary">#</b>
-                    {promptId === "new" ? "NEW" : promptId?.toUpperCase()}
+                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-orange-50 text-orange-700 border border-orange-300">
+                      {promptId === "new" ? "NEW" : promptId?.toUpperCase()}
+                    </span>
                   </span>
                   <span className="text-xs text-gray-500">Required</span>
                 </div>
