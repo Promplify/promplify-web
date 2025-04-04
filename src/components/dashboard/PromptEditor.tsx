@@ -610,7 +610,7 @@ export function PromptEditor({ promptId, onSave }: PromptEditorProps) {
                 disabled={!promptId || promptId === "new"}
               >
                 <div className="flex items-center gap-1">
-                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-sm text-xs font-medium bg-purple-100 text-purple-800">Version {prompt.version}</span>
+                  <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium border border-purple-200 text-purple-700">Version {prompt.version}</span>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="16"
@@ -798,7 +798,7 @@ export function PromptEditor({ promptId, onSave }: PromptEditorProps) {
                     <b className="text-primary">#</b>
                     {promptId === "new" ? "NEW" : promptId?.toUpperCase()}
                   </span>
-                  <span className="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-purple-100 text-purple-800">Required</span>
+                  <span className="text-xs text-gray-500">Required</span>
                 </div>
               </div>
               <div className="p-4 space-y-4">
@@ -854,7 +854,7 @@ export function PromptEditor({ promptId, onSave }: PromptEditorProps) {
               <div className="px-4 py-3 border-b border-gray-100">
                 <div className="flex items-center justify-between">
                   <h3 className="text-base font-medium text-gray-900">Classification</h3>
-                  <span className="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-green-100 text-green-800">Optional</span>
+                  <span className="text-xs text-gray-500">Optional</span>
                 </div>
               </div>
               <div className="p-4">
@@ -956,7 +956,7 @@ export function PromptEditor({ promptId, onSave }: PromptEditorProps) {
                       </div>
                       <div className="flex flex-wrap gap-1.5">
                         {prompt.prompt_tags?.map(({ tags }) => (
-                          <div key={tags.id} className="inline-flex items-center px-2.5 py-1 bg-blue-50 text-blue-700 text-xs font-medium rounded-full relative group/tag">
+                          <div key={tags.id} className="inline-flex items-center px-2.5 py-1 border border-green-200 text-green-700 text-xs font-medium rounded-full relative group/tag">
                             <span>{tags.name}</span>
                             <button
                               onClick={() => {
@@ -966,9 +966,9 @@ export function PromptEditor({ promptId, onSave }: PromptEditorProps) {
                                 });
                                 toast.success(`Removed tag: ${tags.name}`);
                               }}
-                              className="ml-1.5 w-3.5 h-3.5 rounded-full inline-flex items-center justify-center hover:bg-blue-100 absolute -right-1 -top-1 bg-white shadow-sm border border-blue-200 opacity-0 group-hover/tag:opacity-100 transition-opacity"
+                              className="ml-1.5 w-3.5 h-3.5 rounded-full inline-flex items-center justify-center hover:bg-green-100 absolute -right-1 -top-1 bg-white shadow-sm border border-green-200 opacity-0 group-hover/tag:opacity-100 transition-opacity"
                             >
-                              <X size={10} className="text-blue-600" />
+                              <X size={10} className="text-green-700" />
                             </button>
                           </div>
                         ))}
@@ -985,7 +985,7 @@ export function PromptEditor({ promptId, onSave }: PromptEditorProps) {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
                     <h3 className="text-base font-medium text-gray-900">Content</h3>
-                    <span className="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-blue-100 text-blue-800">
+                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium border border-blue-200 text-blue-700">
                       System: {prompt.system_tokens || 0} + User: {prompt.user_tokens || 0} = {prompt.token_count} tokens
                     </span>
                   </div>

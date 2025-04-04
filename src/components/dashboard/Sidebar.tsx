@@ -228,35 +228,33 @@ export function Sidebar({ onCategorySelect, selectedCategoryId }: SidebarProps) 
               <div
                 onClick={() => handleCategoryClick(category.id)}
                 className={cn(
-                  "w-full text-left px-2 py-1.5 rounded-md text-sm flex items-center justify-between group hover:bg-gray-100 transition-colors cursor-pointer",
+                  "w-full text-left px-2 py-1.5 rounded-md text-sm flex items-center group hover:bg-gray-100 transition-colors cursor-pointer",
                   selectedCategoryId === category.id && "bg-gray-100 text-primary"
                 )}
               >
                 <div className="flex items-center gap-2 flex-1 min-w-0">
                   <Folder size={18} className={cn("flex-shrink-0", selectedCategoryId === category.id ? "text-primary" : "text-gray-400 group-hover:text-gray-500")} />
-                  {!isCollapsed && <span className="truncate flex-1">{category.name}</span>}
                   {!isCollapsed && (
-                    <span
-                      className={cn("ml-1 text-xs px-2 py-0.5 rounded-md font-medium flex-shrink-0", selectedCategoryId === category.id ? "bg-primary/10 text-primary" : "bg-gray-100 text-gray-500")}
-                    >
-                      {category.prompt_count || 0}
-                    </span>
+                    <>
+                      <span className="truncate flex-1">{category.name}</span>
+                      <div className="flex items-center gap-2 ml-auto">
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDeleteCategory(category.id);
+                          }}
+                          className="p-1 hover:bg-gray-200 rounded-md opacity-0 group-hover:opacity-100 transition-opacity"
+                        >
+                          <Trash2 size={14} className="text-gray-500" />
+                        </button>
+                        <span className={cn("text-xs px-2 py-0.5 rounded-md font-medium", selectedCategoryId === category.id ? "bg-primary/10 text-primary" : "bg-gray-100 text-gray-500")}>
+                          {category.prompt_count || 0}
+                        </span>
+                      </div>
+                    </>
                   )}
                 </div>
-                {!isCollapsed && (
-                  <div className="flex items-center opacity-0 group-hover:opacity-100 transition-opacity ml-2">
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleDeleteCategory(category.id);
-                      }}
-                      className="p-1 hover:bg-gray-200 rounded-md"
-                    >
-                      <Trash2 size={14} className="text-gray-500" />
-                    </button>
-                  </div>
-                )}
               </div>
             </div>
           ))}

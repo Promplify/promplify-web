@@ -262,7 +262,7 @@ export function PromptList({ categoryId, onPromptSelect, selectedPromptId, onTot
                         >
                           <Heart size={14} className={`transition-colors hover:text-red-500 ${prompt.is_favorite ? "text-red-500 fill-current" : "text-gray-400"}`} />
                         </button>
-                        <span className="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-purple-100 text-purple-800">Version {prompt.version}</span>
+                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium border border-purple-200 text-purple-700">Version {prompt.version}</span>
                       </div>
                     </div>
                     {prompt.description && <p className="text-sm text-gray-500 mb-2 line-clamp-2">{prompt.description}</p>}
@@ -271,7 +271,7 @@ export function PromptList({ categoryId, onPromptSelect, selectedPromptId, onTot
                         {prompt.prompt_tags.map(
                           ({ tags }) =>
                             tags && (
-                              <span key={tags.id} className="px-2 py-1 bg-green-50 text-green-600 text-xs rounded-full">
+                              <span key={tags.id} className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium border border-green-200 text-green-700">
                                 {tags.name}
                               </span>
                             )
@@ -279,7 +279,7 @@ export function PromptList({ categoryId, onPromptSelect, selectedPromptId, onTot
                       </div>
                     )}
                     <div className="mt-2 text-xs text-gray-400 flex items-center justify-between">
-                      <span className="px-1.5 py-0.5 bg-blue-50 text-blue-600 rounded">{prompt.token_count || 0} tokens</span>
+                      <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium border border-blue-200 text-blue-700">{prompt.token_count || 0} tokens</span>
                       <span>Updated {new Date(prompt.updated_at || prompt.created_at).toLocaleDateString()}</span>
                     </div>
                   </>
