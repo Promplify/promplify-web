@@ -789,9 +789,12 @@ export function PromptEditor({ promptId, onSave }: PromptEditorProps) {
           <div className="space-y-4">
             {/* Basic Information */}
             <section className="bg-white border-b border-gray-200">
-              <div className="px-4 py-3 border-b border-gray-100">
+              <div className="px-4 py-4 border-b border-gray-100">
                 <div className="flex items-center gap-4">
-                  <h3 className="text-base font-medium text-gray-900">Basic Information</h3>
+                  <div className="flex items-center gap-2">
+                    <div className="w-1 h-6 bg-gradient-to-b from-[#2C106A] to-purple-600 rounded-full"></div>
+                    <h3 className="text-base font-semibold bg-clip-text text-transparent bg-gradient-to-r from-[#2C106A] to-purple-600">Basic Information</h3>
+                  </div>
                   <span className="font-mono text-sm text-gray-500 flex-1">
                     <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-orange-50 text-orange-700 border border-orange-300">
                       {promptId === "new" ? "NEW" : promptId?.toUpperCase()}
@@ -850,9 +853,12 @@ export function PromptEditor({ promptId, onSave }: PromptEditorProps) {
 
             {/* Classification */}
             <section className="bg-white border-b border-gray-200">
-              <div className="px-4 py-3 border-b border-gray-100">
+              <div className="px-4 py-4 border-b border-gray-100">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-base font-medium text-gray-900">Classification</h3>
+                  <div className="flex items-center gap-2">
+                    <div className="w-1 h-6 bg-gradient-to-b from-[#2C106A] to-purple-600 rounded-full"></div>
+                    <h3 className="text-base font-semibold bg-clip-text text-transparent bg-gradient-to-r from-[#2C106A] to-purple-600">Classification</h3>
+                  </div>
                   <span className="text-xs text-gray-500">Optional</span>
                 </div>
               </div>
@@ -980,10 +986,11 @@ export function PromptEditor({ promptId, onSave }: PromptEditorProps) {
 
             {/* Content */}
             <section className="bg-white border-b border-gray-200">
-              <div className="px-4 py-3 border-b border-gray-100">
+              <div className="px-4 py-4 border-b border-gray-100">
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-2">
-                    <h3 className="text-base font-medium text-gray-900">Content</h3>
+                  <div className="flex items-center gap-2">
+                    <div className="w-1 h-6 bg-gradient-to-b from-[#2C106A] to-purple-600 rounded-full"></div>
+                    <h3 className="text-base font-semibold bg-clip-text text-transparent bg-gradient-to-r from-[#2C106A] to-purple-600">Content</h3>
                     <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium border border-blue-200 text-blue-700">
                       System: {prompt.system_tokens || 0} + User: {prompt.user_tokens || 0} = {prompt.token_count} tokens
                     </span>
