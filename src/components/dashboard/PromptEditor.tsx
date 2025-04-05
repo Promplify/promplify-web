@@ -729,13 +729,11 @@ export function PromptEditor({ promptId, onSave }: PromptEditorProps) {
             <Share2 size={16} className="mr-1" />
             {isSharing ? "Sharing..." : "Share"}
           </Button>
-          <Button variant="outline" size="sm" onClick={handleCopyContent}>
+          <Button variant="outline" size="sm" onClick={handleCopyContent} title="Copy">
             <Copy size={16} className="mr-1" />
-            Copy
           </Button>
-          <Button variant="outline" size="sm" onClick={() => setShowDeleteDialog(true)} disabled={!promptId || promptId === "new" || isDeleting}>
+          <Button variant="outline" size="sm" onClick={() => setShowDeleteDialog(true)} disabled={!promptId || promptId === "new" || isDeleting} title="Delete">
             <Trash2 size={16} className="mr-1" />
-            Delete
           </Button>
           <Button variant="default" size="sm" onClick={handleSave} disabled={isSaving} className="min-w-[100px]">
             <Save size={16} className="mr-1" />
