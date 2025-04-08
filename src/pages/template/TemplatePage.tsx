@@ -40,6 +40,10 @@ export default function TemplatePage() {
           return;
         }
 
+        // Calculate token count
+        const systemTokens = template.system_prompt ? Math.ceil(countTokens(template.system_prompt)) : 0;
+        template.token_count = systemTokens;
+
         setTemplateData(template);
         setViewCount(template.views || 0);
 
