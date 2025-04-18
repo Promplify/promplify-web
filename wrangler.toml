@@ -2,9 +2,11 @@ name = "promplify-web-portal"
 compatibility_date = "2024-03-20"
 
 [build]
-command = "npm install && npm run build"
-output_dir = "dist"
-base = "/"
+command = "npm install"
+pages_build_output_dir = "dist"
 
 [site]
-bucket = "./dist" 
+bucket = "./dist"
+
+[build.environment]
+NODE_VERSION = "18" 
