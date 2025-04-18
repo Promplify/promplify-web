@@ -48,7 +48,7 @@ export const Hero = () => {
 
         <p className="text-xl md:text-2xl font-semibold text-gray-700 mb-3 max-w-2xl mx-auto">Your Professional AI Prompt Management Platform</p>
         <p className="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto mb-8">
-          Create, organize, and optimize your AI prompts with our intelligent platform. Track tokens, manage versions, and collaborate with your team seamlessly.
+          Create and optimize your AI prompts with our intelligent platform. Track tokens, manage versions, and integrate seamlessly with your applications.
         </p>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-6">
