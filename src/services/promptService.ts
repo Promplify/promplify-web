@@ -1,4 +1,4 @@
-import { supabase } from "@/lib/supabase";
+import { supabase, supabaseUrl } from "@/lib/supabase";
 import { Category, Prompt } from "@/types/prompt";
 
 // Prompts
@@ -262,17 +262,48 @@ export const optimizeSystemPrompt = async (systemPrompt: string) => {
     throw new Error("No user session");
   }
 
-  try {
-    const { data, error } = await supabase.functions.invoke("optimize-system-prompt", {
-      body: { systemPrompt },
-    });
-
-    if (error) throw error;
-    return data.optimizedPrompt;
-  } catch (error) {
-    console.error("Error optimizing system prompt:", error);
-    throw error;
+  if (!systemPrompt) {
+    throw new Error("System prompt is required");
   }
+
+  const maxRetries = 3;
+  let retryCount = 0;
+
+  while (retryCount < maxRetries) {
+    try {
+      const response = await fetch(`${supabaseUrl}/functions/v1/optimize-system-prompt`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${session.data.session.access_token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ systemPrompt }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      if (!data || !data.optimizedPrompt) {
+        throw new Error("Invalid response from optimization service");
+      }
+
+      return data.optimizedPrompt;
+    } catch (error) {
+      retryCount++;
+
+      if (retryCount === maxRetries) {
+        throw error;
+      }
+
+      // Wait before retrying (exponential backoff)
+      await new Promise((resolve) => setTimeout(resolve, Math.pow(2, retryCount) * 1000));
+    }
+  }
+
+  throw new Error("Failed to optimize system prompt after multiple attempts");
 };
 
 export const exportUserData = async (userId: string) => {

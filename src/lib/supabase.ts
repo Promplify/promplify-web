@@ -1,7 +1,7 @@
 import { createClient } from "@supabase/supabase-js";
 
-const supabaseUrl = "https://jnwfnaexsmxqtbotkcon.supabase.co";
-const supabaseAnonKey =
+export const supabaseUrl = "https://jnwfnaexsmxqtbotkcon.supabase.co";
+export const supabaseAnonKey =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impud2ZuYWV4c214cXRib3RrY29uIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzYzNTA5OTcsImV4cCI6MjA1MTkyNjk5N30.5SfFcD1os-yagiD3HUOiR-xEbxxGrkWdc86IT5HGb7Y";
 
 // Add validation and helpful console messages
@@ -27,6 +27,9 @@ const client = createClient(supabaseUrl, supabaseAnonKey, {
   },
   db: {
     schema: "public",
+  },
+  functions: {
+    baseUrl: `${supabaseUrl}/functions/v1`,
   },
 });
 

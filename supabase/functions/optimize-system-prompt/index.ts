@@ -5,12 +5,21 @@ import OpenAI from "https://esm.sh/openai@4.20.1";
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
+  "Access-Control-Max-Age": "86400",
 };
 
 serve(async (req) => {
+  console.log("Received request:", req.method, req.url);
+
   // Handle CORS preflight requests
   if (req.method === "OPTIONS") {
-    return new Response("ok", { headers: corsHeaders });
+    return new Response("ok", {
+      headers: {
+        ...corsHeaders,
+        "Access-Control-Allow-Origin": req.headers.get("Origin") || "*",
+      },
+    });
   }
 
   try {
@@ -27,14 +36,31 @@ serve(async (req) => {
     } = await supabaseClient.auth.getUser();
 
     if (!user) {
-      return new Response(JSON.stringify({ error: "Unauthorized" }), { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 401 });
+      console.error("Unauthorized: No user found");
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        headers: {
+          ...corsHeaders,
+          "Access-Control-Allow-Origin": req.headers.get("Origin") || "*",
+          "Content-Type": "application/json",
+        },
+        status: 401,
+      });
     }
 
     // Parse request body
-    const { systemPrompt } = await req.json();
+    const body = await req.json();
+    console.log("Request body:", body);
 
-    if (!systemPrompt) {
-      return new Response(JSON.stringify({ error: "System prompt is required" }), { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 400 });
+    if (!body.systemPrompt) {
+      console.error("Bad request: No systemPrompt in body");
+      return new Response(JSON.stringify({ error: "System prompt is required" }), {
+        headers: {
+          ...corsHeaders,
+          "Access-Control-Allow-Origin": req.headers.get("Origin") || "*",
+          "Content-Type": "application/json",
+        },
+        status: 400,
+      });
     }
 
     // Initialize OpenAI client
@@ -42,6 +68,18 @@ serve(async (req) => {
       baseURL: "https://api.deepseek.com",
       apiKey: Deno.env.get("DEEPSEEK_API_KEY") ?? "",
     });
+
+    if (!Deno.env.get("DEEPSEEK_API_KEY")) {
+      console.error("Configuration error: DEEPSEEK_API_KEY not set");
+      return new Response(JSON.stringify({ error: "Service configuration error" }), {
+        headers: {
+          ...corsHeaders,
+          "Access-Control-Allow-Origin": req.headers.get("Origin") || "*",
+          "Content-Type": "application/json",
+        },
+        status: 500,
+      });
+    }
 
     // Create the optimization prompt
     const optimizationPrompt = `
@@ -153,7 +191,7 @@ Follow these best practices:
 
   Here is the system prompt to optimize:
 
-${systemPrompt}
+${body.systemPrompt}
 
 Provide ONLY the optimized version of the system prompt, with no additional explanations or comments.
 `;
@@ -172,9 +210,23 @@ Provide ONLY the optimized version of the system prompt, with no additional expl
     const optimizedPrompt = completion.choices[0].message.content;
 
     // Return the optimized prompt
-    return new Response(JSON.stringify({ optimizedPrompt }), { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 200 });
+    return new Response(JSON.stringify({ optimizedPrompt }), {
+      headers: {
+        ...corsHeaders,
+        "Access-Control-Allow-Origin": req.headers.get("Origin") || "*",
+        "Content-Type": "application/json",
+      },
+      status: 200,
+    });
   } catch (error) {
     console.error("Error:", error);
-    return new Response(JSON.stringify({ error: error.message }), { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 500 });
+    return new Response(JSON.stringify({ error: error.message }), {
+      headers: {
+        ...corsHeaders,
+        "Access-Control-Allow-Origin": req.headers.get("Origin") || "*",
+        "Content-Type": "application/json",
+      },
+      status: 500,
+    });
   }
 });
