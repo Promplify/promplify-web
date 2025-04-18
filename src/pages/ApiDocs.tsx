@@ -75,7 +75,6 @@ export default function ApiDocs() {
   "token_count": "number",
   "performance": "number",
   "is_favorite": "boolean",
-  "category_id": "uuid",
   "model": "string",
   "temperature": "number",
   "max_tokens": "number",

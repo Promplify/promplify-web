@@ -57,7 +57,6 @@ export default {
           token_count,
           performance,
           is_favorite,
-          category_id,
           model,
           temperature,
           max_tokens,
