@@ -5,8 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "prebuild": "npm install",
-    "build": "vite build && npx @sentry/cli sourcemaps inject ./dist && npx @sentry/cli sourcemaps upload --auth-token $SENTRY_AUTH_TOKEN --org gugudata --project promplify ./dist",
+    "build": "vite build",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
     "preview": "vite preview"

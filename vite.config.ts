@@ -11,7 +11,9 @@ export default defineConfig(({ mode }) => ({
     middlewareMode: false,
   },
   build: {
-    sourcemap: true, // Source map generation must be turned on
+    sourcemap: true,
+    outDir: "dist",
+    emptyOutDir: true,
   },
   plugins: [
     react(),
