@@ -1,0 +1,7 @@
+[build]
+command = "rm -rf node_modules package-lock.json && npm install && npm run build"
+[build.environment]
+NODE_VERSION = "18.17.1"
+
+[site]
+bucket = "dist" 

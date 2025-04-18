@@ -42,6 +42,14 @@ export function DashboardHeader() {
                 }`}
               />
             </Link>
+            <Link to="/api-docs" className={`transition-colors text-sm relative group ${isActive("/api-docs") ? "text-white" : "text-gray-400 hover:text-white"}`}>
+              API
+              <span
+                className={`absolute -bottom-1 left-0 w-full h-0.5 bg-white transform origin-left transition-transform duration-200 ${
+                  isActive("/api-docs") ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
+                }`}
+              />
+            </Link>
             <a
               href="https://github.com/Promplify/promplify-issues"
               target="_blank"

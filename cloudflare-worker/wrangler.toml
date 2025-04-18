@@ -1,0 +1,7 @@
+name = "promplify-api"
+main = "src/index.ts"
+compatibility_date = "2024-03-20"
+
+[vars]
+SUPABASE_URL = "https://jnwfnaexsmxqtbotkcon.supabase.co"
+SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impud2ZuYWV4c214cXRib3RrY29uIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzYzNTA5OTcsImV4cCI6MjA1MTkyNjk5N30.5SfFcD1os-yagiD3HUOiR-xEbxxGrkWdc86IT5HGb7Y" 

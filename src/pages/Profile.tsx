@@ -31,6 +31,7 @@ export default function Profile() {
   useEffect(() => {
     const getProfile = async () => {
       try {
+        setIsLoading(true);
         const {
           data: { session },
           error: sessionError,
@@ -41,30 +42,35 @@ export default function Profile() {
           return;
         }
 
-        // First get user metadata from auth
-        const {
-          data: { user },
-          error: userError,
-        } = await supabase.auth.getUser();
-        if (userError) throw userError;
+        // Load user data and profile data in parallel
+        const [userResponse, profileResponse] = await Promise.all([supabase.auth.getUser(), supabase.from("profiles").select("*").eq("id", session.user.id).single()]);
 
-        // Then get profile data from profiles table
-        const { data: profileData, error: profileError } = await supabase.from("profiles").select("*").eq("id", session.user.id).single();
+        if (userResponse.error) throw userResponse.error;
+        const { user } = userResponse.data;
 
-        if (profileError && profileError.code !== "PGRST116") {
-          throw profileError;
-        }
+        // Merge data, prioritizing profile data
+        const profileData =
+          profileResponse.error && profileResponse.error.code === "PGRST116"
+            ? {}
+            : profileResponse.error
+            ? (() => {
+                throw profileResponse.error;
+              })()
+            : profileResponse.data;
 
-        // Merge auth metadata with profile data
-        setProfile({
-          full_name: user?.user_metadata?.full_name || profileData?.full_name || "",
-          username: user?.user_metadata?.username || profileData?.username || "",
+        const initialProfile = {
+          full_name: profileData?.full_name || user?.user_metadata?.full_name || "",
+          username: profileData?.username || user?.user_metadata?.username || "",
           website: profileData?.website || "",
-          avatar_url: user?.user_metadata?.avatar_url || profileData?.avatar_url || "",
+          avatar_url: profileData?.avatar_url || user?.user_metadata?.avatar_url || "",
           bio: profileData?.bio || "",
           company: profileData?.company || "",
           location: profileData?.location || "",
-        });
+        };
+
+        setProfile(initialProfile);
+        // Store the initial profile data
+        window.localStorage.setItem("initialProfile", JSON.stringify(initialProfile));
       } catch (error) {
         console.error("Error loading profile:", error);
         toast.error("Failed to load profile");
@@ -89,30 +95,60 @@ export default function Profile() {
         return;
       }
 
-      // First update auth metadata
-      const { error: authError } = await supabase.auth.updateUser({
-        data: {
-          full_name: profile.full_name,
-          username: profile.username,
-          avatar_url: profile.avatar_url,
-        },
-      });
+      // Get the initial profile data
+      const initialProfile = JSON.parse(window.localStorage.getItem("initialProfile") || "{}");
 
-      if (authError) throw authError;
+      // Only include changed fields in the update
+      const updates = Object.entries(profile).reduce((acc, [key, value]) => {
+        if (value !== initialProfile[key]) {
+          acc[key] = value;
+        }
+        return acc;
+      }, {} as any);
 
-      // Then update profile data
-      const { error: profileError } = await supabase.from("profiles").upsert({
-        id: session.user.id,
-        ...profile,
-        updated_at: new Date().toISOString(),
-      });
+      // If nothing has changed, just return
+      if (Object.keys(updates).length === 0) {
+        toast.success("No changes to save");
+        setIsSaving(false);
+        return;
+      }
 
-      if (profileError) throw profileError;
+      // Update auth metadata only if relevant fields have changed
+      if (updates.full_name || updates.username || updates.avatar_url) {
+        const { error: authError } = await supabase.auth.updateUser({
+          data: {
+            full_name: profile.full_name,
+            username: profile.username,
+            avatar_url: profile.avatar_url,
+          },
+        });
 
+        if (authError) throw authError;
+      }
+
+      // Update profile data with only changed fields
+      const { error: profileError } = await supabase
+        .from("profiles")
+        .update({
+          ...updates,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", session.user.id);
+
+      if (profileError) {
+        if (profileError.code === "23505") {
+          toast.error("Username is already taken. Please choose another one.");
+          return;
+        }
+        throw profileError;
+      }
+
+      // Update the stored initial profile data
+      window.localStorage.setItem("initialProfile", JSON.stringify(profile));
       toast.success("Profile updated successfully");
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error updating profile:", error);
-      toast.error("Failed to update profile");
+      toast.error(error.message || "Failed to update profile");
     } finally {
       setIsSaving(false);
     }
