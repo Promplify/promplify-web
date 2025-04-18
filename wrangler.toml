@@ -1,6 +1,9 @@
 [build]
 command = "npm run build:cloudflare"
-publish = "dist"
+pages_build_output_dir = "dist"
 
 [build.environment]
-NODE_VERSION = "18" 
+NODE_VERSION = "18"
+
+[site]
+bucket = "./dist" 
