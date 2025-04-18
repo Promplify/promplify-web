@@ -5,9 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "prebuild": "npm install",
+    "build": "vite build && npx @sentry/cli sourcemaps inject ./dist && npx @sentry/cli sourcemaps upload --auth-token $SENTRY_AUTH_TOKEN --org gugudata --project promplify ./dist",
     "build:dev": "vite build --mode development",
-    "build:cloudflare": "npm ci && vite build && npx @sentry/cli sourcemaps inject ./dist && npx @sentry/cli sourcemaps upload --auth-token $SENTRY_AUTH_TOKEN --org gugudata --project promplify ./dist",
     "lint": "eslint .",
     "preview": "vite preview"
   },

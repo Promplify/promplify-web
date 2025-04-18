@@ -1,9 +1,9 @@
-[build]
-command = "npm run build:cloudflare"
-pages_build_output_dir = "dist"
+name = "promplify-web-portal"
+compatibility_date = "2024-03-20"
 
-[build.environment]
-NODE_VERSION = "18"
+[build]
+command = "npm install && npm run build"
+output_dir = "dist"
 
 [site]
 bucket = "./dist" 
