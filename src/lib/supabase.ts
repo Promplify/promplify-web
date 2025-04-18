@@ -16,9 +16,9 @@ if (!supabaseAnonKey.includes(".")) {
 // 创建带有优化配置的客户端
 const client = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
-    persistSession: false,
-    autoRefreshToken: false,
-    detectSessionInUrl: false,
+    persistSession: true,
+    autoRefreshToken: true,
+    detectSessionInUrl: true,
   },
   global: {
     headers: {
