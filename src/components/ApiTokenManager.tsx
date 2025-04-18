@@ -12,6 +12,7 @@ import { Skeleton } from "./ui/skeleton";
 interface ApiToken {
   id: string;
   name: string;
+  token: string;
   created_at: string;
   last_used_at: string | null;
   expires_at: string | null;
@@ -24,6 +25,26 @@ export function ApiTokenManager() {
   const [isLoadingTokens, setIsLoadingTokens] = useState(true);
   const [showTokenDialog, setShowTokenDialog] = useState(false);
   const [newTokenValue, setNewTokenValue] = useState("");
+  const [visibleTokens, setVisibleTokens] = useState<Record<string, boolean>>({});
+
+  const toggleTokenVisibility = (tokenId: string) => {
+    setVisibleTokens((prev) => ({
+      ...prev,
+      [tokenId]: !prev[tokenId],
+    }));
+  };
+
+  const formatToken = (token: string, isVisible: boolean) => {
+    if (!token) return "";
+    if (isVisible) return token;
+    return `${token.slice(0, 8)}...${token.slice(-8)}`;
+  };
+
+  const formatDateTime = (dateString: string | null) => {
+    if (!dateString) return null;
+    const date = new Date(dateString);
+    return date.toLocaleString();
+  };
 
   useEffect(() => {
     fetchTokens();
@@ -114,7 +135,7 @@ export function ApiTokenManager() {
             <Input id="tokenName" value={newTokenName} onChange={(e) => setNewTokenName(e.target.value)} placeholder="Enter a name for your token" disabled={isLoading} />
           </div>
           <div className="flex items-end">
-            <Button onClick={handleCreateToken} disabled={isLoading} className="bg-[#2C106A] hover:bg-[#1F0B4C] text-white transition-colors">
+            <Button onClick={handleCreateToken} disabled={isLoading} className="bg-primary hover:bg-primary/90 text-white transition-colors shadow-md hover:shadow-lg">
               {isLoading ? "Creating..." : "Create Token"}
             </Button>
           </div>
@@ -134,13 +155,15 @@ export function ApiTokenManager() {
           <div className="space-y-4">
             {tokens.map((token) => (
               <div key={token.id} className="flex items-center justify-between p-4 border rounded-lg">
-                <div>
+                <div className="space-y-2 flex-1 mr-4">
                   <h4 className="font-medium">{token.name}</h4>
-                  <p className="text-sm text-muted-foreground">Created: {new Date(token.created_at).toLocaleDateString()}</p>
-                  {token.last_used_at && <p className="text-sm text-muted-foreground">Last used: {new Date(token.last_used_at).toLocaleDateString()}</p>}
-                  {token.expires_at && <p className="text-sm text-muted-foreground">Expires: {new Date(token.expires_at).toLocaleDateString()}</p>}
+                  <div className="text-sm text-muted-foreground space-y-1">
+                    <p>Created: {new Date(token.created_at).toLocaleString()}</p>
+                    {token.last_used_at && <p>Last used: {new Date(token.last_used_at).toLocaleString()}</p>}
+                    {token.expires_at && <p>Expires: {new Date(token.expires_at).toLocaleString()}</p>}
+                  </div>
                 </div>
-                <Button variant="destructive" onClick={() => handleDeleteToken(token.id)}>
+                <Button variant="destructive" onClick={() => handleDeleteToken(token.id)} className="shadow-sm hover:shadow-md transition-all">
                   Delete
                 </Button>
               </div>
@@ -153,12 +176,12 @@ export function ApiTokenManager() {
         <DialogContent>
           <DialogHeader>
             <DialogTitle>API Token Created</DialogTitle>
-            <DialogDescription>Please copy your API token now. You won't be able to see it again!</DialogDescription>
+            <DialogDescription>Copy your API token for use in your applications.</DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
             <div className="p-4 bg-muted rounded-lg break-all font-mono text-sm">{newTokenValue}</div>
             <div className="flex justify-end">
-              <Button onClick={handleCopyToken} className="flex items-center gap-2 bg-[#2C106A] hover:bg-[#1F0B4C] text-white transition-colors">
+              <Button onClick={handleCopyToken} className="flex items-center gap-2 bg-primary hover:bg-primary/90 text-white transition-colors shadow-md hover:shadow-lg">
                 <Copy className="h-4 w-4" />
                 Copy Token
               </Button>

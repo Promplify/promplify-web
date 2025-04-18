@@ -119,7 +119,7 @@ export const Navigation = () => {
               <div className="flex items-center gap-4 ml-4">
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <button className="focus:outline-none">
+                    <button className="focus:outline-none cursor-pointer">
                       <Avatar className="w-10 h-10 border-2 border-white/20 hover:border-white/40 transition-colors">
                         <AvatarImage
                           src={session.user.user_metadata?.avatar_url || session.user.user_metadata?.picture}
@@ -140,8 +140,8 @@ export const Navigation = () => {
                       <p className="text-xs leading-none text-muted-foreground">{session.user.email}</p>
                     </div>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem asChild>
-                      <Link to="/profile" className="flex items-center">
+                    <DropdownMenuItem asChild className="cursor-pointer">
+                      <Link to="/profile" className="flex items-center w-full">
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           width="16"
@@ -160,8 +160,8 @@ export const Navigation = () => {
                         <span>Profile</span>
                       </Link>
                     </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
-                      <Link to="/settings" className="flex items-center">
+                    <DropdownMenuItem asChild className="cursor-pointer">
+                      <Link to="/settings" className="flex items-center w-full">
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           width="16"
@@ -180,12 +180,12 @@ export const Navigation = () => {
                         <span>Settings</span>
                       </Link>
                     </DropdownMenuItem>
-                    <DropdownMenuItem onSelect={handleExport}>
+                    <DropdownMenuItem onSelect={handleExport} className="cursor-pointer">
                       <Download className="mr-2 h-4 w-4" />
                       <span>Export Data</span>
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem onSelect={handleLogout} className="text-red-600">
+                    <DropdownMenuItem onSelect={handleLogout} className="text-red-600 cursor-pointer">
                       <LogOut className="mr-2 h-4 w-4" />
                       <span>Log out</span>
                     </DropdownMenuItem>
