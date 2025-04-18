@@ -164,8 +164,8 @@ export function PromptList({ categoryId, onPromptSelect, selectedPromptId, onTot
 
   if (isLoading && localPrompts.length === 0) {
     return (
-      <div className="w-[320px] h-full bg-white">
-        <div className="p-4 border-b border-gray-200">
+      <div className="w-[320px] h-full bg-white flex flex-col">
+        <div className="p-4 border-b border-gray-200 flex-shrink-0">
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <Skeleton className="h-6 w-24 animate-pulse" />
@@ -203,8 +203,8 @@ export function PromptList({ categoryId, onPromptSelect, selectedPromptId, onTot
   }
 
   return (
-    <div className="w-[320px] h-full bg-white">
-      <div className="p-4 border-b border-gray-200">
+    <div className="w-[320px] h-full bg-white flex flex-col">
+      <div className="p-4 border-b border-gray-200 flex-shrink-0">
         <div className="flex items-center justify-between mb-4">
           <h2 className="font-medium">Prompts</h2>
           <Button onClick={handleNewPrompt} className="bg-[#2C106A] hover:bg-[#1F0B4C] text-white transition-colors duration-200">
@@ -233,9 +233,9 @@ export function PromptList({ categoryId, onPromptSelect, selectedPromptId, onTot
           </button>
         </div>
       </div>
-      <div className="overflow-y-auto h-[calc(100%-145px)] scrollbar-thin scrollbar-thumb-gray-200 scrollbar-track-transparent">
+      <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-200 scrollbar-track-transparent">
         <div className="p-2">
-          <div className="space-y-2">
+          <div className="space-y-2 pb-4">
             {sortedPrompts.map((prompt) => (
               <div
                 key={prompt.id}
