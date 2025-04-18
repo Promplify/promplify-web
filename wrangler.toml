@@ -1,6 +1,0 @@
-[build]
-command = "npm install --legacy-peer-deps && npm run build"
-pages_build_output_dir = "dist"
-
-[build.environment]
-NODE_VERSION = "18.18.0" 
