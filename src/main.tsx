@@ -1,12 +1,14 @@
+import { browserTracingIntegration } from "@sentry/browser";
 import * as Sentry from "@sentry/react";
+import { Replay } from "@sentry/replay";
 import { createRoot } from "react-dom/client";
 import App from "./App.tsx";
 import "./index.css";
 
 // Initialize Sentry
 Sentry.init({
-  dsn: "https://792b1d5e0b71fc2444800289dd48bd9b@o4504698557693952.ingest.us.sentry.io/4509172418084864",
-  integrations: [],
+  dsn: import.meta.env.VITE_SENTRY_DSN,
+  integrations: [browserTracingIntegration(), new Replay()],
   // Performance Monitoring
   tracesSampleRate: 1.0, // Capture 100% of the transactions
   // Session Replay
