@@ -28,8 +28,7 @@ dist-ssr
 .env.*
 !.env.example
 
-# Lock files
-package-lock.json
+# Lock files (except npm)
 yarn.lock
 pnpm-lock.yaml
 bun.lockb
