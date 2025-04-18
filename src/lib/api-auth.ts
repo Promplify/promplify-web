@@ -58,8 +58,8 @@ export async function validateApiToken(token: string): Promise<{ userId: string 
       return { userId: null, error: "API token expired" };
     }
 
-    // Update last_used_at
-    await supabase.from("api_tokens").update({ last_used_at: new Date().toISOString() }).eq("token", tokenValue);
+    // 注释掉更新last_used_at的操作，避免循环请求
+    // await supabase.from("api_tokens").update({ last_used_at: new Date().toISOString() }).eq("token", tokenValue);
 
     return { userId: data.user_id, error: null };
   } catch (err) {
