@@ -796,9 +796,33 @@ export function PromptEditor({ promptId, onSave }: PromptEditorProps) {
                     <h3 className="text-base font-semibold bg-clip-text text-transparent bg-gradient-to-r from-[#2C106A] to-purple-600">Basic Information</h3>
                   </div>
                   <span className="font-mono text-sm text-gray-500 flex-1">
-                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-orange-50 text-orange-700 border border-orange-300">
-                      {promptId === "new" ? "NEW" : promptId?.toUpperCase()}
-                    </span>
+                    <div className="inline-flex items-center gap-1.5">
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-orange-50 text-orange-700 border border-orange-300">
+                        {promptId === "new" ? "NEW" : promptId?.toUpperCase()}
+                      </span>
+                      <div className="group relative">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="16"
+                          height="16"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          className="text-gray-400 hover:text-gray-600 cursor-help"
+                        >
+                          <circle cx="12" cy="12" r="10"></circle>
+                          <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                          <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                        </svg>
+                        <div className="absolute left-1/2 -translate-x-1/2 top-6 bg-gray-800 text-white text-xs rounded py-1 px-2 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
+                          This ID can be used with the API to fetch prompt data
+                          <div className="absolute -top-[4px] left-1/2 -translate-x-1/2 border-[4px] border-transparent border-b-gray-800"></div>
+                        </div>
+                      </div>
+                    </div>
                   </span>
                   <span className="text-xs text-gray-500">Required</span>
                 </div>

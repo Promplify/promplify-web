@@ -1,5 +1,6 @@
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import { Toaster } from "sonner";
+import ApiDocs from "./pages/ApiDocs";
 import Auth from "./pages/Auth";
 import Callback from "./pages/auth/Callback";
 import Dashboard from "./pages/Dashboard";
@@ -25,6 +26,7 @@ function App() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/settings" element={<Settings />} />
+        <Route path="/api-docs" element={<ApiDocs />} />
         <Route path="/terms" element={<Terms />} />
         <Route path="/privacy" element={<Privacy />} />
         <Route path="/templates" element={<Templates />} />

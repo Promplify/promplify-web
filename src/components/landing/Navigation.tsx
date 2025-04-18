@@ -94,6 +94,14 @@ export const Navigation = () => {
                 }`}
               />
             </Link>
+            <Link to="/api-docs" className={`transition-colors text-sm relative group ${isActive("/api-docs") ? "text-white" : "text-gray-400 hover:text-white"}`}>
+              API
+              <span
+                className={`absolute -bottom-1 left-0 w-full h-0.5 bg-white transform origin-left transition-transform duration-200 ${
+                  isActive("/api-docs") ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
+                }`}
+              />
+            </Link>
             <a
               href="https://github.com/Promplify/promplify-issues"
               target="_blank"
@@ -229,6 +237,9 @@ export const Navigation = () => {
               </Link>
               <Link to="/templates" className="text-white/80 hover:text-white transition-colors py-2" onClick={() => setIsMenuOpen(false)}>
                 Templates
+              </Link>
+              <Link to="/api-docs" className="text-white/80 hover:text-white transition-colors py-2" onClick={() => setIsMenuOpen(false)}>
+                API
               </Link>
               <a
                 href="https://github.com/Promplify/promplify-issues"

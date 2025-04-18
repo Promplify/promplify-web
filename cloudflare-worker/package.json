@@ -1,0 +1,23 @@
+{
+  "name": "promplify-api",
+  "version": "1.0.0",
+  "description": "Promplify API Worker",
+  "main": "src/index.ts",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20240208.0",
+    "wrangler": "^3.28.1"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.39.7",
+    "@types/prismjs": "^1.26.5",
+    "prismjs": "^1.30.0"
+  }
+}
