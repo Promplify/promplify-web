@@ -1,17 +1,15 @@
 # Allow all web crawlers
 User-agent: *
 
-# Allow access to all public pages
+# Allow access to all pages
 Allow: /
 Allow: /templates
 Allow: /privacy
 Allow: /terms
-
-# Disallow access to authentication and user-specific pages
-Disallow: /auth
-Disallow: /dashboard
-Disallow: /profile
-Disallow: /reset-password
+Allow: /auth
+Allow: /dashboard
+Allow: /profile
+Allow: /reset-password
 
 # Sitemap location
 Sitemap: https://promplify.com/sitemap.xml 
