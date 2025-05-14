@@ -6,11 +6,13 @@ interface SEOProps {
   title?: string;
   description?: string;
   keywords?: string;
+  imageUrl?: string;
 }
 
-export function SEO({ canonicalPath, title, description, keywords }: SEOProps) {
+export function SEO({ canonicalPath, title, description, keywords, imageUrl }: SEOProps) {
   const location = useLocation();
   const baseUrl = "https://promplify.com";
+  const defaultImage = `${baseUrl}/og-image.jpg`;
 
   useEffect(() => {
     // 移除已存在的 canonical 标签
@@ -57,6 +59,34 @@ export function SEO({ canonicalPath, title, description, keywords }: SEOProps) {
       }
     }
 
+    // 更新或添加Open Graph和Twitter卡片元数据
+    const ogTags = {
+      "og:url": canonicalPath ? `${baseUrl}${canonicalPath}` : `${baseUrl}${location.pathname}`,
+      "og:type": "website",
+      "og:title": title || document.title,
+      "og:description": description || "",
+      "og:image": imageUrl || defaultImage,
+      "twitter:card": "summary_large_image",
+      "twitter:title": title || document.title,
+      "twitter:description": description || "",
+      "twitter:image": imageUrl || defaultImage,
+    };
+
+    // 为每个OG和Twitter标签设置值
+    Object.entries(ogTags).forEach(([property, content]) => {
+      let meta = document.querySelector(`meta[property="${property}"]`) || document.querySelector(`meta[name="${property}"]`);
+
+      if (meta) {
+        meta.setAttribute(property.startsWith("og:") ? "property" : "name", property);
+        meta.setAttribute("content", content);
+      } else {
+        meta = document.createElement("meta");
+        meta.setAttribute(property.startsWith("og:") ? "property" : "name", property);
+        meta.setAttribute("content", content);
+        document.head.appendChild(meta);
+      }
+    });
+
     // 清理函数
     return () => {
       const canonical = document.querySelector('link[rel="canonical"]');
@@ -64,7 +94,7 @@ export function SEO({ canonicalPath, title, description, keywords }: SEOProps) {
         canonical.remove();
       }
     };
-  }, [location.pathname, canonicalPath, title, description, keywords]);
+  }, [location.pathname, canonicalPath, title, description, keywords, imageUrl]);
 
   return null;
 }

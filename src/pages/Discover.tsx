@@ -22,8 +22,8 @@ const Discover = () => {
   useEffect(() => {
     updateMeta(
       "Prompt Discover - Discover and Share AI Prompts",
-      "Explore the best AI prompts shared by the community. Find inspiration, share your own prompts, and save your favorites.",
-      "AI prompt discover, prompt sharing, community prompts, AI prompt discovery"
+      "Explore and share the best AI prompts in our community. Find inspiration for ChatGPT, Claude, and other AI models. Create, save, and remix your favorite prompts.",
+      "AI prompt discover, prompt sharing, community prompts, AI prompt library, ChatGPT prompts, Claude prompts, prompt engineering, AI prompt templates"
     );
   }, []);
 
@@ -61,7 +61,12 @@ const Discover = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <SEO canonicalPath="/discover" />
+            <SEO 
+        canonicalPath="/discover" 
+        title="Prompt Discover - Discover and Share AI Prompts"
+        description="Explore and share the best AI prompts in our community. Find inspiration for ChatGPT, Claude, and other AI models. Create, save, and remix your favorite prompts."
+        keywords="AI prompt discover, prompt sharing, community prompts, AI prompt library, ChatGPT prompts, Claude prompts, prompt engineering, AI prompt templates"
+      />
       <Navigation />
       <main className="pt-16 pb-16">
         <DiscoverHeader />

@@ -144,12 +144,12 @@ export default function DiscoverPromptPage() {
   useEffect(() => {
     if (discoverPrompt?.prompt) {
       const title = `${discoverPrompt.prompt.title} - Promplify Discover`;
-      const description = discoverPrompt.prompt.description || "A community shared AI prompt from Promplify";
-      const keywords = `AI prompt, ${discoverPrompt.prompt.title}, prompt sharing, AI assistant, prompt engineering`;
+      const description = discoverPrompt.prompt.description || `Explore this "${discoverPrompt.prompt.title}" prompt shared by the Promplify community.`;
+      const keywords = `AI prompt, ${discoverPrompt.prompt.title}, prompt sharing, ChatGPT prompts, Claude prompts, AI assistant, prompt engineering, ${tags.map((tag: any) => tag.name).join(", ")}`;
 
       updateMeta(title, description, keywords);
     }
-  }, [discoverPrompt]);
+  }, [discoverPrompt, tags]);
 
   // Handle like/unlike
   const handleLike = async () => {
@@ -397,10 +397,12 @@ export default function DiscoverPromptPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       <SEO
-        title={`${discoverPrompt.prompt.title} - Promplify Discover`}
-        description={discoverPrompt.prompt.description || "A community shared AI prompt from Promplify"}
+        title={discoverPrompt.prompt.title ? `${discoverPrompt.prompt.title} - Promplify Discover` : "Prompt Details - Promplify Discover"}
+        description={discoverPrompt.prompt.description || `Explore this ${discoverPrompt.prompt.title || "AI"} prompt shared by the Promplify community.`}
         canonicalPath={`/discover/prompt/${id}`}
-        keywords={`AI prompt, ${discoverPrompt.prompt.title}, prompt sharing, AI assistant, prompt engineering`}
+        keywords={`AI prompt, ${discoverPrompt.prompt.title || "prompt"}, prompt sharing, ChatGPT prompts, Claude prompts, AI assistant, prompt engineering${
+          tags.length > 0 ? ", " + tags.map((tag: any) => tag.name).join(", ") : ""
+        }`}
       />
       <Navigation />
 
@@ -414,8 +416,8 @@ export default function DiscoverPromptPage() {
         </div>
       )}
 
-      <div className="max-w-7xl mx-auto py-20 px-4 sm:px-6 lg:px-8">
-        <div className="mb-6">
+      <div className="max-w-7xl mx-auto py-8 sm:py-12 md:py-16 lg:py-20 px-4 sm:px-6 lg:px-8">
+        <div className="mb-4 sm:mb-6">
           <Breadcrumb>
             <BreadcrumbList>
               <BreadcrumbItem>
@@ -439,7 +441,7 @@ export default function DiscoverPromptPage() {
                 <ChevronRight className="h-4 w-4 text-gray-500" />
               </BreadcrumbItem>
               <BreadcrumbItem>
-                <BreadcrumbPage className="text-gray-900">{discoverPrompt.prompt.title}</BreadcrumbPage>
+                <BreadcrumbPage className="text-gray-900 truncate max-w-[150px] sm:max-w-[250px] md:max-w-xs">{discoverPrompt.prompt.title}</BreadcrumbPage>
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
@@ -447,35 +449,35 @@ export default function DiscoverPromptPage() {
 
         <div className="bg-white shadow-lg rounded-lg overflow-hidden">
           {/* Header */}
-          <div className="px-8 py-6 border-b border-gray-200">
+          <div className="px-4 sm:px-6 lg:px-8 py-4 sm:py-6 border-b border-gray-200">
             <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
               <div className="flex-1">
-                <h1 className="text-2xl font-bold text-gray-900 mb-2">{discoverPrompt.prompt.title}</h1>
-                {discoverPrompt.prompt.description && <p className="text-gray-500 mb-4">{discoverPrompt.prompt.description}</p>}
+                <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2 break-words">{discoverPrompt.prompt.title}</h1>
+                {discoverPrompt.prompt.description && <p className="text-gray-500 mb-4 text-sm sm:text-base">{discoverPrompt.prompt.description}</p>}
               </div>
 
               {/* Action buttons group */}
-              <div className="flex flex-wrap gap-3 items-center justify-end">
-                <Button variant="outline" size="sm" onClick={handleLike} className={`gap-1.5 ${liked ? "text-blue-500 border-blue-200 bg-blue-50" : ""}`}>
-                  <ThumbsUp className={`h-4 w-4 ${liked ? "fill-blue-500" : ""}`} />
+              <div className="flex flex-wrap gap-2 sm:gap-3 items-center">
+                <Button variant="outline" size="sm" onClick={handleLike} className={`gap-1 sm:gap-1.5 text-xs sm:text-sm ${liked ? "text-blue-500 border-blue-200 bg-blue-50" : ""}`}>
+                  <ThumbsUp className={`h-3.5 w-3.5 sm:h-4 sm:w-4 ${liked ? "fill-blue-500" : ""}`} />
                   <span>{likesCount}</span>
                 </Button>
 
                 {currentUserId !== discoverPrompt.user_id && isLoggedIn && (
-                  <Button variant="default" size="sm" className="gap-1.5 bg-[#2C106A] hover:bg-[#1F0B4C]" onClick={handleSave} disabled={isSaving}>
-                    <Save className="h-4 w-4" />
+                  <Button variant="default" size="sm" className="gap-1 sm:gap-1.5 bg-[#2C106A] hover:bg-[#1F0B4C] text-xs sm:text-sm" onClick={handleSave} disabled={isSaving}>
+                    <Save className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                     <span>{isSaving ? "Saving..." : "Save"}</span>
                   </Button>
                 )}
 
-                <Button variant="outline" size="sm" onClick={handleCopy} className="gap-1.5">
-                  <Copy className="h-4 w-4" />
+                <Button variant="outline" size="sm" onClick={handleCopy} className="gap-1 sm:gap-1.5 text-xs sm:text-sm">
+                  <Copy className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                   <span>Copy</span>
                 </Button>
 
                 {currentUserId === discoverPrompt.user_id && (
-                  <Button variant="destructive" size="sm" className="gap-1.5" onClick={handleRemoveFromDiscover} disabled={isDeleting}>
-                    <Trash className="h-4 w-4" />
+                  <Button variant="destructive" size="sm" className="gap-1 sm:gap-1.5 text-xs sm:text-sm" onClick={handleRemoveFromDiscover} disabled={isDeleting}>
+                    <Trash className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                     <span>{isDeleting ? "Removing..." : "Remove"}</span>
                   </Button>
                 )}
@@ -483,11 +485,11 @@ export default function DiscoverPromptPage() {
             </div>
 
             {/* User info, tags and share on one line */}
-            <div className="mt-4 flex flex-wrap items-center justify-between">
-              <div className="flex items-center flex-1 flex-wrap gap-x-4 gap-y-2">
+            <div className="mt-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-y-4">
+              <div className="flex items-center flex-1 flex-wrap gap-x-3 sm:gap-x-4 gap-y-2">
                 {/* User info */}
-                <div className="flex items-center text-sm text-gray-500">
-                  <Avatar className="h-8 w-8 mr-2">
+                <div className="flex items-center text-xs sm:text-sm text-gray-500">
+                  <Avatar className="h-6 w-6 sm:h-8 sm:w-8 mr-2">
                     <AvatarImage src={user?.avatar_url} alt={user?.full_name || user?.username || "Anonymous"} className="object-cover" />
                     <AvatarFallback className="bg-primary/20 text-white text-xs">{(user?.full_name || user?.username || "A").charAt(0).toUpperCase()}</AvatarFallback>
                   </Avatar>
@@ -495,18 +497,18 @@ export default function DiscoverPromptPage() {
                 </div>
 
                 {/* Tags */}
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-1.5 sm:gap-2">
                   {(discoverPrompt.prompt.prompt_tags || tags).length > 0 ? (
                     (discoverPrompt.prompt.prompt_tags || tags).map((tagItem: any) => {
                       const tag = tagItem.tags || tagItem;
                       return (
-                        <Badge key={tag.id} variant="secondary" className="bg-gray-100 text-gray-700 hover:bg-gray-200">
+                        <Badge key={tag.id} variant="secondary" className="bg-gray-100 text-gray-700 hover:bg-gray-200 text-xs py-0.5">
                           {tag.name}
                         </Badge>
                       );
                     })
                   ) : (
-                    <Badge variant="secondary" className="bg-gray-100 text-gray-700">
+                    <Badge variant="secondary" className="bg-gray-100 text-gray-700 text-xs py-0.5">
                       No tags
                     </Badge>
                   )}
@@ -514,45 +516,45 @@ export default function DiscoverPromptPage() {
               </div>
 
               {/* Share */}
-              <div className="flex items-center mt-0 md:mt-0">
-                <span className="text-sm text-gray-500 mr-1">Share:</span>
-                <div className="flex items-center gap-2">
+              <div className="flex items-center">
+                <span className="text-xs sm:text-sm text-gray-500 mr-1">Share:</span>
+                <div className="flex items-center gap-1.5 sm:gap-2">
                   <button
                     onClick={() => handleShare("twitter")}
-                    className="flex items-center justify-center h-8 w-8 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-600 hover:text-gray-800"
+                    className="flex items-center justify-center h-6 w-6 sm:h-8 sm:w-8 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-600 hover:text-gray-800"
                     aria-label="Share on Twitter"
                   >
-                    <svg viewBox="0 0 24 24" className="h-4 w-4 fill-current">
+                    <svg viewBox="0 0 24 24" className="h-3 w-3 sm:h-4 sm:w-4 fill-current">
                       <path d="M16.99 0h3.308l-7.227 8.26 8.502 11.24h-6.657l-5.214-6.817L3.736 19.5H.426l7.73-8.835L0 0h6.826l4.713 6.231L16.99 0Zm-1.161 17.52h1.833L5.83 1.876H3.863L15.829 17.52Z" />
                     </svg>
                     <span className="sr-only">Share on X</span>
                   </button>
                   <button
                     onClick={() => handleShare("facebook")}
-                    className="flex items-center justify-center h-8 w-8 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-600 hover:text-gray-800"
+                    className="flex items-center justify-center h-6 w-6 sm:h-8 sm:w-8 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-600 hover:text-gray-800"
                     aria-label="Share on Facebook"
                   >
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" className="h-4 w-4 fill-current">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" className="h-3 w-3 sm:h-4 sm:w-4 fill-current">
                       <path d="M279.14 288l14.22-92.66h-88.91v-60.13c0-25.35 12.42-50.06 52.24-50.06h40.42V6.26S260.43 0 225.36 0c-73.22 0-121.08 44.38-121.08 124.72v70.62H22.89V288h81.39v224h100.17V288z" />
                     </svg>
                     <span className="sr-only">Share on Facebook</span>
                   </button>
                   <button
                     onClick={() => handleShare("linkedin")}
-                    className="flex items-center justify-center h-8 w-8 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-600 hover:text-gray-800"
+                    className="flex items-center justify-center h-6 w-6 sm:h-8 sm:w-8 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-600 hover:text-gray-800"
                     aria-label="Share on LinkedIn"
                   >
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" className="h-4 w-4 fill-current">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" className="h-3 w-3 sm:h-4 sm:w-4 fill-current">
                       <path d="M100.28 448H7.4V148.9h92.88zM53.79 108.1C24.09 108.1 0 83.5 0 53.8a53.79 53.79 0 0 1 107.58 0c0 29.7-24.1 54.3-53.79 54.3zM447.9 448h-92.68V302.4c0-34.7-.7-79.2-48.29-79.2-48.29 0-55.69 37.7-55.69 76.7V448h-92.78V148.9h89.08v40.8h1.3c12.4-23.5 42.69-48.3 87.88-48.3 94 0 111.28 61.9 111.28 142.3V448z" />
                     </svg>
                     <span className="sr-only">Share on LinkedIn</span>
                   </button>
                   <button
                     onClick={() => handleShare("copy")}
-                    className="flex items-center justify-center h-8 w-8 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-600 hover:text-gray-800"
+                    className="flex items-center justify-center h-6 w-6 sm:h-8 sm:w-8 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-600 hover:text-gray-800"
                     aria-label="Copy link"
                   >
-                    <Share2 className="h-4 w-4" />
+                    <Share2 className="h-3 w-3 sm:h-4 sm:w-4" />
                     <span className="sr-only">Copy link</span>
                   </button>
                 </div>
@@ -561,19 +563,25 @@ export default function DiscoverPromptPage() {
           </div>
 
           {/* Content */}
-          <div className="px-8 py-6 space-y-6">
+          <div className="px-4 sm:px-6 lg:px-8 py-4 sm:py-6 space-y-4 sm:space-y-6">
             <div>
-              <div className="flex items-center justify-between mb-3">
-                <h2 className="text-lg font-medium text-gray-900">System Prompt</h2>
-                <Badge variant="outline">{discoverPrompt.prompt.token_count || 0} tokens</Badge>
+              <div className="flex items-center justify-between mb-2 sm:mb-3">
+                <h2 className="text-base sm:text-lg font-medium text-gray-900">System Prompt</h2>
+                <Badge variant="outline" className="text-xs">
+                  {discoverPrompt.prompt.token_count || 0} tokens
+                </Badge>
               </div>
-              <div className="p-4 bg-gray-50 rounded-lg border border-gray-200 font-mono text-sm whitespace-pre-wrap">{discoverPrompt.prompt.system_prompt}</div>
+              <div className="p-3 sm:p-4 bg-gray-50 rounded-lg border border-gray-200 font-mono text-xs sm:text-sm whitespace-pre-wrap break-words overflow-auto">
+                {discoverPrompt.prompt.system_prompt}
+              </div>
             </div>
 
             {discoverPrompt.prompt.user_prompt && (
               <div>
-                <h2 className="text-lg font-medium text-gray-900 mb-3">User Prompt</h2>
-                <div className="p-4 bg-gray-50 rounded-lg border border-gray-200 font-mono text-sm whitespace-pre-wrap">{discoverPrompt.prompt.user_prompt}</div>
+                <h2 className="text-base sm:text-lg font-medium text-gray-900 mb-2 sm:mb-3">User Prompt</h2>
+                <div className="p-3 sm:p-4 bg-gray-50 rounded-lg border border-gray-200 font-mono text-xs sm:text-sm whitespace-pre-wrap break-words overflow-auto">
+                  {discoverPrompt.prompt.user_prompt}
+                </div>
               </div>
             )}
           </div>
