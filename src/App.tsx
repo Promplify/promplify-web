@@ -5,6 +5,8 @@ import Auth from "./pages/Auth";
 import Callback from "./pages/auth/Callback";
 import Dashboard from "./pages/Dashboard";
 import Settings from "./pages/dashboard/Settings";
+import Discover from "./pages/Discover";
+import DiscoverPromptPage from "./pages/discover/DiscoverPromptPage";
 import Index from "./pages/Index";
 import Privacy from "./pages/Privacy";
 import Profile from "./pages/Profile";
@@ -32,6 +34,8 @@ function App() {
         <Route path="/templates" element={<Templates />} />
         <Route path="/template/:id" element={<TemplatePage />} />
         <Route path="/share/:token" element={<SharedPromptPage />} />
+        <Route path="/discover" element={<Discover />} />
+        <Route path="/discover/prompt/:id" element={<DiscoverPromptPage />} />
       </Routes>
     </Router>
   );

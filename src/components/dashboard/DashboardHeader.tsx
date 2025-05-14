@@ -34,6 +34,14 @@ export function DashboardHeader() {
                 }`}
               />
             </Link>
+            <Link to="/discover" className={`transition-colors text-sm relative group ${isActive("/discover") ? "text-white" : "text-gray-400 hover:text-white"}`}>
+              Discover
+              <span
+                className={`absolute -bottom-1 left-0 w-full h-0.5 bg-white transform origin-left transition-transform duration-200 ${
+                  isActive("/discover") ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
+                }`}
+              />
+            </Link>
             <Link to="/templates" className={`transition-colors text-sm relative group ${isActive("/templates") ? "text-white" : "text-gray-400 hover:text-white"}`}>
               Templates
               <span

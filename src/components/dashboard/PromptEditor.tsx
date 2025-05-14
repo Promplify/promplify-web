@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Skeleton } from "@/components/ui/skeleton";
 import { Textarea } from "@/components/ui/textarea";
 import { supabase } from "@/lib/supabase";
+import { sharePromptToDiscover } from "@/services/plazaService";
 import { addTagToPrompt, createPrompt, createTag, deletePrompt, getCategories, getPromptById, getTags, optimizeSystemPrompt, updatePrompt } from "@/services/promptService";
 import { createShareLink } from "@/services/shareService";
 import { Category, Prompt, Tag } from "@/types/prompt";
@@ -82,6 +83,7 @@ export function PromptEditor({ promptId, onSave }: PromptEditorProps) {
   const [showShareDialog, setShowShareDialog] = useState(false);
   const [shareUrl, setShareUrl] = useState<string>("");
   const [isSharing, setIsSharing] = useState(false);
+  const [isSharingToDiscover, setIsSharingToDiscover] = useState(false);
 
   useEffect(() => {
     const getSession = async () => {
@@ -553,6 +555,25 @@ export function PromptEditor({ promptId, onSave }: PromptEditorProps) {
     toast.success("Share link copied to clipboard");
   };
 
+  const handleShareToDiscover = async () => {
+    if (!promptId || promptId === "new") return;
+
+    try {
+      setIsSharingToDiscover(true);
+      await sharePromptToDiscover(promptId);
+      toast.success("Successfully shared to Discover!");
+    } catch (error: any) {
+      console.error("Error sharing to discover:", error);
+      if (error.message === "Prompt already shared to discover") {
+        toast.error("This prompt is already shared to Discover");
+      } else {
+        toast.error("Sharing failed, please try again");
+      }
+    } finally {
+      setIsSharingToDiscover(false);
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="flex-1 h-full bg-gray-50 p-4">
@@ -725,6 +746,24 @@ export function PromptEditor({ promptId, onSave }: PromptEditorProps) {
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
+          <Button variant="outline" size="sm" onClick={handleShareToDiscover} disabled={!promptId || promptId === "new" || isSharingToDiscover} className="group">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="mr-1"
+            >
+              <path d="M7 10v12"></path>
+              <path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2h0a3.13 3.13 0 0 1 3 3.88Z"></path>
+            </svg>
+            {isSharingToDiscover ? "Sharing..." : "Share to Discover"}
+          </Button>
           <Button variant="outline" size="sm" onClick={handleShare} disabled={!promptId || promptId === "new" || isSharing} className="group">
             <Share2 size={16} className="mr-1" />
             {isSharing ? "Sharing..." : "Share"}

@@ -6,6 +6,7 @@ import { getPrompts, toggleFavorite } from "@/services/promptService";
 import { Prompt } from "@/types/prompt";
 import { ArrowDownUp, Heart, Plus, Search } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
 interface PromptListProps {
@@ -21,6 +22,7 @@ export function PromptList({ categoryId, onPromptSelect, selectedPromptId, onTot
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(searchTerm);
+  const navigate = useNavigate();
 
   const fetchPrompts = useCallback(async () => {
     setIsLoading(true);
@@ -250,43 +252,25 @@ export function PromptList({ categoryId, onPromptSelect, selectedPromptId, onTot
                   </div>
                 ) : (
                   <>
-                    <div className="flex items-center justify-between gap-2 mb-1">
-                      <h3 className="font-medium text-gray-900 truncate flex-1">{prompt.title}</h3>
-                      <div className="flex items-center gap-3 flex-shrink-0">
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleToggleFavorite(e, prompt.id, prompt.is_favorite);
-                          }}
-                          className={`transition-opacity ${prompt.is_favorite ? "opacity-100" : "opacity-0 group-hover:opacity-100"}`}
-                        >
-                          <Heart size={14} className={`transition-colors hover:text-red-500 ${prompt.is_favorite ? "text-red-500 fill-current" : "text-gray-400"}`} />
+                    <div className="flex items-center justify-between mb-1.5">
+                      <h3 className="font-medium text-gray-900 truncate flex-1 pr-2">{prompt.title}</h3>
+                      <div className="flex items-center space-x-1">
+                        <button type="button" onClick={(e) => handleToggleFavorite(e, prompt.id, prompt.is_favorite)} className="text-gray-400 hover:text-gray-700 group-hover:visible">
+                          <Heart size={16} className={`${prompt.is_favorite ? "fill-red-500 text-red-500" : ""}`} />
                         </button>
-                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium border border-purple-200 text-purple-700">Version {prompt.version}</span>
                       </div>
                     </div>
-                    {prompt.description && <p className="text-sm text-gray-500 mb-2 line-clamp-2">{prompt.description}</p>}
-                    {prompt.prompt_tags && prompt.prompt_tags.length > 0 && (
-                      <div className="flex flex-wrap gap-2 mt-2">
-                        {prompt.prompt_tags.map(
-                          ({ tags }) =>
-                            tags && (
-                              <span key={tags.id} className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium border border-green-200 text-green-700">
-                                {tags.name}
-                              </span>
-                            )
-                        )}
-                      </div>
-                    )}
-                    <div className="mt-2 text-xs text-gray-400 flex items-center justify-between">
-                      <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium border border-blue-200 text-blue-700">{prompt.token_count || 0} tokens</span>
-                      <span>Updated {new Date(prompt.updated_at || prompt.created_at).toLocaleDateString()}</span>
+                    <p className="text-sm text-gray-500 truncate mb-2">{prompt.description}</p>
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="text-gray-400">{new Date(prompt.updated_at || prompt.created_at).toLocaleDateString()}</span>
+                      <span className="text-gray-400">
+                        {prompt.token_count || 0} {prompt.token_count === 1 ? "token" : "tokens"}
+                      </span>
                     </div>
                   </>
                 )}
               </div>
             ))}
-            {sortedPrompts.filter((p) => p.id !== "new").length === 0 && !isLoading && <div className="text-center text-gray-500 py-4">No prompts found.</div>}
           </div>
         </div>
       </div>
