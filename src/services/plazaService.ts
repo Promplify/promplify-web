@@ -93,15 +93,37 @@ export const likeDiscoverPrompt = async (discoverPromptId: string) => {
 
   if (!userId) throw new Error("User not authenticated");
 
-  // Add like
-  const { data, error } = await supabase
-    .from("plaza_likes")
-    .insert([{ plaza_prompt_id: discoverPromptId, user_id: userId }])
-    .select()
-    .single();
+  // 先验证 plaza_prompts 中是否存在对应的记录
+  const { data: promptExists, error: promptError } = await supabase.from("plaza_prompts").select("id").eq("id", discoverPromptId).single();
 
-  if (error) throw error;
-  return data;
+  if (promptError) {
+    console.error("Error checking prompt existence:", promptError);
+    throw new Error(`Plaza prompt ${discoverPromptId} not found: ${promptError.message}`);
+  }
+
+  // Add like
+  try {
+    const { data, error } = await supabase
+      .from("plaza_likes")
+      .insert([{ plaza_prompt_id: discoverPromptId, user_id: userId }])
+      .select()
+      .single();
+
+    if (error) {
+      console.error("Error adding like:", error);
+      throw error;
+    }
+
+    return data;
+  } catch (error: any) {
+    // 如果是唯一性约束错误（用户已经点过赞），我们可以忽略
+    if (error.code === "23505") {
+      console.log("User already liked this prompt");
+      return { plaza_prompt_id: discoverPromptId, user_id: userId };
+    }
+    console.error("Failed to like prompt:", error);
+    throw error;
+  }
 };
 
 // Unlike a prompt
@@ -112,11 +134,20 @@ export const unlikeDiscoverPrompt = async (discoverPromptId: string) => {
 
   if (!userId) throw new Error("User not authenticated");
 
-  // Remove like
-  const { error } = await supabase.from("plaza_likes").delete().eq("plaza_prompt_id", discoverPromptId).eq("user_id", userId);
+  try {
+    // Remove like
+    const { error } = await supabase.from("plaza_likes").delete().eq("plaza_prompt_id", discoverPromptId).eq("user_id", userId);
 
-  if (error) throw error;
-  return true;
+    if (error) {
+      console.error("Error removing like:", error);
+      throw error;
+    }
+
+    return true;
+  } catch (error) {
+    console.error("Failed to unlike prompt:", error);
+    throw error;
+  }
 };
 
 // Save discover prompt to my list

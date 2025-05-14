@@ -141,6 +141,13 @@ export const getTags = async () => {
   return data;
 };
 
+export const getTagsByPromptId = async (promptId: string) => {
+  const { data, error } = await supabase.from("prompt_tags").select("tags(id, name)").eq("prompt_id", promptId);
+  if (error) throw error;
+  // 返回 tag 对象数组
+  return data?.map((item) => item.tags) || [];
+};
+
 export const createTag = async (name: string) => {
   const session = await supabase.auth.getSession();
   if (!session.data.session?.user.id) {

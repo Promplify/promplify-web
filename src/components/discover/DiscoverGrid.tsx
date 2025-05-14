@@ -73,7 +73,7 @@ export function DiscoverGrid({ prompts, isLoading, currentPage, totalItems, item
 
   if (isLoading) {
     return (
-      <div id="all-prompts" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      <div id="all-prompts" className="px-2 sm:px-4 lg:px-0 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-7">
         {Array.from({ length: 8 }).map((_, index) => (
           <div key={index} className="bg-white rounded-lg shadow-md p-4 flex flex-col">
             <div className="h-40 bg-gray-200 rounded-md animate-pulse mb-4"></div>
@@ -101,7 +101,7 @@ export function DiscoverGrid({ prompts, isLoading, currentPage, totalItems, item
 
   return (
     <div>
-      <div id="all-prompts" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      <div id="all-prompts" className="px-2 sm:px-4 lg:px-0 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-7">
         {prompts.map((prompt) => (
           <DiscoverCard key={prompt.id} discoverPrompt={prompt} />
         ))}

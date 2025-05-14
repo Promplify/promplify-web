@@ -1,10 +1,12 @@
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { supabase } from "@/lib/supabase";
 import { likeDiscoverPrompt, unlikeDiscoverPrompt } from "@/services/plazaService";
+import { getTagsByPromptId } from "@/services/promptService";
 import { DiscoverPrompt } from "@/types/discover";
-import { ThumbsUp, User } from "lucide-react";
+import { ThumbsUp } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -21,6 +23,7 @@ export function DiscoverCard({ discoverPrompt, featured = false }: DiscoverCardP
   const [user, setUser] = useState<any>(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
+  const [fetchedTags, setFetchedTags] = useState<any[]>([]);
 
   useEffect(() => {
     // Check if user is logged in
@@ -63,6 +66,11 @@ export function DiscoverCard({ discoverPrompt, featured = false }: DiscoverCardP
     fetchUser();
   }, [discoverPrompt.user_id]);
 
+  // 保证 likesCount 能响应外部 props 变化
+  useEffect(() => {
+    setLikesCount(discoverPrompt.likes_count || 0);
+  }, [discoverPrompt.likes_count]);
+
   // Handle like/unlike
   const handleLike = async (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -73,38 +81,23 @@ export function DiscoverCard({ discoverPrompt, featured = false }: DiscoverCardP
       return;
     }
 
+    setIsLoading(true);
     try {
-      setIsLoading(true);
-
       if (liked) {
+        // 取消点赞
         await unlikeDiscoverPrompt(discoverPrompt.id);
-        // 直接调用API更新点赞计数
-        const { data, error } = await supabase.from("plaza_prompts").select("likes_count").eq("id", discoverPrompt.id).single();
-
-        if (!error && data) {
-          setLikesCount(data.likes_count || 0);
-        } else {
-          setLikesCount((prev) => Math.max(0, prev - 1));
-        }
-
         setLiked(false);
+        setLikesCount((prev) => Math.max(0, prev - 1));
         toast.success("Like removed");
       } else {
+        // 点赞
         await likeDiscoverPrompt(discoverPrompt.id);
-        // 直接调用API更新点赞计数
-        const { data, error } = await supabase.from("plaza_prompts").select("likes_count").eq("id", discoverPrompt.id).single();
-
-        if (!error && data) {
-          setLikesCount(data.likes_count || 0);
-        } else {
-          setLikesCount((prev) => prev + 1);
-        }
-
         setLiked(true);
+        setLikesCount((prev) => prev + 1);
         toast.success("Prompt liked");
       }
     } catch (error) {
-      console.error("Error toggling like:", error);
+      console.error("Like operation failed:", error);
       toast.error("Operation failed, please try again");
     } finally {
       setIsLoading(false);
@@ -133,30 +126,36 @@ export function DiscoverCard({ discoverPrompt, featured = false }: DiscoverCardP
   // Check if the prompt_tags array exists and has elements
   const hasTags = discoverPrompt.prompt?.prompt_tags && Array.isArray(discoverPrompt.prompt.prompt_tags) && discoverPrompt.prompt.prompt_tags.length > 0;
 
+  // 自动查 tag
+  useEffect(() => {
+    if (!hasTags && discoverPrompt.prompt?.id) {
+      getTagsByPromptId(discoverPrompt.prompt.id)
+        .then((tags) => setFetchedTags(tags))
+        .catch((e) => {
+          console.error("Failed to fetch tags for prompt", e);
+        });
+    }
+  }, [discoverPrompt.prompt?.id, hasTags]);
+
+  // 渲染用的 tagList
+  const tagsList = hasTags
+    ? (discoverPrompt.prompt?.prompt_tags || []).slice(0, 3).map((tagItem: any, index: number) => {
+        const tag = tagItem.tags || tagItem;
+        return {
+          id: tag?.id || `tag-${index}`,
+          name: tag?.name || "Tag",
+        };
+      })
+    : fetchedTags.slice(0, 3).map((tag: any, index: number) => ({
+        id: tag.id || `tag-${index}`,
+        name: tag.name || "Tag",
+      }));
+
   // 添加日志查看标签数据
   useEffect(() => {
     console.log("DiscoverCard prompt_tags:", discoverPrompt.prompt?.prompt_tags);
     console.log("Has tags:", hasTags);
   }, [discoverPrompt, hasTags]);
-
-  // 从标签数据中提取可用的标签
-  const extractTags = () => {
-    if (!hasTags) return [];
-
-    // 尝试不同的数据格式
-    const tagList = discoverPrompt.prompt?.prompt_tags || [];
-
-    return tagList.slice(0, 3).map((tagItem: any, index) => {
-      // 处理可能的数据结构: { tags: Tag } 或直接 Tag
-      const tag = tagItem.tags || tagItem;
-      return {
-        id: tag?.id || `tag-${index}`,
-        name: tag?.name || "Tag",
-      };
-    });
-  };
-
-  const tagsList = extractTags();
 
   return (
     <div
@@ -167,8 +166,8 @@ export function DiscoverCard({ discoverPrompt, featured = false }: DiscoverCardP
     >
       {/* Cover image or gradient */}
       <div
-        className={`h-48 bg-gradient-to-br ${gradientColors[cardGradient]} flex items-center justify-center relative`}
-        style={discoverPrompt.cover_image_url ? { backgroundImage: `url(${discoverPrompt.cover_image_url})`, backgroundSize: "cover", backgroundPosition: "center" } : {}}
+        className={`h-40 bg-gradient-to-br ${gradientColors[cardGradient]} flex items-center justify-center relative`}
+        style={discoverPrompt.cover_image_url ? { backgroundImage: `url(${discoverPrompt.cover_image_url})`, backgroundSize: "cover", backgroundPosition: "center", objectFit: "cover" } : {}}
       >
         {!discoverPrompt.cover_image_url && (
           <span className="text-white text-2xl font-bold px-6 text-center drop-shadow-md">
@@ -219,15 +218,12 @@ export function DiscoverCard({ discoverPrompt, featured = false }: DiscoverCardP
         </div>
 
         {/* Footer with user and likes */}
-        <div className="mt-auto flex items-center justify-between">
+        <div className="mt-auto flex items-center justify-between pt-2 border-t border-gray-100">
           <div className="flex items-center text-xs text-gray-600 hover:text-gray-800 transition-colors">
-            {user?.avatar_url ? (
-              <img src={user.avatar_url} alt={user.full_name || user.username} className="h-4 w-4 rounded-full mr-1" />
-            ) : (
-              <div className="h-4 w-4 rounded-full bg-gray-200 flex items-center justify-center mr-1">
-                <User className="h-2.5 w-2.5 text-gray-500" strokeWidth={2.5} />
-              </div>
-            )}
+            <Avatar className="h-6 w-6 mr-2">
+              <AvatarImage src={user?.avatar_url} alt={user?.full_name || user?.username || "Anonymous"} className="object-cover" />
+              <AvatarFallback className="bg-primary/20 text-white text-xs">{(user?.full_name || user?.username || "A").charAt(0).toUpperCase()}</AvatarFallback>
+            </Avatar>
             <span className="font-medium">{user ? user.full_name || user.username || "Anonymous" : "Anonymous"}</span>
           </div>
 
@@ -237,11 +233,11 @@ export function DiscoverCard({ discoverPrompt, featured = false }: DiscoverCardP
                 <Button
                   variant="ghost"
                   size="sm"
-                  className={`px-2 py-1 h-6 min-w-[50px] rounded-full ${liked ? "bg-blue-50 text-blue-600 hover:bg-blue-100" : "text-gray-600 hover:bg-gray-100"} transition-all duration-200`}
+                  className={`px-2 py-1 h-7 min-w-[50px] rounded-full ${liked ? "bg-blue-50 text-blue-600 hover:bg-blue-100" : "text-gray-600 hover:bg-gray-100"} transition-all duration-200`}
                   onClick={handleLike}
                   disabled={isLoading}
                 >
-                  <ThumbsUp className={`h-3 w-3 ${liked ? "fill-blue-500 stroke-blue-500" : "stroke-gray-600"} mr-0.5`} strokeWidth={2} />
+                  <ThumbsUp className={`h-3.5 w-3.5 ${liked ? "fill-blue-500 stroke-blue-500" : "stroke-gray-600"} mr-1`} strokeWidth={2} />
                   <span className="text-xs">{likesCount}</span>
                 </Button>
               </TooltipTrigger>
