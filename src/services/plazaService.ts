@@ -93,16 +93,37 @@ export const likeDiscoverPrompt = async (discoverPromptId: string) => {
 
   if (!userId) throw new Error("User not authenticated");
 
-  // 先验证 plaza_prompts 中是否存在对应的记录
-  const { data: promptExists, error: promptError } = await supabase.from("plaza_prompts").select("id").eq("id", discoverPromptId).single();
+  // 先验证 plaza_prompts 中是否存在对应的记录，并获取当前的 likes_count
+  const { data: promptData, error: promptError } = await supabase.from("plaza_prompts").select("id, likes_count").eq("id", discoverPromptId).single();
 
   if (promptError) {
     console.error("Error checking prompt existence:", promptError);
     throw new Error(`Plaza prompt ${discoverPromptId} not found: ${promptError.message}`);
   }
 
-  // Add like
+  // 获取当前的 likes_count
+  const currentLikesCount = promptData.likes_count || 0;
+
   try {
+    // 1. 检查用户是否已经点赞
+    const { data: existingLike, error: checkError } = await supabase
+      .from("plaza_likes")
+      .select("id")
+      .eq("plaza_prompt_id", discoverPromptId)
+      .eq("user_id", userId)
+      .maybeSingle();
+
+    if (checkError) {
+      console.error("Error checking existing like:", checkError);
+    }
+
+    // 如果用户已经点赞，直接返回
+    if (existingLike) {
+      console.log("User already liked this prompt");
+      return existingLike;
+    }
+
+    // 2. 添加点赞记录
     const { data, error } = await supabase
       .from("plaza_likes")
       .insert([{ plaza_prompt_id: discoverPromptId, user_id: userId }])
@@ -114,13 +135,20 @@ export const likeDiscoverPrompt = async (discoverPromptId: string) => {
       throw error;
     }
 
+    // 3. 直接更新 plaza_prompts 表的 likes_count（重要变更）
+    console.log(`Updating likes_count for prompt ${discoverPromptId} from ${currentLikesCount} to ${currentLikesCount + 1}`);
+    const { error: updateError } = await supabase
+      .from("plaza_prompts")
+      .update({ likes_count: currentLikesCount + 1 })
+      .eq("id", discoverPromptId);
+
+    if (updateError) {
+      console.error("Error updating likes_count:", updateError);
+      console.error("Full error object:", JSON.stringify(updateError));
+    }
+
     return data;
   } catch (error: any) {
-    // 如果是唯一性约束错误（用户已经点过赞），我们可以忽略
-    if (error.code === "23505") {
-      console.log("User already liked this prompt");
-      return { plaza_prompt_id: discoverPromptId, user_id: userId };
-    }
     console.error("Failed to like prompt:", error);
     throw error;
   }
@@ -134,13 +162,59 @@ export const unlikeDiscoverPrompt = async (discoverPromptId: string) => {
 
   if (!userId) throw new Error("User not authenticated");
 
+  // 先获取当前的 likes_count
+  const { data: promptData, error: promptError } = await supabase.from("plaza_prompts").select("id, likes_count").eq("id", discoverPromptId).single();
+
+  if (promptError) {
+    console.error("Error checking prompt existence:", promptError);
+    throw new Error(`Plaza prompt ${discoverPromptId} not found: ${promptError.message}`);
+  }
+
+  // 获取当前的 likes_count
+  const currentLikesCount = promptData.likes_count || 0;
+
   try {
-    // Remove like
-    const { error } = await supabase.from("plaza_likes").delete().eq("plaza_prompt_id", discoverPromptId).eq("user_id", userId);
+    // 1. 检查用户是否已经点赞
+    const { data: existingLike, error: checkError } = await supabase
+      .from("plaza_likes")
+      .select("id")
+      .eq("plaza_prompt_id", discoverPromptId)
+      .eq("user_id", userId)
+      .maybeSingle();
+
+    if (checkError) {
+      console.error("Error checking existing like:", checkError);
+    }
+
+    // 如果用户没有点赞，直接返回
+    if (!existingLike) {
+      console.log("User hasn't liked this prompt");
+      return true;
+    }
+
+    // 2. 移除点赞
+    const { error } = await supabase
+      .from("plaza_likes")
+      .delete()
+      .eq("plaza_prompt_id", discoverPromptId)
+      .eq("user_id", userId);
 
     if (error) {
       console.error("Error removing like:", error);
       throw error;
+    }
+
+    // 3. 直接更新 plaza_prompts 表的 likes_count，确保不为负数
+    const newLikesCount = Math.max(0, currentLikesCount - 1);
+    console.log(`Updating likes_count for prompt ${discoverPromptId} from ${currentLikesCount} to ${newLikesCount}`);
+    const { error: updateError } = await supabase
+      .from("plaza_prompts")
+      .update({ likes_count: newLikesCount })
+      .eq("id", discoverPromptId);
+
+    if (updateError) {
+      console.error("Error updating likes_count:", updateError);
+      console.error("Full error object:", JSON.stringify(updateError));
     }
 
     return true;
@@ -149,6 +223,8 @@ export const unlikeDiscoverPrompt = async (discoverPromptId: string) => {
     throw error;
   }
 };
+
+
 
 // Save discover prompt to my list
 export const saveDiscoverPromptToMyList = async (discoverPromptId: string) => {
