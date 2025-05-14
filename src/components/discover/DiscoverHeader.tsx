@@ -10,6 +10,10 @@ export function DiscoverHeader() {
         <div className="max-w-3xl mx-auto text-center">
           <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-[#2C106A] to-purple-600">Prompt Discover</h1>
           <p className="text-xl text-gray-700 mb-8">Discover, share, and save the best AI prompts. Join our community to explore amazing prompts created by users and share your own creativity.</p>
+          <p className="text-sm text-gray-600 mb-6 italic border-l-2 border-purple-300 pl-3 mx-auto max-w-3xl bg-white/50 py-2 rounded">
+            Shared prompts must comply with legal requirements. Feel free to share open-source prompts, but please avoid sharing prompts from commercial products that may result in intellectual
+            property disputes.
+          </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button onClick={() => navigate("/dashboard")} className="bg-[#2C106A] hover:bg-[#1F0B4C] text-white px-6 py-2">
               Share My Prompts
