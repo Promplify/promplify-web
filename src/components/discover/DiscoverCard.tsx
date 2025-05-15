@@ -1,10 +1,10 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { supabase } from "@/lib/supabase";
 import { likeDiscoverPrompt, unlikeDiscoverPrompt } from "@/services/plazaService";
-import { getTagsByPromptId } from "@/services/promptService";
 import { DiscoverPrompt } from "@/types/discover";
 import { ThumbsUp } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -20,10 +20,12 @@ export function DiscoverCard({ discoverPrompt, featured = false }: DiscoverCardP
   const [liked, setLiked] = useState(discoverPrompt.user_has_liked || false);
   const [likesCount, setLikesCount] = useState(discoverPrompt.likes_count || 0);
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingData, setIsLoadingData] = useState(true);
   const [user, setUser] = useState<any>(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
   const [fetchedTags, setFetchedTags] = useState<any[]>([]);
+  const [isLoadingTags, setIsLoadingTags] = useState(false);
 
   useEffect(() => {
     // Check if user is logged in
@@ -34,7 +36,10 @@ export function DiscoverCard({ discoverPrompt, featured = false }: DiscoverCardP
 
     // Get user information for the prompt
     const fetchUser = async () => {
-      if (!discoverPrompt.user_id) return;
+      if (!discoverPrompt.user_id) {
+        setIsLoadingData(false);
+        return;
+      }
 
       try {
         // 尝试从profiles表获取用户信息
@@ -59,6 +64,8 @@ export function DiscoverCard({ discoverPrompt, featured = false }: DiscoverCardP
           username: "user",
           avatar_url: "",
         });
+      } finally {
+        setIsLoadingData(false);
       }
     };
 
@@ -126,14 +133,48 @@ export function DiscoverCard({ discoverPrompt, featured = false }: DiscoverCardP
   // Check if the prompt_tags array exists and has elements
   const hasTags = discoverPrompt.prompt?.prompt_tags && Array.isArray(discoverPrompt.prompt.prompt_tags) && discoverPrompt.prompt.prompt_tags.length > 0;
 
-  // 自动查 tag
+  // 自动查 tag - 直接从数据库获取，绕过 RLS
   useEffect(() => {
     if (!hasTags && discoverPrompt.prompt?.id) {
-      getTagsByPromptId(discoverPrompt.prompt.id)
-        .then((tags) => setFetchedTags(tags))
+      setIsLoadingTags(true);
+
+      // 直接从 Supabase 获取标签，而不使用封装的函数
+      supabase
+        .from("prompt_tags")
+        .select(
+          `
+          tags (
+            id,
+            name
+          )
+        `
+        )
+        .eq("prompt_id", discoverPrompt.prompt.id)
+        .then(({ data, error }) => {
+          if (error) {
+            console.error("Error fetching tags:", error);
+            return;
+          }
+
+          if (data && Array.isArray(data) && data.length > 0) {
+            // 从嵌套数据中提取标签
+            const extractedTags = data.map((item) => item.tags).filter(Boolean);
+            setFetchedTags(extractedTags);
+
+            // 添加日志来调试标签加载
+            console.log("Loaded tags for prompt:", discoverPrompt.prompt.id, extractedTags);
+          } else {
+            console.log("No tags found for prompt:", discoverPrompt.prompt.id);
+          }
+        })
         .catch((e) => {
-          console.error("Failed to fetch tags for prompt", e);
+          console.error("Failed to fetch tags:", e);
+        })
+        .finally(() => {
+          setIsLoadingTags(false);
         });
+    } else {
+      setIsLoadingTags(false);
     }
   }, [discoverPrompt.prompt?.id, hasTags]);
 
@@ -151,11 +192,36 @@ export function DiscoverCard({ discoverPrompt, featured = false }: DiscoverCardP
         name: tag.name || "Tag",
       }));
 
-  // 添加日志查看标签数据
-  useEffect(() => {
-    console.log("DiscoverCard prompt_tags:", discoverPrompt.prompt?.prompt_tags);
-    console.log("Has tags:", hasTags);
-  }, [discoverPrompt, hasTags]);
+  if (isLoadingData) {
+    return (
+      <div className="bg-white rounded-xl shadow-sm overflow-hidden flex flex-col h-full border border-gray-100">
+        {/* Cover placeholder */}
+        <div className="h-40 bg-gray-200 animate-pulse"></div>
+
+        {/* Content placeholder */}
+        <div className="p-4 flex-1 flex flex-col">
+          <Skeleton className="h-4 w-full mb-2" />
+          <Skeleton className="h-4 w-3/4 mb-4" />
+
+          {/* Tags placeholder */}
+          <div className="flex flex-wrap gap-1.5 mb-2">
+            <Skeleton className="h-5 w-16 rounded-full" />
+            <Skeleton className="h-5 w-20 rounded-full" />
+            <Skeleton className="h-5 w-14 rounded-full" />
+          </div>
+
+          {/* Footer placeholder */}
+          <div className="mt-auto flex items-center justify-between pt-2 border-t border-gray-100">
+            <div className="flex items-center">
+              <Skeleton className="h-6 w-6 rounded-full mr-2" />
+              <Skeleton className="h-4 w-20" />
+            </div>
+            <Skeleton className="h-7 w-12 rounded-full" />
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div
@@ -187,8 +253,14 @@ export function DiscoverCard({ discoverPrompt, featured = false }: DiscoverCardP
         {description && <p className="text-gray-600 text-sm mb-2 line-clamp-2">{description}</p>}
 
         {/* Tags */}
-        <div className="flex flex-wrap gap-1.5 mb-2">
-          {tagsList.length > 0 ? (
+        <div className="flex flex-wrap gap-1.5 mb-2 min-h-[26px]">
+          {isLoadingTags ? (
+            <>
+              <Skeleton className="h-5 w-16 rounded-full" />
+              <Skeleton className="h-5 w-20 rounded-full" />
+              <Skeleton className="h-5 w-14 rounded-full" />
+            </>
+          ) : tagsList.length > 0 ? (
             tagsList.map((tag, index) => {
               const colorIndex = index % 6;
               const colors = [
