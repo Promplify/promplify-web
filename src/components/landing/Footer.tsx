@@ -19,7 +19,7 @@ export function Footer() {
               <Mail className="w-4 h-4" />
             </a>
             <a
-              href="https://github.com/Promplify/promplify-issues"
+              href="https://github.com/Promplify/promplify-web/issues"
               target="_blank"
               rel="noopener noreferrer"
               className="text-white/60 hover:text-white text-sm transition-colors inline-flex items-center gap-1.5"

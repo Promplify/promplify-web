@@ -58,7 +58,7 @@ export const Hero = () => {
             </Link>
           </Button>
           <Button asChild size="lg" variant="outline" className="border-[#2C106A] text-[#2C106A] hover:bg-[#2C106A]/5 shadow-md hover:shadow-lg transition-all duration-300 group relative px-4">
-            <a href="https://github.com/Promplify/promplify-issues" target="_blank" rel="noopener noreferrer" className="inline-flex items-center">
+            <a href="https://github.com/Promplify/promplify-web/issues" target="_blank" rel="noopener noreferrer" className="inline-flex items-center">
               <Github className="h-4 w-4" />
               Feedback & Issues
             </a>
