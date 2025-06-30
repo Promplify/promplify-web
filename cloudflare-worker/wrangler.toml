@@ -1,0 +1,8 @@
+name = "promplify-api"
+main = "src/index.ts"
+compatibility_date = "2024-03-20"
+
+[vars]
+# Environment variables should be set via Cloudflare Dashboard or wrangler secret
+# SUPABASE_URL = "YOUR_SUPABASE_URL"
+# SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY" 
