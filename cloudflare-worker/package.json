@@ -13,7 +13,7 @@
   "license": "ISC",
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20240208.0",
-    "wrangler": "^3.28.1"
+    "wrangler": "^4.22.0"
   },
   "dependencies": {
     "@sentry/react": "^9.13.0",
