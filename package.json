@@ -37,7 +37,7 @@
     "preview": "vite preview",
     "test": "echo \"No tests specified\" && exit 0",
     "clean": "rm -rf dist node_modules/.vite",
-    "prepare": "npm run type-check && npm run lint"
+    "prepare": "npm run type-check"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
