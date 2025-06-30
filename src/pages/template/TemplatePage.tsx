@@ -56,6 +56,7 @@ export default function TemplatePage() {
             .eq("id", template.id);
 
           if (updateError) {
+            console.warn("Failed to update view count:", updateError);
           } else {
             // Re-fetch data after update to confirm success
             const { data: refreshData, error: refreshError } = await supabase.from("prompt_template").select("views").eq("id", template.id).single();
@@ -66,7 +67,9 @@ export default function TemplatePage() {
               setViewCount((template.views || 0) + 1);
             }
           }
-        } catch (updateErr) {}
+        } catch (updateErr) {
+          console.warn("Failed to update view count:", updateErr);
+        }
       } catch (err: any) {
         setError(err.message || "Failed to load template");
       } finally {

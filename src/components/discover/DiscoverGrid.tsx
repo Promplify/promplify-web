@@ -22,7 +22,7 @@ export function DiscoverGrid({ prompts, isLoading, currentPage, totalItems, item
     const maxButtons = window.innerWidth < 640 ? 3 : 5; // Reduce pagination button count on small screens
 
     let startPage = Math.max(1, currentPage - Math.floor(maxButtons / 2));
-    let endPage = Math.min(totalPages, startPage + maxButtons - 1);
+    const endPage = Math.min(totalPages, startPage + maxButtons - 1);
 
     if (endPage - startPage + 1 < maxButtons) {
       startPage = Math.max(1, endPage - maxButtons + 1);
