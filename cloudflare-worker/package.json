@@ -13,11 +13,11 @@
   "license": "ISC",
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20240208.0",
-    "wrangler": "^3.28.1"
+    "wrangler": "^4.22.0"
   },
   "dependencies": {
     "@sentry/react": "^9.13.0",
-    "@sentry/vite-plugin": "^3.3.1",
+    "@sentry/vite-plugin": "^3.5.0",
     "@supabase/supabase-js": "^2.39.7",
     "@types/prismjs": "^1.26.5",
     "prismjs": "^1.30.0"
