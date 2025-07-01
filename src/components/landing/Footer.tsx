@@ -19,12 +19,16 @@ export function Footer() {
               <Mail className="w-4 h-4" />
             </a>
             <a
-              href="https://github.com/Promplify/promplify-web/issues"
+              href="https://github.com/Promplify/promplify-web"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-white/60 hover:text-white text-sm transition-colors inline-flex items-center gap-1.5"
+              className="text-white/60 hover:text-white text-sm transition-all duration-300 inline-flex items-center gap-1.5 px-2 py-1 rounded-md hover:bg-white/10 group"
+              title="⭐ Star us on GitHub"
             >
-              <Github className="w-4 h-4" />
+              <div className="flex items-center justify-center w-5 h-5 rounded-full bg-white/10 group-hover:bg-white/20 transition-all duration-300">
+                <Github className="w-3 h-3 group-hover:scale-110 transition-transform duration-300" />
+              </div>
+              <span className="font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-300">Star</span>
             </a>
           </div>
         </div>

@@ -32,12 +32,19 @@ export const Hero = () => {
       </div>
 
       <div className="relative animate-fade-up z-10 max-w-4xl mx-auto will-change-transform">
-        <div className="mb-4 animate-bounce-slow">
+        <div className="mb-4 animate-bounce-slow flex flex-col items-center gap-3">
           <span className="inline-block px-4 py-1.5 text-sm font-semibold rounded-full bg-gradient-to-r from-[#2C106A]/10 to-purple-500/10 border border-[#2C106A]/20">
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#2C106A] via-purple-600 via-pink-500 via-rose-400 to-indigo-500 animate-gradient-x bg-[length:200%_auto]">
               AI Prompt Management Made Simple
             </span>
           </span>
+          <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200/60 shadow-sm hover:shadow-md hover:scale-105 transition-all duration-300 cursor-default group">
+            <div className="flex items-center justify-center w-5 h-5 rounded-full bg-green-100 group-hover:bg-green-200 transition-colors duration-300">
+              <Github className="h-3 w-3 text-green-600 group-hover:text-green-700 transition-colors duration-300" />
+            </div>
+            <span className="text-sm font-semibold text-green-700 group-hover:text-green-800 transition-colors duration-300">Open Source & Free</span>
+            <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+          </div>
         </div>
         <h1 className="text-4xl md:text-6xl font-bold mb-3 leading-tight">
           <p className="bg-clip-text text-transparent bg-gradient-to-r from-[#2C106A] to-purple-600 md:text-7xl animate-gradient-x" style={{ lineHeight: "1.1" }}>
@@ -46,21 +53,43 @@ export const Hero = () => {
           <p className="bg-clip-text text-transparent bg-gradient-to-r from-[#2C106A] to-purple-600">Amplify Your AI Potential</p>
         </h1>
 
-        <p className="text-xl md:text-2xl font-semibold text-gray-700 mb-3 max-w-2xl mx-auto">Your Professional AI Prompt Management Platform</p>
+        <p className="text-xl md:text-2xl font-semibold text-gray-700 mb-3 max-w-2xl mx-auto">Open Source AI Prompt Management Platform</p>
         <p className="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto mb-8">
-          Create and optimize your AI prompts with our intelligent platform. Track tokens, manage versions, and integrate seamlessly with your applications.
+          Create and optimize your AI prompts with our open-source platform. Track tokens, manage versions, and integrate seamlessly with your applications. Free forever, built by the community.
         </p>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-6">
-          <Button asChild size="lg" className="group bg-[#2C106A] hover:bg-[#2C106A]/90 text-white px-8 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
-            <Link to="/dashboard">
-              Get Started <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+          <Button
+            asChild
+            size="lg"
+            className="group bg-gradient-to-r from-[#2C106A] to-purple-600 hover:from-[#2C106A]/90 hover:to-purple-600/90 text-white px-8 py-3 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 hover:scale-105 relative overflow-hidden"
+          >
+            <Link to="/dashboard" className="relative z-10">
+              <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+              Get Started <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform duration-300" />
             </Link>
           </Button>
-          <Button asChild size="lg" variant="outline" className="border-[#2C106A] text-[#2C106A] hover:bg-[#2C106A]/5 shadow-md hover:shadow-lg transition-all duration-300 group relative px-4">
-            <a href="https://github.com/Promplify/promplify-web/issues" target="_blank" rel="noopener noreferrer" className="inline-flex items-center">
-              <Github className="h-4 w-4" />
-              Feedback & Issues
+          <Button
+            asChild
+            size="lg"
+            variant="outline"
+            className="border-2 border-gray-300 text-gray-700 hover:border-gray-400 hover:bg-gray-50 shadow-md hover:shadow-lg transition-all duration-300 group relative px-6 py-3 overflow-hidden hover:scale-105"
+          >
+            <a href="https://github.com/Promplify/promplify-web" target="_blank" rel="noopener noreferrer" className="inline-flex items-center relative z-10">
+              <div className="absolute inset-0 bg-gradient-to-r from-gray-50/0 via-gray-100/50 to-gray-50/0 -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
+              <div className="flex items-center justify-center w-5 h-5 rounded-full bg-gray-100 group-hover:bg-gray-200 transition-all duration-300 mr-2">
+                <Github className="h-3 w-3 text-gray-600 group-hover:text-gray-700 transition-colors duration-300" />
+              </div>
+              <span className="font-medium">View Source Code</span>
+              <div className="ml-1 opacity-60 group-hover:opacity-100 transition-opacity duration-300">
+                <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                  <path
+                    fillRule="evenodd"
+                    d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </div>
             </a>
           </Button>
         </div>
