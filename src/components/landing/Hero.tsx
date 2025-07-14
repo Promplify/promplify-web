@@ -47,10 +47,10 @@ export const Hero = () => {
           </div>
         </div>
         <h1 className="text-4xl md:text-6xl font-bold mb-3 leading-tight">
-          <p className="bg-clip-text text-transparent bg-gradient-to-r from-[#2C106A] to-purple-600 md:text-7xl animate-gradient-x" style={{ lineHeight: "1.1" }}>
+          <span className="block bg-clip-text text-transparent bg-gradient-to-r from-[#2C106A] to-purple-600 md:text-7xl animate-gradient-x" style={{ lineHeight: "1.1" }}>
             Promplify
-          </p>
-          <p className="bg-clip-text text-transparent bg-gradient-to-r from-[#2C106A] to-purple-600">Amplify Your AI Potential</p>
+          </span>
+          <span className="block bg-clip-text text-transparent bg-gradient-to-r from-[#2C106A] to-purple-600">Amplify Your AI Potential</span>
         </h1>
 
         <p className="text-xl md:text-2xl font-semibold text-gray-700 mb-3 max-w-2xl mx-auto">Open Source AI Prompt Management Platform</p>

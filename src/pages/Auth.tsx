@@ -36,7 +36,13 @@ export default function Auth() {
 
   return (
     <div className="container relative h-screen flex-col items-center justify-center md:grid lg:max-w-none lg:grid-cols-[2fr_3fr] lg:px-0">
-      <SEO canonicalPath="/auth" />
+      <SEO
+        canonicalPath="/auth"
+        title="Sign In - Promplify"
+        description="Sign in or create an account to start managing your AI prompts with Promplify."
+        keywords="sign in, login, register, account, AI prompt management"
+      />
+      <meta name="robots" content="noindex, nofollow" />
       <div className="relative hidden h-full flex-col bg-muted p-8 text-white lg:flex dark:border-r">
         <div className="absolute inset-0 bg-[#000000]" />
         <div className="relative z-20 flex items-center text-2xl font-medium">

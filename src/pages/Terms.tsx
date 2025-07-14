@@ -11,7 +11,12 @@ export default function Terms() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <SEO canonicalPath="/terms" />
+      <SEO
+        canonicalPath="/terms"
+        title="Terms of Service - Promplify"
+        description="Read Promplify's Terms of Service to understand your rights and responsibilities when using our AI prompt management platform."
+        keywords="terms of service, legal terms, user agreement"
+      />
       <Navigation />
       <main className="container max-w-4xl mx-auto p-6 pt-32">
         <div className="bg-white shadow-sm rounded-lg p-8 md:p-12">

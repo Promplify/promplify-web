@@ -3,7 +3,7 @@
   <!-- Homepage -->
   <url>
     <loc>https://promplify.com</loc>
-    <lastmod>2024-03-20</lastmod>
+    <lastmod>2025-01-03</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
@@ -11,39 +11,23 @@
   <!-- Templates page -->
   <url>
     <loc>https://promplify.com/templates</loc>
-    <lastmod>2024-03-20</lastmod>
+    <lastmod>2025-01-03</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
 
-  <!-- Authentication page -->
+  <!-- Discover page -->
   <url>
-    <loc>https://promplify.com/auth</loc>
-    <lastmod>2024-03-20</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-
-  <!-- Dashboard -->
-  <url>
-    <loc>https://promplify.com/dashboard</loc>
-    <lastmod>2024-03-20</lastmod>
+    <loc>https://promplify.com/discover</loc>
+    <lastmod>2025-01-03</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
-  </url>
-
-  <!-- User profile -->
-  <url>
-    <loc>https://promplify.com/profile</loc>
-    <lastmod>2024-03-20</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
   </url>
 
   <!-- Privacy policy -->
   <url>
     <loc>https://promplify.com/privacy</loc>
-    <lastmod>2024-03-20</lastmod>
+    <lastmod>2025-01-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
@@ -51,8 +35,8 @@
   <!-- Terms of service -->
   <url>
     <loc>https://promplify.com/terms</loc>
-    <lastmod>2024-03-20</lastmod>
+    <lastmod>2025-01-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
-</urlset> 
+</urlset>

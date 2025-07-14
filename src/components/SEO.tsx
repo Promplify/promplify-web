@@ -12,7 +12,7 @@ interface SEOProps {
 export function SEO({ canonicalPath, title, description, keywords, imageUrl }: SEOProps) {
   const location = useLocation();
   const baseUrl = "https://promplify.com";
-  const defaultImage = `${baseUrl}/og-image.jpg`;
+  const defaultImage = `${baseUrl}/logo.svg`;
 
   useEffect(() => {
     // Remove existing canonical tags
@@ -66,10 +66,16 @@ export function SEO({ canonicalPath, title, description, keywords, imageUrl }: S
       "og:title": title || document.title,
       "og:description": description || "",
       "og:image": imageUrl || defaultImage,
+      "og:image:width": "1200",
+      "og:image:height": "630",
+      "og:site_name": "Promplify",
       "twitter:card": "summary_large_image",
+      "twitter:site": "@promplify",
+      "twitter:creator": "@promplify",
       "twitter:title": title || document.title,
       "twitter:description": description || "",
       "twitter:image": imageUrl || defaultImage,
+      "twitter:image:alt": title ? `${title} - Promplify` : "Promplify - AI Prompt Management Platform",
     };
 
     // Set value for each OG and Twitter tag

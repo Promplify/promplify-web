@@ -79,7 +79,13 @@ export default function Dashboard() {
 
   return (
     <div className="flex flex-col h-screen">
-      <SEO canonicalPath="/dashboard" />
+      <SEO
+        canonicalPath="/dashboard"
+        title="Dashboard - Promplify"
+        description="Manage and optimize your AI prompts with Promplify's intuitive dashboard."
+        keywords="AI prompt management, prompt organization, prompt optimization, AI workflow"
+      />
+      <meta name="robots" content="noindex, nofollow" />
       {/* Fixed Header */}
       <div className="flex-none">
         <DashboardHeader />
