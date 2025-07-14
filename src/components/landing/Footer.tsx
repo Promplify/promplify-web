@@ -8,6 +8,9 @@ export function Footer() {
         <div className="flex flex-col md:flex-row justify-between items-center">
           <div className="text-white/60 text-sm">© {new Date().getFullYear()} Promplify. All rights reserved.</div>
           <div className="flex items-center space-x-6 mt-4 md:mt-0">
+            <a href="https://startupfa.me/s/promplify?utm_source=promplify.com" target="_blank">
+              <img src="https://startupfa.me/badges/featured/dark-small.webp" alt="Featured on Startup Fame" width="224" height="36" />
+            </a>
             <Link to="/privacy" className="text-white/60 hover:text-white text-sm transition-colors">
               Privacy Policy
             </Link>
