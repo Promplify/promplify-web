@@ -157,7 +157,13 @@ export default function Profile() {
   if (isLoading) {
     return (
       <div className="flex flex-col min-h-screen">
-        <SEO canonicalPath="/profile" />
+        <SEO
+          canonicalPath="/profile"
+          title="Profile - Promplify"
+          description="Manage your Promplify profile settings and account information."
+          keywords="profile, account settings, user profile"
+        />
+        <meta name="robots" content="noindex, nofollow" />
         <Navigation />
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center">
@@ -174,7 +180,13 @@ export default function Profile() {
 
   return (
     <div className="flex flex-col min-h-screen">
-      <SEO canonicalPath="/profile" />
+      <SEO
+        canonicalPath="/profile"
+        title="Profile - Promplify"
+        description="Manage your Promplify profile settings and account information."
+        keywords="profile, account settings, user profile"
+      />
+      <meta name="robots" content="noindex, nofollow" />
       <Navigation />
       <div className="flex-1">
         <main className="container max-w-2xl mx-auto p-6 pt-32">

@@ -138,7 +138,12 @@ export default function Templates() {
 
   return (
     <>
-      <SEO canonicalPath="/templates" />
+      <SEO
+        canonicalPath="/templates"
+        title="AI Prompt Templates - Promplify"
+        description="Discover and use professionally crafted AI prompt templates to enhance your productivity with ChatGPT, Claude, and other AI models."
+        keywords="AI prompt templates, ChatGPT templates, Claude templates, prompt library, AI workflow templates"
+      />
       <div className="flex flex-col min-h-screen bg-gradient-to-b from-white to-gray-50">
         <Navigation />
 
