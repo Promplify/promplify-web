@@ -217,10 +217,6 @@ export default function Templates() {
                           <span className="font-semibold">{countTokens(template.system_prompt)}</span>
                           <span className="ml-1 text-purple-500 font-medium">tokens</span>
                         </div>
-                        <span className="w-1 h-1 rounded-full bg-gray-200"></span>
-                        <div className="inline-flex items-center px-2.5 py-1 rounded-md bg-gradient-to-r from-blue-50 to-blue-50/50 text-blue-700 border border-blue-100/80 shadow-sm shadow-blue-100/50">
-                          <span className="font-medium">{new Date(template.created_at).toLocaleDateString()}</span>
-                        </div>
                         {template.category && (
                           <>
                             <span className="w-1 h-1 rounded-full bg-gray-200"></span>
