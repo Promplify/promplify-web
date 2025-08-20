@@ -38,13 +38,6 @@ export const Hero = () => {
               AI Prompt Management Made Simple
             </span>
           </span>
-          <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200/60 shadow-sm hover:shadow-md hover:scale-105 transition-all duration-300 cursor-default group">
-            <div className="flex items-center justify-center w-5 h-5 rounded-full bg-green-100 group-hover:bg-green-200 transition-colors duration-300">
-              <Github className="h-3 w-3 text-green-600 group-hover:text-green-700 transition-colors duration-300" />
-            </div>
-            <span className="text-sm font-semibold text-green-700 group-hover:text-green-800 transition-colors duration-300">Open Source & Free</span>
-            <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-          </div>
         </div>
         <h1 className="text-4xl md:text-6xl font-bold mb-3 leading-tight">
           <span className="block bg-clip-text text-transparent bg-gradient-to-r from-[#2C106A] to-purple-600 md:text-7xl animate-gradient-x" style={{ lineHeight: "1.1" }}>

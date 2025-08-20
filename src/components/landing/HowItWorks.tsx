@@ -55,11 +55,6 @@ export const HowItWorks = () => {
                   </div>
                   <div className="flex-grow">
                     <h3 className="text-xl font-semibold text-gray-900 mb-1">{step.title}</h3>
-                    {step.comingSoon && (
-                      <div className="absolute top-0 right-0">
-                        <span className="px-2 py-0.5 text-[10px] font-medium rounded-full bg-yellow-100/80 text-yellow-800 backdrop-blur-sm">Coming Soon</span>
-                      </div>
-                    )}
                     <p className="text-gray-600 text-sm mt-2 line-clamp-3">{step.description}</p>
                   </div>
                 </div>
