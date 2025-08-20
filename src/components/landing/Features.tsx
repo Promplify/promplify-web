@@ -58,7 +58,10 @@ export const Features = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 lg:gap-4">
           {features.map((feature, index) => (
-            <div key={index} className="group relative p-6 bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 overflow-hidden">
+            <div
+              key={index}
+              className="group relative p-6 bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 overflow-hidden border border-transparent hover:border-[#2C106A]/20"
+            >
               <div className="absolute inset-0 bg-gradient-to-r from-[#2C106A]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
               <div className="relative z-10 h-full flex flex-col">
@@ -79,7 +82,7 @@ export const Features = () => {
         {/* Stats Section */}
         <div className="mt-20 relative">
           <div className="absolute inset-0 bg-gradient-to-r from-[#2C106A]/5 via-purple-500/5 to-[#2C106A]/5 rounded-2xl" />
-          <div className="relative grid grid-cols-1 md:grid-cols-3 gap-8 rounded-2xl p-8">
+          <div className="relative grid grid-cols-1 md:grid-cols-3 gap-8 rounded-2xl p-8 bg-white/60 backdrop-blur">
             {stats.map((stat, index) => (
               <div key={index} className="text-center group">
                 <div className="mb-1">

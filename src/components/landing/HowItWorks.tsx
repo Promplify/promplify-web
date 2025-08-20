@@ -8,28 +8,24 @@ const steps = [
     icon: BookMarked,
     title: "Create & Save",
     description: "Create and store your AI prompts in our intuitive editor with multi-model support",
-    comingSoon: false,
   },
   {
     number: "02",
     icon: Sparkles,
     title: "Optimize & Improve",
     description: "Get AI-powered suggestions to enhance your prompts and improve their effectiveness",
-    comingSoon: false,
   },
   {
     number: "03",
     icon: Share2,
     title: "Share & Collaborate",
     description: "Share your best prompts and collaborate with team members in real-time",
-    comingSoon: false,
   },
   {
     number: "04",
     icon: Gauge,
     title: "Monitor & Analyze",
     description: "Track token usage and analyze prompt performance with real-time monitoring tools",
-    comingSoon: true,
   },
 ];
 
@@ -46,7 +42,7 @@ export const HowItWorks = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 mb-12 px-4 md:px-6 lg:px-8">
           {steps.map((step, index) => (
             <div key={index} className="relative group hover:-translate-y-1 transition-transform duration-300">
-              <div className="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow duration-300 h-full">
+              <div className="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow duration-300 h-full border border-transparent hover:border-[#2C106A]/20">
                 <div className="absolute -top-3 -right-3 bg-[#2C106A] text-white w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold">{step.number}</div>
 
                 <div className="relative h-full flex flex-col">
@@ -55,11 +51,6 @@ export const HowItWorks = () => {
                   </div>
                   <div className="flex-grow">
                     <h3 className="text-xl font-semibold text-gray-900 mb-1">{step.title}</h3>
-                    {step.comingSoon && (
-                      <div className="absolute top-0 right-0">
-                        <span className="px-2 py-0.5 text-[10px] font-medium rounded-full bg-yellow-100/80 text-yellow-800 backdrop-blur-sm">Coming Soon</span>
-                      </div>
-                    )}
                     <p className="text-gray-600 text-sm mt-2 line-clamp-3">{step.description}</p>
                   </div>
                 </div>

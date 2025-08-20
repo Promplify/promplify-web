@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 export function Footer() {
   return (
-    <footer className="bg-black py-6 mt-auto">
+    <footer className="bg-gradient-to-r from-[#2C106A] via-purple-900 to-[#2C106A] py-6 mt-auto">
       <div className="container mx-auto px-6">
         <div className="flex flex-col md:flex-row justify-between items-center">
           <div className="text-white/60 text-sm">© {new Date().getFullYear()} Promplify. All rights reserved.</div>
