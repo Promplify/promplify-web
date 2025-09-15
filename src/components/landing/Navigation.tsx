@@ -2,9 +2,9 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { supabase } from "@/lib/supabase";
-import { exportUserData } from "@/services/promptService";
-import { Download, ExternalLink, LogOut } from "lucide-react";
-import { useEffect, useState } from "react";
+import { exportUserData, importUserData } from "@/services/promptService";
+import { Download, ExternalLink, LogOut, Upload } from "lucide-react";
+import { useEffect, useRef, useState, type ChangeEvent } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { Logo } from "./Logo";
@@ -13,6 +13,7 @@ export const Navigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
   const [session, setSession] = useState(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
   const location = useLocation();
 
   const isActive = (path: string) => location.pathname === path;
@@ -58,7 +59,35 @@ export const Navigation = () => {
     }
   };
 
+  const handleImportClick = () => {
+    if (!session) {
+      toast.error("Please sign in first");
+      return;
+    }
+    fileInputRef.current?.click();
+  };
+
+  const handleImportChange = async (e: ChangeEvent<HTMLInputElement>) => {
+    const loadingId = toast.loading("Importing data...");
+    try {
+      const file = e.target.files?.[0];
+      if (!file) return;
+      const text = await file.text();
+      const payload = JSON.parse(text);
+      const result = await importUserData(session.user.id, payload);
+      toast.success(`Imported ${result.prompts_created} prompts, ${result.categories_created} categories, ${result.tags_created} tags`, { id: loadingId });
+      // Refresh to reload data across views
+      setTimeout(() => window.location.reload(), 500);
+    } catch (error: any) {
+      console.error("Error importing data:", error);
+      toast.error(`Failed to import: ${error.message || "Unknown error"}`, { id: loadingId });
+    } finally {
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    }
+  };
+
   return (
+    <>
     <nav className="fixed top-0 left-0 right-0 z-50 bg-black shadow-md">
       <div className="container mx-auto px-6">
         <div className="flex items-center justify-between h-16">
@@ -209,6 +238,10 @@ export const Navigation = () => {
                       <Download className="mr-2 h-4 w-4" />
                       <span>Export Data</span>
                     </DropdownMenuItem>
+                    <DropdownMenuItem onSelect={handleImportClick} className="cursor-pointer">
+                      <Upload className="mr-2 h-4 w-4" />
+                      <span>Import Data</span>
+                    </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem onSelect={handleLogout} className="text-red-600 cursor-pointer">
                       <LogOut className="mr-2 h-4 w-4" />
@@ -290,6 +323,16 @@ export const Navigation = () => {
                   </button>
                   <button
                     onClick={() => {
+                      handleImportClick();
+                      setIsMenuOpen(false);
+                    }}
+                    className="flex items-center space-x-2 text-white/80 hover:text-white transition-colors py-2 text-left"
+                  >
+                    <Upload className="w-4 h-4" />
+                    <span>Import Data</span>
+                  </button>
+                  <button
+                    onClick={() => {
                       handleLogout();
                       setIsMenuOpen(false);
                     }}
@@ -309,5 +352,7 @@ export const Navigation = () => {
         </div>
       </div>
     </nav>
+    <input ref={fileInputRef} onChange={handleImportChange} type="file" accept="application/json,.json" className="hidden" />
+    </>
   );
 };

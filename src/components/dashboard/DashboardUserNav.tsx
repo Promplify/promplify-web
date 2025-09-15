@@ -2,14 +2,15 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { supabase } from "@/lib/supabase";
-import { exportUserData } from "@/services/promptService";
-import { Download, LogOut, Settings, User } from "lucide-react";
-import { useEffect, useState } from "react";
+import { exportUserData, importUserData } from "@/services/promptService";
+import { Download, LogOut, Settings, Upload, User } from "lucide-react";
+import { useEffect, useRef, useState, type ChangeEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
 export function DashboardUserNav() {
   const [session, setSession] = useState(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -58,9 +59,37 @@ export function DashboardUserNav() {
     }
   };
 
+  const handleImportClick = () => {
+    if (!session) {
+      toast.error("Please login to import data");
+      return;
+    }
+    fileInputRef.current?.click();
+  };
+
+  const handleImportChange = async (e: ChangeEvent<HTMLInputElement>) => {
+    const loadingId = toast.loading("Importing data...");
+    try {
+      const file = e.target.files?.[0];
+      if (!file) return;
+      const text = await file.text();
+      const payload = JSON.parse(text);
+      const result = await importUserData(session.user.id, payload);
+      toast.success(`Imported ${result.prompts_created} prompts, ${result.categories_created} categories, ${result.tags_created} tags`, { id: loadingId });
+      // Refresh to reload dashboard data
+      setTimeout(() => window.location.reload(), 500);
+    } catch (error: any) {
+      console.error("Import error:", error);
+      toast.error(`Failed to import data: ${error.message || "Unknown error"}`, { id: loadingId });
+    } finally {
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    }
+  };
+
   if (!session) return null;
 
   return (
+    <>
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="relative h-10 w-10 rounded-full cursor-pointer">
@@ -101,6 +130,10 @@ export function DashboardUserNav() {
           <Download className="mr-2 h-4 w-4" />
           <span>Export Data</span>
         </DropdownMenuItem>
+        <DropdownMenuItem onSelect={handleImportClick} className="cursor-pointer">
+          <Upload className="mr-2 h-4 w-4" />
+          <span>Import Data</span>
+        </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem onSelect={handleLogout} className="text-red-600 cursor-pointer">
           <LogOut className="mr-2 h-4 w-4" />
@@ -108,5 +141,7 @@ export function DashboardUserNav() {
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
+    <input ref={fileInputRef} onChange={handleImportChange} type="file" accept="application/json,.json" className="hidden" />
+    </>
   );
 }

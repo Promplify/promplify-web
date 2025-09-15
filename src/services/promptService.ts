@@ -357,3 +357,131 @@ export const exportUserData = async (userId: string) => {
     exported_at: new Date().toISOString(),
   };
 };
+
+// Import user data from a previously exported JSON
+export const importUserData = async (userId: string, payload: any) => {
+  if (!userId) throw new Error("User ID is required for import");
+
+  if (!payload || typeof payload !== "object") {
+    throw new Error("Invalid import payload");
+  }
+
+  const categories: Array<{ name: string }> = Array.isArray(payload.categories) ? payload.categories : [];
+  const tags: Array<{ name: string }> = Array.isArray(payload.tags) ? payload.tags : [];
+  const prompts: Array<any> = Array.isArray(payload.prompts) ? payload.prompts : [];
+
+  let createdCategories = 0;
+  let createdTags = 0;
+  let createdPrompts = 0;
+
+  // Build a name->id map for categories
+  const categoryIdByName = new Map<string, string | null>();
+  if (categories.length > 0) {
+    for (const c of categories) {
+      const name = (c?.name || "").trim();
+      if (!name) continue;
+
+      // Check if exists for this user
+      const { data: existing } = await supabase.from("categories").select("id").eq("user_id", userId).eq("name", name).maybeSingle();
+      if (existing?.id) {
+        categoryIdByName.set(name, existing.id);
+        continue;
+      }
+
+      const { data: created, error } = await supabase.from("categories").insert({ name, user_id: userId }).select("id").single();
+      if (error) throw error;
+      createdCategories += 1;
+      categoryIdByName.set(name, created.id);
+    }
+  }
+
+  // Build a name->id map for tags
+  const tagIdByName = new Map<string, string>();
+  if (tags.length > 0) {
+    for (const t of tags) {
+      const name = (t?.name || "").trim();
+      if (!name) continue;
+
+      const { data: existing } = await supabase.from("tags").select("id").eq("user_id", userId).eq("name", name).maybeSingle();
+      if (existing?.id) {
+        tagIdByName.set(name, existing.id);
+        continue;
+      }
+
+      const { data: created, error } = await supabase.from("tags").insert({ name, user_id: userId }).select("id").single();
+      if (error) throw error;
+      createdTags += 1;
+      tagIdByName.set(name, created.id);
+    }
+  }
+
+  // Helper to resolve a category name on prompt if present
+  const resolvePromptCategoryId = (p: any): string | null => {
+    const cname = (p?.category_name || p?.category || "").trim();
+    if (!cname) return null;
+    return categoryIdByName.get(cname) ?? null;
+  };
+
+  // Insert prompts and attach tags
+  for (const p of prompts) {
+    try {
+      const newPrompt = {
+        id: crypto.randomUUID(),
+        user_id: userId,
+        title: p.title || "Untitled",
+        description: p.description || "",
+        content: p.content ?? "",
+        system_prompt: p.system_prompt || "",
+        user_prompt: p.user_prompt || "",
+        version: p.version || "1.0.0",
+        token_count: typeof p.token_count === "number" ? p.token_count : 0,
+        system_tokens: typeof p.system_tokens === "number" ? p.system_tokens : 0,
+        user_tokens: typeof p.user_tokens === "number" ? p.user_tokens : 0,
+        performance: typeof p.performance === "number" ? p.performance : 0,
+        is_favorite: Boolean(p.is_favorite),
+        category_id: p.category_id ?? resolvePromptCategoryId(p),
+        model: p.model || "gpt-4",
+        temperature: typeof p.temperature === "number" ? p.temperature : 0.7,
+        max_tokens: typeof p.max_tokens === "number" ? p.max_tokens : 2000,
+      } as const;
+
+      const { data: created, error } = await supabase.from("prompts").insert(newPrompt).select("id").single();
+      if (error) throw error;
+      createdPrompts += 1;
+
+      const incomingTags: Array<{ tags: { name: string } }> = Array.isArray(p.prompt_tags) ? p.prompt_tags : [];
+      for (const pt of incomingTags) {
+        const tagName = (pt?.tags?.name || "").trim();
+        if (!tagName) continue;
+
+        // Ensure tag exists
+        let tagId = tagIdByName.get(tagName);
+        if (!tagId) {
+          const { data: existing } = await supabase.from("tags").select("id").eq("user_id", userId).eq("name", tagName).maybeSingle();
+          if (existing?.id) {
+            tagId = existing.id;
+          } else {
+            const { data: createdTag, error: cErr } = await supabase.from("tags").insert({ name: tagName, user_id: userId }).select("id").single();
+            if (cErr) throw cErr;
+            tagId = createdTag.id;
+            createdTags += 1;
+          }
+          tagIdByName.set(tagName, tagId);
+        }
+
+        // Link tag to prompt
+        await supabase.from("prompt_tags").insert({ prompt_id: created.id, tag_id: tagId });
+      }
+    } catch (e) {
+      // Continue with next prompt but surface error to caller
+      console.error("Failed to import a prompt:", e);
+      throw e;
+    }
+  }
+
+  return {
+    categories_created: createdCategories,
+    tags_created: createdTags,
+    prompts_created: createdPrompts,
+  };
+};
