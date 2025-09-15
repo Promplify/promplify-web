@@ -22,7 +22,7 @@ export default function Terms() {
         <div className="bg-white shadow-sm rounded-lg p-8 md:p-12">
           <div className="max-w-3xl mx-auto">
             <h1 className="text-4xl font-bold mb-8 text-center">Terms of Service</h1>
-            <p className="text-gray-600 mb-12 text-center">Last updated: {new Date().toLocaleDateString()}</p>
+            <p className="text-gray-600 mb-12 text-center">Last updated: June 15, 2025</p>
 
             <div className="prose prose-slate max-w-none">
               <h2 className="text-2xl font-semibold mt-12 mb-6">1. Terms</h2>
