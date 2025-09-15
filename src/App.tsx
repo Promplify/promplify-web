@@ -19,7 +19,8 @@ import Terms from "./pages/Terms";
 function App() {
   return (
     <Router>
-      <Toaster position="bottom-right" richColors />
+      {/* Increase bottom offset by 20px to avoid footer overlap */}
+      <Toaster position="bottom-right" richColors offset={{ bottom: 60, right: 20 }} />
       <Routes>
         <Route path="/" element={<Index />} />
         <Route path="/auth" element={<Auth />} />
