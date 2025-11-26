@@ -2,8 +2,6 @@
 
 <div align="center">
 
-[![Promplify Logo](public/logo.svg)](https://promplify.com)
-
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://github.com/Promplify/promplify-web/blob/main/LICENSE)
 [![Issues](https://img.shields.io/github/issues/Promplify/promplify-web)](https://github.com/Promplify/promplify-web/issues)
 [![Forks](https://img.shields.io/github/forks/Promplify/promplify-web)](https://github.com/Promplify/promplify-web/network/members)
