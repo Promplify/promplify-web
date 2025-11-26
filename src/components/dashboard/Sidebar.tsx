@@ -84,14 +84,21 @@ export function Sidebar({ onCategorySelect, selectedCategoryId }: SidebarProps) 
       const userId = session.data.session.user.id;
 
       const targetCategory = categories.find((c) => c.id !== categoryToDelete);
-      if (!targetCategory && categories.length > 1) {
-        toast.error("Cannot delete the last category without a target category.");
-        setIsDeleting(false);
-        setShowDeleteDialog(false);
-        return;
-      }
-      let promptsMoved = false;
-      if (targetCategory) {
+      const isLastCategory = categories.length === 1;
+
+      // If this is the last category, we need to handle prompts differently
+      if (isLastCategory) {
+        // Set category_id to null for all prompts in this category
+        const { data: promptsToMove, error: selectError } = await supabase.from("prompts").select("id").eq("user_id", userId).eq("category_id", categoryToDelete);
+
+        if (selectError) throw selectError;
+
+        if (promptsToMove && promptsToMove.length > 0) {
+          const updates = promptsToMove.map((p) => supabase.from("prompts").update({ category_id: null }).match({ id: p.id }));
+          await Promise.all(updates);
+        }
+      } else if (targetCategory) {
+        // Move prompts to another category
         const { data: promptsToMove, error: selectError } = await supabase.from("prompts").select("id").eq("user_id", userId).eq("category_id", categoryToDelete);
 
         if (selectError) throw selectError;
@@ -99,8 +106,13 @@ export function Sidebar({ onCategorySelect, selectedCategoryId }: SidebarProps) 
         if (promptsToMove && promptsToMove.length > 0) {
           const updates = promptsToMove.map((p) => supabase.from("prompts").update({ category_id: targetCategory.id }).match({ id: p.id }));
           await Promise.all(updates);
-          promptsMoved = true;
         }
+      } else {
+        // This should not happen, but handle it gracefully
+        toast.error("Cannot delete category: no target category available.");
+        setIsDeleting(false);
+        setShowDeleteDialog(false);
+        return;
       }
 
       await deleteCategory(categoryToDelete);
@@ -115,7 +127,8 @@ export function Sidebar({ onCategorySelect, selectedCategoryId }: SidebarProps) 
       const { count } = await supabase.from("prompts").select("*", { count: "exact", head: true }).eq("user_id", userId);
       setTotalPromptsCount(count || 0);
 
-      toast.success(`Category deleted ${promptsMoved ? "and prompts moved" : ""}.`);
+      const successMessage = isLastCategory ? "Category deleted. Prompts moved to uncategorized." : "Category deleted and prompts moved.";
+      toast.success(successMessage);
     } catch (error) {
       console.error("Error deleting category:", error);
       toast.error(`Failed to delete category: ${error.message}`);

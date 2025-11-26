@@ -2,7 +2,6 @@ import { DashboardFooter } from "@/components/dashboard/DashboardFooter";
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
 import { PromptEditor } from "@/components/dashboard/PromptEditor";
 import { PromptList } from "@/components/dashboard/PromptList";
-import { Sidebar } from "@/components/dashboard/Sidebar";
 import { SEO } from "@/components/SEO";
 import { supabase } from "@/lib/supabase";
 import { updateMeta } from "@/utils/meta";
@@ -93,14 +92,17 @@ export default function Dashboard() {
 
       {/* Main Content */}
       <div className="flex-1 flex overflow-hidden">
-        <Sidebar onCategorySelect={setSelectedCategoryId} selectedCategoryId={selectedCategoryId} />
-        <div className="flex-1 flex">
-          <div className="w-[320px] border-r border-gray-200">
-            <PromptList categoryId={selectedCategoryId} onPromptSelect={handlePromptSelect} selectedPromptId={selectedPromptId} refreshTrigger={refreshTrigger} />
-          </div>
-          <div className="flex-1">
-            <PromptEditor promptId={selectedPromptId} onSave={handlePromptSave} onDelete={handlePromptDelete} />
-          </div>
+        <div className="w-[320px] border-r border-gray-200">
+          <PromptList
+            categoryId={selectedCategoryId}
+            onCategorySelect={setSelectedCategoryId}
+            onPromptSelect={handlePromptSelect}
+            selectedPromptId={selectedPromptId}
+            refreshTrigger={refreshTrigger}
+          />
+        </div>
+        <div className="flex-1">
+          <PromptEditor promptId={selectedPromptId} onSave={handlePromptSave} onDelete={handlePromptDelete} />
         </div>
       </div>
 

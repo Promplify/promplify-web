@@ -1,29 +1,185 @@
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { supabase } from "@/lib/supabase";
-import { getPrompts, toggleFavorite } from "@/services/promptService";
-import { Prompt } from "@/types/prompt";
-import { ArrowDownUp, Heart, Plus, Search } from "lucide-react";
+import { createCategory, deleteCategory, getCategories, getPrompts, toggleFavorite } from "@/services/promptService";
+import { Category, Prompt } from "@/types/prompt";
+import { ArrowDownUp, Heart, LayoutGrid, Plus, Search, Settings, Trash2 } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
 interface PromptListProps {
   categoryId?: string | null;
+  onCategorySelect?: (categoryId: string | null) => void;
   onPromptSelect?: (promptId: string) => void;
   selectedPromptId?: string | null;
   onTotalPromptsChange?: (total: number) => void;
   refreshTrigger?: number;
 }
 
-export function PromptList({ categoryId, onPromptSelect, selectedPromptId, onTotalPromptsChange, refreshTrigger }: PromptListProps) {
+export function PromptList({ categoryId, onCategorySelect, onPromptSelect, selectedPromptId, onTotalPromptsChange, refreshTrigger }: PromptListProps) {
   const [localPrompts, setLocalPrompts] = useState<Prompt[]>([]);
   const [sortByDate, setSortByDate] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(searchTerm);
   const navigate = useNavigate();
+
+  // Category management state
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [isLoadingCategories, setIsLoadingCategories] = useState(true);
+  const [isAddCategoryOpen, setIsAddCategoryOpen] = useState(false);
+  const [newCategoryName, setNewCategoryName] = useState("");
+  const [categoryToDelete, setCategoryToDelete] = useState<string | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [totalPromptsCount, setTotalPromptsCount] = useState(0);
+
+  // Fetch categories
+  useEffect(() => {
+    const fetchCategories = async () => {
+      setIsLoadingCategories(true);
+      try {
+        const session = await supabase.auth.getSession();
+        if (session.data.session?.user.id) {
+          const data = await getCategories(session.data.session.user.id);
+          setCategories(data);
+        }
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+        toast.error("Failed to load categories");
+      } finally {
+        setIsLoadingCategories(false);
+      }
+    };
+    fetchCategories();
+  }, []);
+
+  // Fetch total prompts count
+  useEffect(() => {
+    const fetchTotalCount = async () => {
+      try {
+        const session = await supabase.auth.getSession();
+        if (session.data.session?.user.id) {
+          const { count } = await supabase.from("prompts").select("*", { count: "exact", head: true }).eq("user_id", session.data.session.user.id);
+          setTotalPromptsCount(count || 0);
+        } else {
+          setTotalPromptsCount(0);
+        }
+      } catch (error) {
+        console.error("Error fetching total prompt count:", error);
+        setTotalPromptsCount(0);
+      }
+    };
+    fetchTotalCount();
+  }, []);
+
+  // Category management handlers
+  const handleCategoryChange = (value: string) => {
+    const newCategoryId = value === "all" ? null : value;
+    onCategorySelect?.(newCategoryId);
+  };
+
+  const handleAddCategory = async () => {
+    if (!newCategoryName.trim()) {
+      toast.error("Category name is required");
+      return;
+    }
+    try {
+      const session = await supabase.auth.getSession();
+      if (!session.data.session?.user.id) {
+        toast.error("Please login to add categories");
+        return;
+      }
+      const newCategoryData = { name: newCategoryName.trim(), user_id: session.data.session.user.id };
+      const createdCategory = await createCategory(newCategoryData);
+      // Refresh categories list to get updated prompt counts
+      const data = await getCategories(session.data.session.user.id);
+      setCategories(data);
+      setNewCategoryName("");
+      setIsAddCategoryOpen(false);
+      toast.success("Category added successfully");
+    } catch (error) {
+      console.error("Error adding category:", error);
+      toast.error("Failed to add category");
+    }
+  };
+
+  const handleDeleteCategory = async (categoryId: string) => {
+    setCategoryToDelete(categoryId);
+    setShowDeleteDialog(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!categoryToDelete) return;
+    setIsDeleting(true);
+    try {
+      const session = await supabase.auth.getSession();
+      if (!session.data.session?.user.id) throw new Error("User not logged in");
+      const userId = session.data.session.user.id;
+
+      const targetCategory = categories.find((c) => c.id !== categoryToDelete);
+      const isLastCategory = categories.length === 1;
+
+      // If this is the last category, we need to handle prompts differently
+      if (isLastCategory) {
+        // Set category_id to null for all prompts in this category
+        const { data: promptsToMove, error: selectError } = await supabase.from("prompts").select("id").eq("user_id", userId).eq("category_id", categoryToDelete);
+
+        if (selectError) throw selectError;
+
+        if (promptsToMove && promptsToMove.length > 0) {
+          const updates = promptsToMove.map((p) => supabase.from("prompts").update({ category_id: null }).match({ id: p.id }));
+          await Promise.all(updates);
+        }
+      } else if (targetCategory) {
+        // Move prompts to another category
+        const { data: promptsToMove, error: selectError } = await supabase.from("prompts").select("id").eq("user_id", userId).eq("category_id", categoryToDelete);
+
+        if (selectError) throw selectError;
+
+        if (promptsToMove && promptsToMove.length > 0) {
+          const updates = promptsToMove.map((p) => supabase.from("prompts").update({ category_id: targetCategory.id }).match({ id: p.id }));
+          await Promise.all(updates);
+        }
+      } else {
+        // This should not happen, but handle it gracefully
+        toast.error("Cannot delete category: no target category available.");
+        setIsDeleting(false);
+        setShowDeleteDialog(false);
+        return;
+      }
+
+      await deleteCategory(categoryToDelete);
+
+      // Refresh categories list
+      const data = await getCategories(userId);
+      setCategories(data);
+
+      if (categoryId === categoryToDelete) {
+        onCategorySelect?.(null);
+      }
+
+      const { count } = await supabase.from("prompts").select("*", { count: "exact", head: true }).eq("user_id", userId);
+      setTotalPromptsCount(count || 0);
+
+      const successMessage = isLastCategory ? "Category deleted. Prompts moved to uncategorized." : "Category deleted and prompts moved.";
+      toast.success(successMessage);
+    } catch (error: any) {
+      console.error("Error deleting category:", error);
+      toast.error(`Failed to delete category: ${error.message}`);
+    } finally {
+      setIsDeleting(false);
+      setShowDeleteDialog(false);
+      setCategoryToDelete(null);
+    }
+  };
 
   const fetchPrompts = useCallback(async () => {
     setIsLoading(true);
@@ -229,23 +385,132 @@ export function PromptList({ categoryId, onPromptSelect, selectedPromptId, onTot
             New Prompt
           </Button>
         </div>
+        {/* Category Selector */}
+        <div className="mb-4">
+          <div className="flex items-center gap-2">
+            <Select value={categoryId || "all"} onValueChange={handleCategoryChange}>
+              <SelectTrigger className="flex-1">
+                <SelectValue placeholder="Select category">
+                  {categoryId === null ? (
+                    <div className="flex items-center gap-2">
+                      <LayoutGrid size={14} className="text-gray-500" />
+                      <span>All Prompts</span>
+                      <span className="ml-auto text-xs text-gray-500">({totalPromptsCount})</span>
+                    </div>
+                  ) : (
+                    (() => {
+                      const selectedCategory = categories.find((c) => c.id === categoryId);
+                      return selectedCategory ? (
+                        <div className="flex items-center gap-2">
+                          <span>{selectedCategory.name}</span>
+                          <span className="ml-auto text-xs text-gray-500">({selectedCategory.prompt_count || 0})</span>
+                        </div>
+                      ) : (
+                        "Select category"
+                      );
+                    })()
+                  )}
+                </SelectValue>
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">
+                  <div className="flex items-center justify-between w-full">
+                    <div className="flex items-center gap-2">
+                      <LayoutGrid size={14} className="text-gray-500" />
+                      <span>All Prompts</span>
+                    </div>
+                    <span className="ml-auto text-xs text-gray-500">({totalPromptsCount})</span>
+                  </div>
+                </SelectItem>
+                {categories.map((category) => (
+                  <SelectItem key={category.id} value={category.id}>
+                    <div className="flex items-center justify-between w-full">
+                      <span>{category.name}</span>
+                      <span className="ml-auto text-xs text-gray-500">({category.prompt_count || 0})</span>
+                    </div>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="sm" className="px-2 focus-visible:ring-0 focus-visible:ring-offset-0">
+                  <Settings size={16} />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <Dialog open={isAddCategoryOpen} onOpenChange={setIsAddCategoryOpen}>
+                  <DialogTrigger asChild>
+                    <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                      <Plus size={16} className="mr-2" />
+                      Add Category
+                    </DropdownMenuItem>
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-md">
+                    <DialogHeader>
+                      <DialogTitle className="flex items-center gap-2">
+                        <Plus size={18} className="text-primary" />
+                        Add New Category
+                      </DialogTitle>
+                    </DialogHeader>
+                    <div className="space-y-4 py-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="name" className="text-sm font-medium">
+                          Category Name
+                        </Label>
+                        <Input
+                          id="name"
+                          value={newCategoryName}
+                          onChange={(e) => setNewCategoryName(e.target.value)}
+                          placeholder="Enter category name"
+                          className="focus:border-[#2C106A]"
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter") {
+                              e.preventDefault();
+                              handleAddCategory();
+                            }
+                          }}
+                        />
+                      </div>
+                      <Button onClick={handleAddCategory} className="w-full bg-primary hover:bg-primary/90">
+                        Add Category
+                      </Button>
+                    </div>
+                  </DialogContent>
+                </Dialog>
+                {categoryId && (
+                  <>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem
+                      onSelect={(e) => {
+                        e.preventDefault();
+                        const selectedCategory = categories.find((c) => c.id === categoryId);
+                        if (selectedCategory) {
+                          handleDeleteCategory(categoryId);
+                        }
+                      }}
+                      className="text-red-600 focus:text-red-600"
+                    >
+                      <Trash2 size={16} className="mr-2" />
+                      Delete "{categories.find((c) => c.id === categoryId)?.name || "Category"}"
+                    </DropdownMenuItem>
+                  </>
+                )}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+        </div>
         <div className="relative mb-4 group">
           <Search className="absolute left-3 top-2.5 text-gray-400 group-focus-within:text-[#2C106A] transition-colors duration-200" size={18} />
-          <Input
-            type="text"
-            placeholder="Search prompts..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-9 transition-all duration-200 focus:ring-[#2C106A] focus:border-[#2C106A]"
-          />
+          <Input type="text" placeholder="Search prompts..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="pl-9 transition-all duration-200 focus:border-[#2C106A]" />
         </div>
-        <div className="flex items-center justify-between text-sm text-gray-500">
-          <span className="bg-gray-100 px-2 py-1 rounded-md transition-colors duration-200">{sortedPrompts.filter((p) => p.id !== "new").length} prompts</span>
+        <div className="flex items-center justify-between text-xs text-gray-500">
+          <span className="bg-gray-100 px-2 py-0.5 rounded-md transition-colors duration-200">{sortedPrompts.filter((p) => p.id !== "new").length} prompts</span>
           <button
             onClick={() => setSortByDate(!sortByDate)}
-            className="flex items-center space-x-1 min-w-[100px] justify-center hover:text-gray-900 bg-gray-50 px-2 py-1 rounded-md transition-all duration-200 hover:bg-gray-100"
+            className="flex items-center space-x-1 min-w-[100px] justify-center hover:text-gray-900 bg-gray-50 px-2 py-0.5 rounded-md transition-all duration-200 hover:bg-gray-100"
           >
-            <ArrowDownUp size={14} className="transition-transform duration-200" />
+            <ArrowDownUp size={12} className="transition-transform duration-200" />
             <span>Sort by {sortByDate ? "newest" : "oldest"}</span>
           </button>
         </div>
@@ -289,6 +554,35 @@ export function PromptList({ categoryId, onPromptSelect, selectedPromptId, onTot
           </div>
         </div>
       </div>
+
+      {/* Delete Category Dialog */}
+      <AlertDialog
+        open={showDeleteDialog}
+        onOpenChange={(open) => {
+          setShowDeleteDialog(open);
+          if (!open) {
+            setIsDeleting(false);
+          }
+        }}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle className="flex items-center gap-2">
+              <Trash2 size={18} className="text-red-600" />
+              Delete Category
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete this category? All prompts in this category will be moved to the default category. This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={confirmDelete} className="bg-red-600 hover:bg-red-700 text-white" disabled={isDeleting}>
+              {isDeleting ? "Deleting..." : "Delete"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

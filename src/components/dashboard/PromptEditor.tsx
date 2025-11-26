@@ -390,7 +390,7 @@ export function PromptEditor({ promptId, onSave, onDelete }: PromptEditorProps) 
         setPrompt((prev) => ({ ...prev, category_id: newCategoryId }));
       }}
     >
-      <SelectTrigger className="w-full focus:ring-[#2C106A] focus:border-[#2C106A] hover:border-gray-300">
+      <SelectTrigger className="w-full hover:border-gray-300">
         <SelectValue placeholder="All Prompts" />
       </SelectTrigger>
       <SelectContent>
@@ -503,7 +503,7 @@ export function PromptEditor({ promptId, onSave, onDelete }: PromptEditorProps) 
         <Label>System Prompt</Label>
         <div className="flex items-center space-x-2">
           {previousSystemPrompt && (
-            <Button variant="outline" size="sm" onClick={handleUndoOptimization} className="h-7 px-2 text-xs">
+            <Button variant="outline" size="sm" onClick={handleUndoOptimization} className="h-7 px-2 text-xs focus-visible:ring-0 focus-visible:ring-offset-0">
               Undo Optimization
             </Button>
           )}
@@ -512,7 +512,7 @@ export function PromptEditor({ promptId, onSave, onDelete }: PromptEditorProps) 
             size="sm"
             onClick={handleOptimizeSystemPrompt}
             disabled={isOptimizing || !prompt.system_prompt}
-            className="h-7 px-2 text-xs flex items-center gap-1 bg-gradient-to-r from-purple-50 to-indigo-50 border-purple-200 hover:from-purple-100 hover:to-indigo-100 hover:border-purple-300 transition-all duration-200 shadow-sm"
+            className="h-7 px-2 text-xs flex items-center gap-1 bg-gradient-to-r from-purple-50 to-indigo-50 border-purple-200 hover:from-purple-100 hover:to-indigo-100 hover:border-purple-300 transition-all duration-200 shadow-sm focus-visible:ring-0 focus-visible:ring-offset-0"
           >
             {isOptimizing ? (
               <>
@@ -548,7 +548,7 @@ export function PromptEditor({ promptId, onSave, onDelete }: PromptEditorProps) 
         value={prompt.system_prompt}
         onChange={(e) => setPrompt({ ...prompt, system_prompt: e.target.value })}
         placeholder="Enter system prompt..."
-        className="h-64 font-mono resize-y min-h-[12rem] focus:ring-[#2C106A] focus:border-[#2C106A] hover:border-gray-300 transition-colors"
+        className="h-64 font-mono resize-y min-h-[12rem] focus:border-[#2C106A] hover:border-gray-300 transition-colors"
       />
     </div>
   );
@@ -761,7 +761,7 @@ export function PromptEditor({ promptId, onSave, onDelete }: PromptEditorProps) 
         <div className="flex items-center space-x-2">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm" className="group">
+              <Button variant="outline" size="sm" className="group focus-visible:ring-0 focus-visible:ring-offset-0">
                 Try in AI
                 <ExternalLink className="w-3 h-3 ml-1 opacity-50 group-hover:opacity-100 transition-opacity" />
               </Button>
@@ -777,13 +777,13 @@ export function PromptEditor({ promptId, onSave, onDelete }: PromptEditorProps) 
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-          <Button variant="outline" size="sm" onClick={handleCopyContent} className="group">
+          <Button variant="outline" size="sm" onClick={handleCopyContent} className="group focus-visible:ring-0 focus-visible:ring-offset-0">
             <Copy size={16} className="mr-1" />
             Copy
           </Button>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm" disabled={!promptId || promptId === "new" || isSharing || isSharingToDiscover} className="group">
+              <Button variant="outline" size="sm" disabled={!promptId || promptId === "new" || isSharing || isSharingToDiscover} className="group focus-visible:ring-0 focus-visible:ring-offset-0">
                 <Share2 size={16} className="mr-1" />
                 {isSharing || isSharingToDiscover ? "Sharing..." : "Share"}
               </Button>
@@ -817,7 +817,7 @@ export function PromptEditor({ promptId, onSave, onDelete }: PromptEditorProps) 
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel asChild>
-              <Button variant="outline" className="border-gray-200">
+              <Button variant="outline" className="border-gray-200 focus-visible:ring-0 focus-visible:ring-offset-0">
                 Cancel
               </Button>
             </AlertDialogCancel>
@@ -900,7 +900,7 @@ export function PromptEditor({ promptId, onSave, onDelete }: PromptEditorProps) 
                     <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
                     <input
                       type="text"
-                      className="w-full px-3 py-2 bg-white border border-gray-200 rounded-md focus:ring-[#2C106A] focus:border-[#2C106A] hover:border-gray-300 transition-colors"
+                      className="w-full px-3 py-2 bg-white border border-gray-200 rounded-md focus:outline-none focus-visible:outline-none focus:border-[#2C106A] hover:border-gray-300 transition-colors"
                       placeholder="Enter prompt title"
                       value={prompt.title}
                       onChange={(e) => setPrompt({ ...prompt, title: e.target.value })}
@@ -910,7 +910,7 @@ export function PromptEditor({ promptId, onSave, onDelete }: PromptEditorProps) 
                     <label className="block text-sm font-medium text-gray-700 mb-1">Version</label>
                     <input
                       type="text"
-                      className="w-full px-3 py-2 bg-white border border-gray-200 rounded-md focus:ring-[#2C106A] focus:border-[#2C106A] hover:border-gray-300 transition-colors"
+                      className="w-full px-3 py-2 bg-white border border-gray-200 rounded-md focus:outline-none focus-visible:outline-none focus:border-[#2C106A] hover:border-gray-300 transition-colors"
                       placeholder="e.g., 1.0.0"
                       value={prompt.version}
                       onChange={(e) => {
@@ -933,7 +933,7 @@ export function PromptEditor({ promptId, onSave, onDelete }: PromptEditorProps) 
                   <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
                   <input
                     type="text"
-                    className="w-full px-3 py-2 bg-white border border-gray-200 rounded-md focus:ring-[#2C106A] focus:border-[#2C106A] hover:border-gray-300 transition-colors"
+                    className="w-full px-3 py-2 bg-white border border-gray-200 rounded-md focus:outline-none focus-visible:outline-none focus:border-[#2C106A] hover:border-gray-300 transition-colors"
                     placeholder="Briefly describe the purpose of this prompt"
                     value={prompt.description}
                     onChange={(e) => setPrompt({ ...prompt, description: e.target.value })}
@@ -963,7 +963,7 @@ export function PromptEditor({ promptId, onSave, onDelete }: PromptEditorProps) 
                     <label className="block text-sm font-medium text-gray-700 mb-1">Tags</label>
                     <div className="flex flex-col gap-2">
                       <div className="relative">
-                        <Input
+                        <input
                           type="text"
                           placeholder="Type to search or create tag..."
                           value={newTag}
@@ -1001,7 +1001,7 @@ export function PromptEditor({ promptId, onSave, onDelete }: PromptEditorProps) 
                               }
                             }
                           }}
-                          className="w-full"
+                          className="w-full px-3 py-2 bg-white border border-gray-200 rounded-md focus:outline-none focus-visible:outline-none focus:border-[#2C106A] hover:border-gray-300 transition-colors"
                         />
                         {newTag && (
                           <div className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-md shadow-lg max-h-48 overflow-auto">
@@ -1101,7 +1101,7 @@ export function PromptEditor({ promptId, onSave, onDelete }: PromptEditorProps) 
                       value={prompt.user_prompt}
                       onChange={(e) => setPrompt({ ...prompt, user_prompt: e.target.value })}
                       placeholder="Enter user prompt..."
-                      className="h-64 font-mono resize-y min-h-[12rem] focus:ring-[#2C106A] focus:border-[#2C106A] hover:border-gray-300 transition-colors"
+                      className="h-64 font-mono resize-y min-h-[12rem] focus:border-[#2C106A] hover:border-gray-300 transition-colors"
                     />
                   </div>
                 </div>
