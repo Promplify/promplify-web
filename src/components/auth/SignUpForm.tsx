@@ -130,9 +130,9 @@ export function SignUpForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="grid gap-6">
+    <form onSubmit={handleSubmit} className="grid gap-4 sm:gap-6">
       <div className="grid gap-2">
-        <Label htmlFor="email" className="text-base">
+        <Label htmlFor="email" className="text-sm sm:text-base">
           Email
         </Label>
         <Input
@@ -142,19 +142,26 @@ export function SignUpForm() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
-          className={`h-12 text-base ${errors.email ? "border-red-500" : ""}`}
+          className={`h-10 sm:h-11 text-sm sm:text-base ${errors.email ? "border-red-500" : ""}`}
         />
-        {errors.email && <p className="text-sm text-red-500">{errors.email}</p>}
+        {errors.email && <p className="text-xs sm:text-sm text-red-500">{errors.email}</p>}
       </div>
       <div className="grid gap-2">
-        <Label htmlFor="password" className="text-base">
+        <Label htmlFor="password" className="text-sm sm:text-base">
           Password
         </Label>
-        <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required className={`h-12 text-base ${errors.password ? "border-red-500" : ""}`} />
-        {errors.password && <p className="text-sm text-red-500">{errors.password}</p>}
+        <Input
+          id="password"
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+          className={`h-10 sm:h-11 text-sm sm:text-base ${errors.password ? "border-red-500" : ""}`}
+        />
+        {errors.password && <p className="text-xs sm:text-sm text-red-500">{errors.password}</p>}
       </div>
       <div className="grid gap-2">
-        <Label htmlFor="confirm-password" className="text-base">
+        <Label htmlFor="confirm-password" className="text-sm sm:text-base">
           Confirm Password
         </Label>
         <Input
@@ -163,11 +170,11 @@ export function SignUpForm() {
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
           required
-          className={`h-12 text-base ${errors.confirmPassword ? "border-red-500" : ""}`}
+          className={`h-10 sm:h-11 text-sm sm:text-base ${errors.confirmPassword ? "border-red-500" : ""}`}
         />
-        {errors.confirmPassword && <p className="text-sm text-red-500">{errors.confirmPassword}</p>}
+        {errors.confirmPassword && <p className="text-xs sm:text-sm text-red-500">{errors.confirmPassword}</p>}
       </div>
-      <Button type="submit" className="w-full h-12 text-base mt-2" disabled={isLoading}>
+      <Button type="submit" className="w-full h-10 sm:h-11 text-sm sm:text-base mt-2" disabled={isLoading}>
         {isLoading ? "Creating account..." : "Create account"}
       </Button>
     </form>

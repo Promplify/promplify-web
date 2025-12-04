@@ -96,19 +96,33 @@ export function LoginForm() {
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="space-y-2">
-        <Label htmlFor="email">Email</Label>
-        <Input id="email" placeholder="m@example.com" type="email" autoCapitalize="none" autoComplete="email" autoCorrect="off" value={email} onChange={(e) => setEmail(e.target.value)} />
+        <Label htmlFor="email" className="text-sm sm:text-base">
+          Email
+        </Label>
+        <Input
+          id="email"
+          placeholder="m@example.com"
+          type="email"
+          autoCapitalize="none"
+          autoComplete="email"
+          autoCorrect="off"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          className="h-10 sm:h-11 text-sm sm:text-base"
+        />
       </div>
       <div className="space-y-2">
         <div className="flex items-center justify-between">
-          <Label htmlFor="password">Password</Label>
-          <Link to="/reset-password" className="text-sm text-[#2C106A] hover:underline">
+          <Label htmlFor="password" className="text-sm sm:text-base">
+            Password
+          </Label>
+          <Link to="/reset-password" className="text-xs sm:text-sm text-[#2C106A] hover:underline">
             Forgot password?
           </Link>
         </div>
-        <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+        <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="h-10 sm:h-11 text-sm sm:text-base" />
       </div>
-      <Button type="submit" className="w-full bg-[#2C106A] hover:bg-[#1F0B4C]" disabled={isLoading}>
+      <Button type="submit" className="w-full bg-[#2C106A] hover:bg-[#1F0B4C] h-10 sm:h-11 text-sm sm:text-base" disabled={isLoading}>
         {isLoading ? "Signing in..." : "Sign in"}
       </Button>
     </form>
