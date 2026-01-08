@@ -68,19 +68,19 @@ const Discover = () => {
         keywords="AI prompt discover, prompt sharing, community prompts, AI prompt library, ChatGPT prompts, Claude prompts, prompt engineering, AI prompt templates"
       />
       <Navigation />
-      <main className="pt-16 pb-16">
+      <main className="pt-12 sm:pt-16 pb-12 sm:pb-16">
         <DiscoverHeader />
 
         {featuredPrompts.length > 0 && (
-          <section className="container mx-auto px-4 max-w-7xl mt-10">
-            <h2 className="text-2xl font-bold mb-6">Featured Prompts</h2>
+          <section className="container mx-auto px-3 sm:px-4 md:px-6 max-w-7xl mt-8 sm:mt-10">
+            <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">Featured Prompts</h2>
             <DiscoverFeatured featuredPrompts={featuredPrompts} />
           </section>
         )}
 
-        <section className="container mx-auto px-4 max-w-7xl mt-10">
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-bold">All Prompts</h2>
+        <section className="container mx-auto px-3 sm:px-4 md:px-6 max-w-7xl mt-8 sm:mt-10">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 sm:gap-0 mb-4 sm:mb-6">
+            <h2 className="text-xl sm:text-2xl font-bold">All Prompts</h2>
             <Tabs defaultValue={sortBy} onValueChange={(value) => handleSortChange(value as any)}>
               <TabsList>
                 <TabsTrigger value="likes_count">Most Popular</TabsTrigger>

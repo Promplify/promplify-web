@@ -8,29 +8,34 @@ interface DiscoverFeaturedProps {
   featuredPrompts: DiscoverPrompt[];
 }
 
+// Custom hook to handle media queries with better performance
+function useMediaQuery(query: string): boolean {
+  const [matches, setMatches] = useState(false);
+
+  useEffect(() => {
+    const media = window.matchMedia(query);
+    if (media.matches !== matches) {
+      setMatches(media.matches);
+    }
+    const listener = () => setMatches(media.matches);
+    media.addEventListener("change", listener);
+    return () => media.removeEventListener("change", listener);
+  }, [matches, query]);
+
+  return matches;
+}
+
 export function DiscoverFeatured({ featuredPrompts }: DiscoverFeaturedProps) {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [visiblePrompts, setVisiblePrompts] = useState<DiscoverPrompt[]>([]);
-  const [slidesToShow, setSlidesToShow] = useState(4);
 
-  // Adjust the number of cards shown per row based on screen size
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth < 640) {
-        setSlidesToShow(1);
-      } else if (window.innerWidth < 1024) {
-        setSlidesToShow(2);
-      } else if (window.innerWidth < 1280) {
-        setSlidesToShow(3);
-      } else {
-        setSlidesToShow(4);
-      }
-    };
+  // Use matchMedia instead of window.resize for better performance
+  const isXl = useMediaQuery("(min-width: 1280px)");
+  const isLg = useMediaQuery("(min-width: 1024px)");
+  const isSm = useMediaQuery("(min-width: 640px)");
 
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  // Calculate slidesToShow based on media queries
+  const slidesToShow = isXl ? 4 : isLg ? 3 : isSm ? 2 : 1;
 
   // Update visible prompts
   useEffect(() => {

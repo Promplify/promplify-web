@@ -37,13 +37,13 @@ export const HowItWorks = () => {
   return (
     <div className="py-16 bg-gradient-to-b from-gray-50/50 to-white" id="how-it-works">
       <div className="container mx-auto px-4 max-w-7xl">
-        <div className="text-center mb-12">
+        <div className="text-center mb-8 sm:mb-12">
           <span className="inline-block px-4 py-1.5 mb-4 text-sm font-semibold rounded-full bg-gradient-to-r from-[#2C106A]/10 to-purple-500/10 text-[#2C106A]">How It Works</span>
-          <h2 className="text-3xl md:text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-[#2C106A] to-purple-600">Start Your AI Prompt Journey in 4 Steps</h2>
-          <p className="text-gray-600 max-w-2xl mx-auto">Simple and intuitive process to help you get started and achieve the best results</p>
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-[#2C106A] to-purple-600">Start Your AI Prompt Journey in 4 Steps</h2>
+          <p className="text-sm sm:text-base text-gray-600 max-w-2xl mx-auto px-4">Simple and intuitive process to help you get started and achieve the best results</p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 mb-12 px-4 md:px-6 lg:px-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 mb-8 sm:mb-12 px-4 sm:px-6 lg:px-8">
           {steps.map((step, index) => (
             <div key={index} className="relative group hover:-translate-y-1 transition-transform duration-300">
               <div className="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow duration-300 h-full">

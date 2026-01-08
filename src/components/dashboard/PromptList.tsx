@@ -337,7 +337,7 @@ export function PromptList({ categoryId, onCategorySelect, onPromptSelect, selec
 
   if (isLoading && localPrompts.length === 0) {
     return (
-      <div className="w-[320px] h-full bg-white flex flex-col">
+      <div className="w-full h-full bg-white flex flex-col">
         <div className="p-4 border-b border-gray-200 flex-shrink-0">
           <div className="space-y-4">
             <div className="flex items-center justify-between">
@@ -376,8 +376,8 @@ export function PromptList({ categoryId, onCategorySelect, onPromptSelect, selec
   }
 
   return (
-    <div className="w-[320px] h-full bg-white flex flex-col">
-      <div className="p-4 border-b border-gray-200 flex-shrink-0">
+    <div className="w-full h-full bg-white flex flex-col">
+      <div className="p-3 sm:p-4 border-b border-gray-200 flex-shrink-0">
         <div className="flex items-center justify-between mb-4">
           <h2 className="font-medium">Prompts</h2>
           <Button onClick={handleNewPrompt} className="bg-[#2C106A] hover:bg-[#1F0B4C] text-white transition-colors duration-200">
