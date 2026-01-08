@@ -147,14 +147,14 @@ export default function Templates() {
       <div className="flex flex-col min-h-screen bg-gradient-to-b from-white to-gray-50">
         <Navigation />
 
-        <main className="flex-1 pt-24 pb-16">
-          <div className="container mx-auto px-4">
+        <main className="flex-1 pt-20 sm:pt-24 pb-12 sm:pb-16">
+          <div className="container mx-auto px-3 sm:px-4 md:px-6">
             <div className="max-w-3xl mx-auto text-center mb-6">
               <div className="inline-block mb-6 px-4 py-1.5 rounded-full bg-[#2C106A]/5 text-[#2C106A] text-sm font-medium border border-[#2C106A]/10">
                 <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#2C106A] to-purple-600">Discover AI Prompt Templates</span>
               </div>
-              <h1 className="text-4xl font-bold tracking-tight mb-5 bg-clip-text text-transparent bg-gradient-to-r from-[#2C106A] to-purple-600 sm:text-5xl">Prompt Templates</h1>
-              <p className="text-gray-600 text-lg mb-5 font-medium">Browse and use our curated collection of prompt templates</p>
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight mb-5 bg-clip-text text-transparent bg-gradient-to-r from-[#2C106A] to-purple-600">Prompt Templates</h1>
+              <p className="text-gray-600 text-base sm:text-lg mb-5 font-medium">Browse and use our curated collection of prompt templates</p>
             </div>
 
             {/* Search Section */}
@@ -173,7 +173,7 @@ export default function Templates() {
                       setSearchQuery(e.target.value);
                       setIsSearching(true);
                     }}
-                    className="flex-1 h-14 px-4 py-4 bg-transparent border-0 focus:ring-0 focus:outline-none text-base placeholder:text-gray-400"
+                    className="flex-1 h-12 sm:h-14 px-3 sm:px-4 py-3 sm:py-4 bg-transparent border-0 focus:ring-0 focus:outline-none text-sm sm:text-base placeholder:text-gray-400"
                     style={{ boxShadow: "none" }}
                   />
                   {searchQuery && (
@@ -243,9 +243,9 @@ export default function Templates() {
 
                   {/* Prompt Content */}
                   <div className="relative">
-                    <div className="font-mono text-sm text-gray-600 bg-gray-50/70 px-5 py-4 rounded-md border border-gray-200/80 h-32 overflow-hidden">
-                      <div className="leading-relaxed whitespace-pre-wrap line-clamp-4">{template.system_prompt}</div>
-                      <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-gray-50 via-gray-50/95 to-transparent pointer-events-none"></div>
+                    <div className="font-mono text-xs sm:text-sm text-gray-600 bg-gray-50/70 px-3 sm:px-5 py-3 sm:py-4 rounded-md border border-gray-200/80 min-h-[100px] sm:h-32 overflow-hidden">
+                      <div className="leading-relaxed whitespace-pre-wrap line-clamp-3 sm:line-clamp-4">{template.system_prompt}</div>
+                      <div className="absolute inset-x-0 bottom-0 h-12 sm:h-16 bg-gradient-to-t from-gray-50 via-gray-50/95 to-transparent pointer-events-none"></div>
                     </div>
                   </div>
                 </div>

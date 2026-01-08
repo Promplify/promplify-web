@@ -269,7 +269,7 @@ export const Navigation = () => {
                   </div>
                 </button>
               </SheetTrigger>
-              <SheetContent side="left" className="w-[300px] sm:w-[350px] bg-black border-white/10 p-0 [&>button]:hidden">
+              <SheetContent side="left" className="w-[280px] sm:w-[320px] md:w-[350px] bg-black border-white/10 p-0 [&>button]:hidden">
                 {/* Mobile menu header with logo and close button */}
                 <div className="flex items-center justify-between p-6 border-b border-white/10">
                   <Link to="/" onClick={() => setIsMenuOpen(false)} className="flex items-center space-x-2 hover:opacity-80 transition-opacity">

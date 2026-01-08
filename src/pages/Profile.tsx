@@ -189,33 +189,33 @@ export default function Profile() {
       <meta name="robots" content="noindex, nofollow" />
       <Navigation />
       <div className="flex-1">
-        <main className="container max-w-2xl mx-auto p-6 pt-32">
-          <div className="bg-white shadow-sm rounded-lg p-8">
-            <h1 className="text-2xl font-bold mb-6">Profile Settings</h1>
-            <form onSubmit={handleSubmit} className="space-y-6">
+        <main className="container max-w-2xl mx-auto p-4 sm:p-6 pt-20 sm:pt-24 md:pt-32">
+          <div className="bg-white shadow-sm rounded-lg p-4 sm:p-6 md:p-8">
+            <h1 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">Profile Settings</h1>
+            <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
               <div className="space-y-2">
                 <Label htmlFor="full_name">Full Name</Label>
-                <Input id="full_name" value={profile.full_name} onChange={(e) => setProfile({ ...profile, full_name: e.target.value })} className="max-w-md" placeholder="Your full name" />
+                <Input id="full_name" value={profile.full_name} onChange={(e) => setProfile({ ...profile, full_name: e.target.value })} className="w-full max-w-md" placeholder="Your full name" />
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="username">Username</Label>
-                <Input id="username" value={profile.username} onChange={(e) => setProfile({ ...profile, username: e.target.value })} className="max-w-md" placeholder="Your username" />
+                <Input id="username" value={profile.username} onChange={(e) => setProfile({ ...profile, username: e.target.value })} className="w-full max-w-md" placeholder="Your username" />
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="bio">Bio</Label>
-                <Input id="bio" value={profile.bio} onChange={(e) => setProfile({ ...profile, bio: e.target.value })} className="max-w-md" placeholder="A short bio about yourself" />
+                <Input id="bio" value={profile.bio} onChange={(e) => setProfile({ ...profile, bio: e.target.value })} className="w-full max-w-md" placeholder="A short bio about yourself" />
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="company">Company</Label>
-                <Input id="company" value={profile.company} onChange={(e) => setProfile({ ...profile, company: e.target.value })} className="max-w-md" placeholder="Your company name" />
+                <Input id="company" value={profile.company} onChange={(e) => setProfile({ ...profile, company: e.target.value })} className="w-full max-w-md" placeholder="Your company name" />
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="location">Location</Label>
-                <Input id="location" value={profile.location} onChange={(e) => setProfile({ ...profile, location: e.target.value })} className="max-w-md" placeholder="Your location" />
+                <Input id="location" value={profile.location} onChange={(e) => setProfile({ ...profile, location: e.target.value })} className="w-full max-w-md" placeholder="Your location" />
               </div>
 
               <div className="space-y-2">
@@ -225,7 +225,7 @@ export default function Profile() {
                   type="url"
                   value={profile.website}
                   onChange={(e) => setProfile({ ...profile, website: e.target.value })}
-                  className="max-w-md"
+                  className="w-full max-w-md"
                   placeholder="https://your-website.com"
                 />
               </div>

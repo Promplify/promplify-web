@@ -104,10 +104,9 @@ export const Hero = () => {
                     alt="Promplify - Amplify Your AI Potential | Product Hunt"
                     width="250"
                     height="54"
-                    style={{ width: "250px", height: "54px" }}
                     onError={() => setProductHuntError(true)}
                     onLoad={() => setProductHuntLoaded(true)}
-                    className="rounded"
+                    className="rounded w-full max-w-[250px] h-auto"
                   />
                 </div>
               </a>

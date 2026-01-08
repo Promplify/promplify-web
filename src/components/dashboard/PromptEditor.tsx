@@ -635,9 +635,9 @@ export function PromptEditor({ promptId, onSave, onDelete }: PromptEditorProps) 
 
   return (
     <div className="flex-1 h-full bg-gray-50 flex flex-col">
-      <div className="p-3 border-b border-gray-200 bg-white flex items-center justify-between">
-        <div className="flex items-center space-x-4">
-          <h2 className="font-medium">{prompt.title || "New Prompt"}</h2>
+      <div className="p-2 sm:p-3 border-b border-gray-200 bg-white flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-0 sm:justify-between">
+        <div className="flex items-center space-x-2 sm:space-x-4 w-full sm:w-auto">
+          <h2 className="font-medium text-sm sm:text-base truncate">{prompt.title || "New Prompt"}</h2>
           <div className="flex items-center space-x-1">
             <Dialog open={showVersionHistory} onOpenChange={setShowVersionHistory}>
               <DialogTrigger asChild>
@@ -758,11 +758,12 @@ export function PromptEditor({ promptId, onSave, onDelete }: PromptEditorProps) 
             </Button>
           </div>
         </div>
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center space-x-1 sm:space-x-2 w-full sm:w-auto flex-wrap">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm" className="group focus-visible:ring-0 focus-visible:ring-offset-0">
-                Try in AI
+              <Button variant="outline" size="sm" className="group focus-visible:ring-0 focus-visible:ring-offset-0 text-xs sm:text-sm h-8 sm:h-9 px-2 sm:px-3">
+                <span className="hidden sm:inline">Try in AI</span>
+                <span className="sm:hidden">AI</span>
                 <ExternalLink className="w-3 h-3 ml-1 opacity-50 group-hover:opacity-100 transition-opacity" />
               </Button>
             </DropdownMenuTrigger>
@@ -777,15 +778,15 @@ export function PromptEditor({ promptId, onSave, onDelete }: PromptEditorProps) 
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-          <Button variant="outline" size="sm" onClick={handleCopyContent} className="group focus-visible:ring-0 focus-visible:ring-offset-0">
-            <Copy size={16} className="mr-1" />
-            Copy
+          <Button variant="outline" size="sm" onClick={handleCopyContent} className="group focus-visible:ring-0 focus-visible:ring-offset-0 text-xs sm:text-sm h-8 sm:h-9 px-2 sm:px-3">
+            <Copy size={14} className="sm:mr-1" />
+            <span className="hidden sm:inline">Copy</span>
           </Button>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm" disabled={!promptId || promptId === "new" || isSharing || isSharingToDiscover} className="group focus-visible:ring-0 focus-visible:ring-offset-0">
-                <Share2 size={16} className="mr-1" />
-                {isSharing || isSharingToDiscover ? "Sharing..." : "Share"}
+              <Button variant="outline" size="sm" disabled={!promptId || promptId === "new" || isSharing || isSharingToDiscover} className="group focus-visible:ring-0 focus-visible:ring-offset-0 text-xs sm:text-sm h-8 sm:h-9 px-2 sm:px-3">
+                <Share2 size={14} className="sm:mr-1" />
+                <span className="hidden sm:inline">{isSharing || isSharingToDiscover ? "Sharing..." : "Share"}</span>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
@@ -802,8 +803,8 @@ export function PromptEditor({ promptId, onSave, onDelete }: PromptEditorProps) 
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-          <Button variant="default" size="sm" onClick={handleSave} disabled={isSaving} className="min-w-[100px]">
-            <Save size={16} className="mr-1" />
+          <Button variant="default" size="sm" onClick={handleSave} disabled={isSaving} className="min-w-[70px] sm:min-w-[100px] text-xs sm:text-sm h-8 sm:h-9 px-2 sm:px-3">
+            <Save size={14} className="sm:mr-1" />
             {isSaving ? "Saving..." : "Save"}
           </Button>
         </div>
@@ -852,8 +853,8 @@ export function PromptEditor({ promptId, onSave, onDelete }: PromptEditorProps) 
       </Dialog>
 
       <div className="flex-1 overflow-y-auto">
-        <div className="w-full px-2">
-          <div className="space-y-4">
+        <div className="w-full px-2 sm:px-3 lg:px-4">
+          <div className="space-y-3 sm:space-y-4">
             {/* Basic Information */}
             <section className="bg-white border-b border-gray-200">
               <div className="px-4 py-4 border-b border-gray-100">
@@ -894,9 +895,9 @@ export function PromptEditor({ promptId, onSave, onDelete }: PromptEditorProps) 
                   <span className="text-xs text-gray-500">Required</span>
                 </div>
               </div>
-              <div className="p-4 space-y-4">
-                <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
-                  <div className="lg:col-span-3">
+              <div className="p-3 sm:p-4 space-y-3 sm:space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 sm:gap-4">
+                  <div className="sm:col-span-3">
                     <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
                     <input
                       type="text"
@@ -953,13 +954,13 @@ export function PromptEditor({ promptId, onSave, onDelete }: PromptEditorProps) 
                   <span className="text-xs text-gray-500">Optional</span>
                 </div>
               </div>
-              <div className="p-4">
-                <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
-                  <div className="lg:col-span-3">
+              <div className="p-3 sm:p-4">
+                <div className="grid grid-cols-1 md:grid-cols-5 gap-3 sm:gap-4">
+                  <div className="md:col-span-3">
                     <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
                     {renderCategorySelect()}
                   </div>
-                  <div className="lg:col-span-2">
+                  <div className="md:col-span-2">
                     <label className="block text-sm font-medium text-gray-700 mb-1">Tags</label>
                     <div className="flex flex-col gap-2">
                       <div className="relative">
@@ -1092,8 +1093,8 @@ export function PromptEditor({ promptId, onSave, onDelete }: PromptEditorProps) 
                   </div>
                 </div>
               </div>
-              <div className="p-4">
-                <div className="space-y-4">
+              <div className="p-3 sm:p-4">
+                <div className="space-y-3 sm:space-y-4">
                   {renderSystemPromptSection()}
                   <div>
                     <Label>User Prompt</Label>

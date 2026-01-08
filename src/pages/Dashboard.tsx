@@ -5,6 +5,7 @@ import { PromptList } from "@/components/dashboard/PromptList";
 import { SEO } from "@/components/SEO";
 import { supabase } from "@/lib/supabase";
 import { updateMeta } from "@/utils/meta";
+import { Menu, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
@@ -15,6 +16,7 @@ export default function Dashboard() {
   const [selectedPromptId, setSelectedPromptId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [refreshTrigger, setRefreshTrigger] = useState(0);
+  const [showMobilePromptList, setShowMobilePromptList] = useState(false);
 
   useEffect(() => {
     updateMeta("Dashboard", "Manage and optimize your AI prompts with Promplify's intuitive dashboard.", "AI prompt management, prompt organization, prompt optimization, AI workflow");
@@ -50,6 +52,8 @@ export default function Dashboard() {
 
   const handlePromptSelect = (promptId: string) => {
     setSelectedPromptId(promptId);
+    // Close mobile prompt list when selecting a prompt
+    setShowMobilePromptList(false);
   };
 
   const handlePromptSave = (savedPromptId?: string) => {
@@ -91,8 +95,38 @@ export default function Dashboard() {
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 flex overflow-hidden">
-        <div className="w-[320px] border-r border-gray-200">
+      <div className="flex-1 flex overflow-hidden relative">
+        {/* Mobile Hamburger Button */}
+        <button
+          onClick={() => setShowMobilePromptList(!showMobilePromptList)}
+          className="md:hidden fixed bottom-4 right-4 z-50 bg-[#2C106A] text-white p-3 rounded-full shadow-lg hover:bg-[#1F0B4C] transition-colors"
+          aria-label="Toggle prompt list"
+        >
+          {showMobilePromptList ? <X size={24} /> : <Menu size={24} />}
+        </button>
+
+        {/* Mobile Overlay */}
+        {showMobilePromptList && (
+          <div
+            className="md:hidden fixed inset-0 bg-black bg-opacity-50 z-30"
+            onClick={() => setShowMobilePromptList(false)}
+          />
+        )}
+
+        {/* Prompt List - Desktop: sidebar, Mobile: drawer */}
+        <div
+          className={`
+            ${showMobilePromptList ? "translate-x-0" : "-translate-x-full"}
+            md:translate-x-0
+            fixed md:relative
+            inset-y-0 left-0
+            z-40 md:z-0
+            w-[280px] sm:w-[320px]
+            border-r border-gray-200
+            transition-transform duration-300 ease-in-out
+            bg-white
+          `}
+        >
           <PromptList
             categoryId={selectedCategoryId}
             onCategorySelect={setSelectedCategoryId}
@@ -101,7 +135,9 @@ export default function Dashboard() {
             refreshTrigger={refreshTrigger}
           />
         </div>
-        <div className="flex-1">
+
+        {/* Prompt Editor */}
+        <div className="flex-1 overflow-hidden">
           <PromptEditor promptId={selectedPromptId} onSave={handlePromptSave} onDelete={handlePromptDelete} />
         </div>
       </div>

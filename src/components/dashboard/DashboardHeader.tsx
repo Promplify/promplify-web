@@ -10,23 +10,23 @@ export function DashboardHeader() {
 
   return (
     <header className="sticky top-0 w-full bg-black/95 backdrop-blur-sm border-b border-white/10 z-40">
-      <div className="h-16 px-8 flex items-center justify-between w-full">
-        <Link to="/" className="flex items-center space-x-2 hover:opacity-80 transition-opacity">
+      <div className="h-14 sm:h-16 px-3 sm:px-6 lg:px-8 flex items-center justify-between w-full">
+        <Link to="/" className="flex items-center space-x-2 hover:opacity-80 transition-opacity flex-shrink-0">
           <Logo />
         </Link>
-        <div className="flex items-center space-x-6">
-          <nav className="flex items-center space-x-6">
+        <div className="flex items-center space-x-2 sm:space-x-4 lg:space-x-6">
+          <nav className="flex items-center space-x-2 sm:space-x-4 lg:space-x-6">
             <a
               href="https://www.producthunt.com/posts/promplify"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-sm bg-[#EA532A]/10 hover:bg-[#EA532A]/20 text-[#EA532A] transition-all group inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-[#EA532A]/20"
+              className="hidden lg:inline-flex text-sm bg-[#EA532A]/10 hover:bg-[#EA532A]/20 text-[#EA532A] transition-all group items-center gap-1.5 px-3 py-1 rounded-full border border-[#EA532A]/20"
             >
               <span>🎉</span>
               <span>Vote on Product Hunt</span>
               <ExternalLink className="w-3.5 h-3.5 opacity-70 group-hover:opacity-100 transition-opacity" />
             </a>
-            <Link to="/" className={`transition-colors text-sm relative group ${isActive("/") ? "text-white" : "text-gray-400 hover:text-white"}`}>
+            <Link to="/" className={`transition-colors text-xs sm:text-sm relative group whitespace-nowrap ${isActive("/") ? "text-white" : "text-gray-400 hover:text-white"}`}>
               Home
               <span
                 className={`absolute -bottom-1 left-0 w-full h-0.5 bg-white transform origin-left transition-transform duration-200 ${
@@ -34,7 +34,7 @@ export function DashboardHeader() {
                 }`}
               />
             </Link>
-            <Link to="/discover" className={`transition-colors text-sm relative group ${isActive("/discover") ? "text-white" : "text-gray-400 hover:text-white"}`}>
+            <Link to="/discover" className={`hidden sm:inline-block transition-colors text-xs sm:text-sm relative group whitespace-nowrap ${isActive("/discover") ? "text-white" : "text-gray-400 hover:text-white"}`}>
               Discover
               <span
                 className={`absolute -bottom-1 left-0 w-full h-0.5 bg-white transform origin-left transition-transform duration-200 ${
@@ -42,7 +42,7 @@ export function DashboardHeader() {
                 }`}
               />
             </Link>
-            <Link to="/templates" className={`transition-colors text-sm relative group ${isActive("/templates") ? "text-white" : "text-gray-400 hover:text-white"}`}>
+            <Link to="/templates" className={`hidden md:inline-block transition-colors text-xs sm:text-sm relative group whitespace-nowrap ${isActive("/templates") ? "text-white" : "text-gray-400 hover:text-white"}`}>
               Templates
               <span
                 className={`absolute -bottom-1 left-0 w-full h-0.5 bg-white transform origin-left transition-transform duration-200 ${
@@ -50,7 +50,7 @@ export function DashboardHeader() {
                 }`}
               />
             </Link>
-            <Link to="/api-docs" className={`transition-colors text-sm relative group ${isActive("/api-docs") ? "text-white" : "text-gray-400 hover:text-white"}`}>
+            <Link to="/api-docs" className={`hidden lg:inline-block transition-colors text-xs sm:text-sm relative group whitespace-nowrap ${isActive("/api-docs") ? "text-white" : "text-gray-400 hover:text-white"}`}>
               API
               <span
                 className={`absolute -bottom-1 left-0 w-full h-0.5 bg-white transform origin-left transition-transform duration-200 ${
@@ -62,14 +62,14 @@ export function DashboardHeader() {
               href="https://github.com/Promplify/promplify-web/issues"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-gray-400 hover:text-white transition-colors text-sm relative group inline-flex items-center gap-1"
+              className="hidden xl:inline-flex text-gray-400 hover:text-white transition-colors text-xs sm:text-sm relative group items-center gap-1 whitespace-nowrap"
               title="Issue Tracker & Contributions Repository"
             >
               GitHub
               <ExternalLink className="w-3.5 h-3.5 opacity-50 group-hover:opacity-100 transition-opacity" />
               <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-white transform origin-left transition-transform duration-200 scale-x-0 group-hover:scale-x-100" />
             </a>
-            <Link to="/dashboard" className={`transition-colors text-sm relative group ${isActive("/dashboard") ? "text-white" : "text-gray-400 hover:text-white"}`}>
+            <Link to="/dashboard" className={`transition-colors text-xs sm:text-sm relative group whitespace-nowrap ${isActive("/dashboard") ? "text-white" : "text-gray-400 hover:text-white"}`}>
               Dashboard
               <span
                 className={`absolute -bottom-1 left-0 w-full h-0.5 bg-white transform origin-left transition-transform duration-200 ${
