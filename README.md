@@ -29,7 +29,7 @@ Promplify helps teams and individual builders manage prompts in a structured way
 ## Tech Stack
 
 - Frontend: React, Vite, TypeScript, Tailwind CSS, shadcn/ui
-- Backend/API: Supabase Edge Functions, Cloudflare Worker (optional)
+- Backend/API: Supabase Edge Functions
 - Database/Auth: Supabase
 
 ## Requirements
@@ -37,7 +37,6 @@ Promplify helps teams and individual builders manage prompts in a structured way
 - Node.js `>=20.18.3`
 - npm
 - Supabase account
-- Cloudflare account (only if you deploy the optional worker)
 
 ## Quick Start
 
@@ -101,26 +100,6 @@ supabase secrets set DEEPSEEK_API_KEY=your_deepseek_api_key
 ```
 
 See [supabase/README.md](supabase/README.md) for details.
-
-## Cloudflare Worker (Optional)
-
-If you need the worker-based API layer:
-
-```bash
-cd cloudflare-worker
-npm run dev
-# or
-npm run deploy
-```
-
-Set worker secrets before deploy:
-
-```bash
-npx wrangler secret put SUPABASE_URL
-npx wrangler secret put SUPABASE_ANON_KEY
-```
-
-See [cloudflare-worker/README.md](cloudflare-worker/README.md).
 
 ## Contributing Code
 
