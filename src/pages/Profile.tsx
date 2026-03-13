@@ -162,8 +162,8 @@ export default function Profile() {
           title="Profile - Promplify"
           description="Manage your Promplify profile settings and account information."
           keywords="profile, account settings, user profile"
+          robots="noindex, nofollow"
         />
-        <meta name="robots" content="noindex, nofollow" />
         <Navigation />
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center">
@@ -185,8 +185,8 @@ export default function Profile() {
         title="Profile - Promplify"
         description="Manage your Promplify profile settings and account information."
         keywords="profile, account settings, user profile"
+        robots="noindex, nofollow"
       />
-      <meta name="robots" content="noindex, nofollow" />
       <Navigation />
       <div className="flex-1">
         <main className="container max-w-2xl mx-auto p-4 sm:p-6 pt-20 sm:pt-24 md:pt-32">

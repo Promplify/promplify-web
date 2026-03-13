@@ -21,14 +21,14 @@ const steps = [
     number: "03",
     icon: Share2,
     title: "Share & Collaborate",
-    description: "Share your best prompts and collaborate with team members in real-time",
+    description: "Share your best prompts with teammates through links and versioned updates",
     comingSoon: false,
   },
   {
     number: "04",
     icon: Gauge,
     title: "Monitor & Analyze",
-    description: "Track token usage and analyze prompt performance with real-time monitoring tools",
+    description: "Track token usage and review prompt performance trends over time",
     comingSoon: true,
   },
 ];

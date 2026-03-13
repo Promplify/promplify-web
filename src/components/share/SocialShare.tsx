@@ -6,15 +6,11 @@ interface SocialShareProps {
   title: string;
   url: string;
   description?: string;
-  image?: string;
   className?: string;
 }
 
 export function SocialShare({ title, url, description = "", className = "" }: SocialShareProps) {
-  const encodedTitle = encodeURIComponent(title);
   const encodedUrl = encodeURIComponent(url);
-  const encodedDescription = encodeURIComponent(description);
-  const logoUrl = encodeURIComponent(`${window.location.origin}/logo.svg`);
 
   // Customize share text for different platforms
   const shareContent = {

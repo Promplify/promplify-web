@@ -43,8 +43,8 @@ export default function Auth() {
         title="Sign In - Promplify"
         description="Sign in or create an account to start managing your AI prompts with Promplify."
         keywords="sign in, login, register, account, AI prompt management"
+        robots="noindex, nofollow"
       />
-      <meta name="robots" content="noindex, nofollow" />
 
       {/* Simple navigation header */}
       <header className="fixed top-0 left-0 right-0 z-50 bg-black border-b border-white/10">
@@ -118,12 +118,10 @@ export default function Auth() {
             </div>
           </div>
           <div className="relative z-20 mt-auto">
-            <blockquote className="space-y-2">
-              <p className="text-base italic text-white/90">
-                "Promplify has revolutionized how I manage and optimize my AI prompts. The platform's intuitive interface and powerful features have made my workflow significantly more efficient."
-              </p>
-              <footer className="text-sm text-white/70">Sofia Davis, AI Researcher</footer>
-            </blockquote>
+            <div className="space-y-2">
+              <p className="text-base text-white/90">Open-source project maintained by the community.</p>
+              <p className="text-sm text-white/70">Use templates, versioning, and API access to keep your prompt workflow organized.</p>
+            </div>
           </div>
         </div>
 

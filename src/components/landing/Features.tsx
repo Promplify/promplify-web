@@ -30,19 +30,19 @@ const features = [
 
 const stats = [
   {
-    value: "10K+",
-    label: "Active Users",
-    description: "Trusted by developers worldwide",
+    value: "Open Source",
+    label: "Community Driven",
+    description: "Built in public with transparent development",
   },
   {
-    value: "1M+",
-    label: "Prompts Optimized",
-    description: "Improving AI interactions daily",
+    value: "API Ready",
+    label: "Developer Friendly",
+    description: "Integrate prompt retrieval into your applications",
   },
   {
-    value: "99%",
-    label: "Success Rate",
-    description: "Consistently high performance",
+    value: "Exportable",
+    label: "Portable Data",
+    description: "Keep ownership with import and export support",
   },
 ];
 
@@ -83,7 +83,7 @@ export const Features = () => {
             {stats.map((stat, index) => (
               <div key={index} className="text-center group">
                 <div className="mb-1">
-                  <span className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#2C106A] to-purple-600">{stat.value}</span>
+                  <span className="text-3xl sm:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#2C106A] to-purple-600">{stat.value}</span>
                 </div>
                 <div className="text-gray-800 font-medium mb-1">{stat.label}</div>
                 <p className="text-sm text-gray-600 opacity-80 group-hover:opacity-100 transition-opacity">{stat.description}</p>
