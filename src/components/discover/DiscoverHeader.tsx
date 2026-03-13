@@ -9,7 +9,7 @@ export function DiscoverHeader() {
       <div className="container mx-auto max-w-7xl">
         <div className="max-w-3xl mx-auto text-center">
           <div className="inline-block mb-4 sm:mb-6 px-3 sm:px-4 py-1.5 rounded-full bg-[#2C106A]/5 text-[#2C106A] text-xs sm:text-sm font-medium border border-[#2C106A]/10">
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#2C106A] to-purple-600">Discover Premium Product Prompts</span>
+            <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#2C106A] to-purple-600">Discover Community AI Prompts</span>
           </div>
           <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-3 md:mb-4 bg-clip-text text-transparent bg-gradient-to-r from-[#2C106A] to-purple-600 leading-tight">Prompt Discover</h1>
           <p className="text-base sm:text-lg md:text-xl text-gray-700 mb-4 md:mb-8 px-1">

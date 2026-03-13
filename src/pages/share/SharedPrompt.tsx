@@ -276,7 +276,7 @@ export default function SharedPromptPage() {
                   <Eye className="w-4 h-4" />
                   <span>{viewCount}</span>
                 </div>
-                <SocialShare title={promptData.title} url={window.location.href} description={promptData.description || "A shared AI prompt from Promplify"} image="/og-image.png" />
+                <SocialShare title={promptData.title} url={window.location.href} description={promptData.description || "A shared AI prompt from Promplify"} />
                 <Button onClick={handleSavePrompt} disabled={isSaving} className="bg-purple-600 hover:bg-purple-700">
                   {isSaving ? "Saving..." : "Save to My Prompts"}
                 </Button>

@@ -104,7 +104,6 @@ export const Navigation = () => {
                 rel="noopener noreferrer"
                 className="text-sm bg-[#EA532A]/10 hover:bg-[#EA532A]/20 text-[#EA532A] transition-all group inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-[#EA532A]/20"
               >
-                <span>🎉</span>
                 <span>Vote on Product Hunt</span>
                 <ExternalLink className="w-3.5 h-3.5 opacity-70 group-hover:opacity-100 transition-opacity" />
               </a>
@@ -145,7 +144,7 @@ export const Navigation = () => {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-gray-400 hover:text-white transition-all duration-300 text-sm relative group inline-flex items-center gap-1.5 px-2 py-1 rounded-md hover:bg-white/5"
-                title="⭐ Star us on GitHub"
+                title="Star us on GitHub"
               >
                 <div className="flex items-center justify-center w-4 h-4 rounded-full bg-gray-700 group-hover:bg-white/20 transition-all duration-300">
                   <svg className="w-2.5 h-2.5" fill="currentColor" viewBox="0 0 20 20">
@@ -290,7 +289,6 @@ export const Navigation = () => {
                     className="text-sm bg-[#EA532A]/10 hover:bg-[#EA532A]/20 text-[#EA532A] transition-all group flex items-center justify-center gap-2 px-4 py-3 rounded-lg border border-[#EA532A]/20"
                     onClick={() => setIsMenuOpen(false)}
                   >
-                    <span>🎉</span>
                     <span className="font-medium">Vote on Product Hunt</span>
                     <ExternalLink className="w-4 h-4 opacity-70 group-hover:opacity-100 transition-opacity" />
                   </a>

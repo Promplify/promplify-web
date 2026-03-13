@@ -10,7 +10,12 @@ export default function ApiDocs() {
     <div className="min-h-screen flex flex-col bg-black text-white">
       <Navigation />
       <main className="flex-1 container mx-auto px-4 sm:px-6 py-6 pt-20 sm:pt-24">
-        <SEO canonicalPath="/api-docs" />
+        <SEO
+          canonicalPath="/api-docs"
+          title="API Documentation - Promplify"
+          description="Integrate Promplify prompts into your applications with secure API token authentication and version-aware prompt retrieval."
+          keywords="Promplify API, prompt API, prompt versioning API, AI prompt integration"
+        />
         <div className="max-w-6xl mx-auto">
           <div className="mb-4 sm:mb-6">
             <Breadcrumb>

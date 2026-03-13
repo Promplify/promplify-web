@@ -3,7 +3,7 @@
   <!-- Homepage -->
   <url>
     <loc>https://promplify.com</loc>
-    <lastmod>2025-01-03</lastmod>
+    <lastmod>2026-03-13</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
@@ -11,7 +11,7 @@
   <!-- Templates page -->
   <url>
     <loc>https://promplify.com/templates</loc>
-    <lastmod>2025-01-03</lastmod>
+    <lastmod>2026-03-13</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
@@ -19,15 +19,23 @@
   <!-- Discover page -->
   <url>
     <loc>https://promplify.com/discover</loc>
-    <lastmod>2025-01-03</lastmod>
+    <lastmod>2026-03-13</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
+  </url>
+
+  <!-- API docs page -->
+  <url>
+    <loc>https://promplify.com/api-docs</loc>
+    <lastmod>2026-03-13</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
 
   <!-- Privacy policy -->
   <url>
     <loc>https://promplify.com/privacy</loc>
-    <lastmod>2025-01-03</lastmod>
+    <lastmod>2026-03-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
@@ -35,7 +43,7 @@
   <!-- Terms of service -->
   <url>
     <loc>https://promplify.com/terms</loc>
-    <lastmod>2025-01-03</lastmod>
+    <lastmod>2026-03-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>

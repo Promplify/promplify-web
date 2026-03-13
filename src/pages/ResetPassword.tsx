@@ -72,7 +72,7 @@ export default function ResetPassword() {
       if (error) throw error;
 
       toast.success("Password has been reset successfully");
-      navigate("/auth/login");
+      navigate("/auth");
     } catch (error: any) {
       console.error("Error resetting password:", error);
       toast.error(error.message || "Failed to reset password");
@@ -157,8 +157,8 @@ export default function ResetPassword() {
         title="Reset Password - Promplify"
         description="Reset your Promplify account password securely."
         keywords="reset password, forgot password, account recovery"
+        robots="noindex, nofollow"
       />
-      <meta name="robots" content="noindex, nofollow" />
       <div className="relative hidden h-full flex-col bg-muted p-8 text-white lg:flex dark:border-r">
         <div className="absolute inset-0 bg-black" />
         <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]" />
