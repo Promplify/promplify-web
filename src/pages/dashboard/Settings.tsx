@@ -26,14 +26,27 @@ export default function Settings() {
   }, [navigate]);
 
   if (isLoading) {
-    return null;
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[#2C106A] mx-auto mb-3"></div>
+          <p className="text-sm text-gray-600">Loading settings...</p>
+        </div>
+      </div>
+    );
   }
 
   return (
     <div className="min-h-screen flex flex-col">
       <Navigation />
       <main className="flex-1 container mx-auto p-6">
-        <SEO canonicalPath="/settings" />
+        <SEO
+          canonicalPath="/settings"
+          title="Settings - Promplify"
+          description="Manage your API tokens and account settings in Promplify."
+          keywords="Promplify settings, API token management, prompt API access"
+          robots="noindex, nofollow"
+        />
         <div className="max-w-4xl mx-auto">
           <h1 className="text-2xl font-bold mb-6">Settings</h1>
           <div className="bg-white rounded-lg shadow p-6">

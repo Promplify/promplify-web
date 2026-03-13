@@ -22,7 +22,6 @@ export function DashboardHeader() {
               rel="noopener noreferrer"
               className="hidden lg:inline-flex text-sm bg-[#EA532A]/10 hover:bg-[#EA532A]/20 text-[#EA532A] transition-all group items-center gap-1.5 px-3 py-1 rounded-full border border-[#EA532A]/20"
             >
-              <span>🎉</span>
               <span>Vote on Product Hunt</span>
               <ExternalLink className="w-3.5 h-3.5 opacity-70 group-hover:opacity-100 transition-opacity" />
             </a>

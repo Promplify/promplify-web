@@ -8,7 +8,7 @@ import { createPrompt } from "@/services/promptService";
 import { updateMeta } from "@/utils/meta";
 import { countTokens } from "gpt-tokenizer/model/gpt-4";
 import { ArrowRight, Search, Tag, X } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -29,7 +29,7 @@ export default function Templates() {
   const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(0);
   const [searchQuery, setSearchQuery] = useState("");
-  const [isSearching, setIsSearching] = useState(false);
+  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
   const navigate = useNavigate();
   const { ref, inView } = useInView({
     threshold: 0.5,
@@ -40,15 +40,16 @@ export default function Templates() {
     updateMeta("Prompt Templates", "Browse and use our curated collection of AI prompt templates", "AI prompts, prompt templates, prompt engineering, AI assistant templates");
   }, []);
 
-  const fetchTemplates = async () => {
+  const fetchTemplates = useCallback(async () => {
+    setLoading(true);
     try {
       const from = page * 30;
       const to = from + 29;
 
       let query = supabase.from("prompt_template").select("*");
 
-      if (searchQuery) {
-        query = query.or(`title.ilike.%${searchQuery}%,system_prompt.ilike.%${searchQuery}%,category.ilike.%${searchQuery}%`);
+      if (debouncedSearchQuery) {
+        query = query.or(`title.ilike.%${debouncedSearchQuery}%,system_prompt.ilike.%${debouncedSearchQuery}%,category.ilike.%${debouncedSearchQuery}%`);
       }
 
       const { data, error } = await query.range(from, to).order("created_at", { ascending: false });
@@ -69,25 +70,31 @@ export default function Templates() {
       toast.error("Failed to load templates");
     } finally {
       setLoading(false);
-      setIsSearching(false);
     }
-  };
+  }, [page, debouncedSearchQuery]);
 
   useEffect(() => {
-    fetchTemplates();
-  }, [page, searchQuery]);
+    const timer = setTimeout(() => {
+      setDebouncedSearchQuery(searchQuery.trim());
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
 
   useEffect(() => {
     if (inView && hasMore && !loading) {
       setPage((prev) => prev + 1);
     }
-  }, [inView, hasMore]);
+  }, [inView, hasMore, loading]);
 
   useEffect(() => {
     setPage(0);
     setHasMore(true);
-    setLoading(true);
-  }, [searchQuery]);
+    setTemplates([]);
+  }, [debouncedSearchQuery]);
+
+  useEffect(() => {
+    fetchTemplates();
+  }, [fetchTemplates]);
 
   const handleUseTemplate = async (template: Template) => {
     try {
@@ -163,16 +170,17 @@ export default function Templates() {
                 <div className="absolute inset-0 bg-gradient-to-r from-[#2C106A] to-purple-600 rounded-full blur-md opacity-25 group-hover:opacity-30 transition-opacity" />
                 <div className="relative flex items-center bg-white rounded-full border border-gray-200 shadow-sm transition-shadow group-hover:shadow-md">
                   <div className="flex-none pl-5">
-                    {isSearching ? <div className="w-5 h-5 border-2 border-[#2C106A] border-t-transparent rounded-full animate-spin" /> : <Search className="w-5 h-5 text-gray-400" />}
+                    {searchQuery.trim() !== debouncedSearchQuery ? (
+                      <div className="w-5 h-5 border-2 border-[#2C106A] border-t-transparent rounded-full animate-spin" />
+                    ) : (
+                      <Search className="w-5 h-5 text-gray-400" />
+                    )}
                   </div>
                   <Input
                     type="text"
                     placeholder="Search templates by title, content, or category..."
                     value={searchQuery}
-                    onChange={(e) => {
-                      setSearchQuery(e.target.value);
-                      setIsSearching(true);
-                    }}
+                    onChange={(e) => setSearchQuery(e.target.value)}
                     className="flex-1 h-12 sm:h-14 px-3 sm:px-4 py-3 sm:py-4 bg-transparent border-0 focus:ring-0 focus:outline-none text-sm sm:text-base placeholder:text-gray-400"
                     style={{ boxShadow: "none" }}
                   />

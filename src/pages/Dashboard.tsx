@@ -77,7 +77,14 @@ export default function Dashboard() {
   };
 
   if (isLoading) {
-    return null;
+    return (
+      <div className="h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[#2C106A] mx-auto mb-3"></div>
+          <p className="text-sm text-gray-600">Loading dashboard...</p>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -87,8 +94,8 @@ export default function Dashboard() {
         title="Dashboard - Promplify"
         description="Manage and optimize your AI prompts with Promplify's intuitive dashboard."
         keywords="AI prompt management, prompt organization, prompt optimization, AI workflow"
+        robots="noindex, nofollow"
       />
-      <meta name="robots" content="noindex, nofollow" />
       {/* Fixed Header */}
       <div className="flex-none">
         <DashboardHeader />

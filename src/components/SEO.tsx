@@ -7,12 +7,13 @@ interface SEOProps {
   description?: string;
   keywords?: string;
   imageUrl?: string;
+  robots?: string;
 }
 
-export function SEO({ canonicalPath, title, description, keywords, imageUrl }: SEOProps) {
+export function SEO({ canonicalPath, title, description, keywords, imageUrl, robots }: SEOProps) {
   const location = useLocation();
   const baseUrl = "https://promplify.com";
-  const defaultImage = `${baseUrl}/logo.svg`;
+  const defaultImage = `${baseUrl}/web-app-manifest-512x512.png`;
 
   useEffect(() => {
     // Remove existing canonical tags
@@ -93,6 +94,15 @@ export function SEO({ canonicalPath, title, description, keywords, imageUrl }: S
       }
     });
 
+    // Update robots directive.
+    let metaRobots = document.querySelector('meta[name="robots"]');
+    if (!metaRobots) {
+      metaRobots = document.createElement("meta");
+      metaRobots.setAttribute("name", "robots");
+      document.head.appendChild(metaRobots);
+    }
+    metaRobots.setAttribute("content", robots || "index,follow");
+
     // Cleanup function
     return () => {
       const canonical = document.querySelector('link[rel="canonical"]');
@@ -100,7 +110,7 @@ export function SEO({ canonicalPath, title, description, keywords, imageUrl }: S
         canonical.remove();
       }
     };
-  }, [location.pathname, canonicalPath, title, description, keywords, imageUrl]);
+  }, [location.pathname, canonicalPath, title, description, keywords, imageUrl, robots, defaultImage]);
 
   return null;
 }

@@ -280,7 +280,7 @@ export default function TemplatePage() {
                   <Eye className="w-4 h-4" />
                   <span>{viewCount}</span>
                 </div>
-                <SocialShare title={templateData.title} url={window.location.href} description={templateData.description || "A prompt template from Promplify"} image="/og-image.png" />
+                <SocialShare title={templateData.title} url={window.location.href} description={templateData.description || "A prompt template from Promplify"} />
                 <Button onClick={handleSavePrompt} disabled={isSaving} className="bg-purple-600 hover:bg-purple-700">
                   {isSaving ? "Saving..." : "Save to My Prompts"}
                 </Button>
