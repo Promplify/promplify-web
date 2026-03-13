@@ -124,15 +124,15 @@ See [cloudflare-worker/README.md](cloudflare-worker/README.md).
 
 ## Contributing Code
 
-- Read [CONTRIBUTING.md](CONTRIBUTING.md) for branch, PR, and quality requirements.
-- Follow [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) in all community interactions.
+- Read [CONTRIBUTING.md](.github/CONTRIBUTING.md) for branch, PR, and quality requirements.
+- Follow [CODE_OF_CONDUCT.md](.github/CODE_OF_CONDUCT.md) in all community interactions.
 - Run `npm run type-check` and `npm run lint` before opening a pull request.
 
 ## Security and Secrets
 
 - Never commit secrets, tokens, private keys, or filled `.env` files.
 - Keep `.env` local only; `.env.example` is the only environment file that should be tracked.
-- Security disclosures should follow [SECURITY.md](SECURITY.md).
+- Security disclosures should follow [SECURITY.md](.github/SECURITY.md).
 - This repository runs automated secret scanning in CI (`.github/workflows/secret-scan.yml`).
 
 To reproduce secret scanning locally:
