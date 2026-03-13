@@ -33,6 +33,7 @@ export default function Templates() {
   const [searchQuery, setSearchQuery] = useState("");
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
   const requestIdRef = useRef(0);
+  const latestQueryRef = useRef(debouncedSearchQuery);
   const navigate = useNavigate();
   const { ref, inView } = useInView({
     threshold: 0.5,
@@ -89,6 +90,10 @@ export default function Templates() {
   }, [searchQuery]);
 
   useEffect(() => {
+    latestQueryRef.current = debouncedSearchQuery;
+  }, [debouncedSearchQuery]);
+
+  useEffect(() => {
     if (inView && hasMore && !loading) {
       setPage((prev) => prev + 1);
     }
@@ -103,8 +108,8 @@ export default function Templates() {
 
   useEffect(() => {
     if (page === 0) return;
-    fetchTemplates(page, debouncedSearchQuery);
-  }, [page, debouncedSearchQuery, fetchTemplates]);
+    fetchTemplates(page, latestQueryRef.current);
+  }, [page, fetchTemplates]);
 
   const handleUseTemplate = async (template: Template) => {
     try {
