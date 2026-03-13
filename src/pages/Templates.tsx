@@ -8,7 +8,7 @@ import { createPrompt } from "@/services/promptService";
 import { updateMeta } from "@/utils/meta";
 import { countTokens } from "gpt-tokenizer/model/gpt-4";
 import { ArrowRight, Search, Tag, X } from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -23,6 +23,8 @@ type Template = {
   updated_at: string;
 };
 
+const PAGE_SIZE = 30;
+
 export default function Templates() {
   const [templates, setTemplates] = useState<Template[]>([]);
   const [loading, setLoading] = useState(true);
@@ -30,6 +32,7 @@ export default function Templates() {
   const [page, setPage] = useState(0);
   const [searchQuery, setSearchQuery] = useState("");
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
+  const requestIdRef = useRef(0);
   const navigate = useNavigate();
   const { ref, inView } = useInView({
     threshold: 0.5,
@@ -40,38 +43,43 @@ export default function Templates() {
     updateMeta("Prompt Templates", "Browse and use our curated collection of AI prompt templates", "AI prompts, prompt templates, prompt engineering, AI assistant templates");
   }, []);
 
-  const fetchTemplates = useCallback(async () => {
+  const fetchTemplates = useCallback(async (targetPage: number, queryValue: string) => {
+    const requestId = ++requestIdRef.current;
     setLoading(true);
     try {
-      const from = page * 30;
-      const to = from + 29;
+      const from = targetPage * PAGE_SIZE;
+      const to = from + (PAGE_SIZE - 1);
 
       let query = supabase.from("prompt_template").select("*");
 
-      if (debouncedSearchQuery) {
-        query = query.or(`title.ilike.%${debouncedSearchQuery}%,system_prompt.ilike.%${debouncedSearchQuery}%,category.ilike.%${debouncedSearchQuery}%`);
+      if (queryValue) {
+        query = query.or(`title.ilike.%${queryValue}%,system_prompt.ilike.%${queryValue}%,category.ilike.%${queryValue}%`);
       }
 
       const { data, error } = await query.range(from, to).order("created_at", { ascending: false });
 
       if (error) throw error;
+      if (requestId !== requestIdRef.current) return;
 
-      if (data.length < 30) {
+      if (data.length < PAGE_SIZE) {
         setHasMore(false);
       }
 
-      if (page === 0) {
+      if (targetPage === 0) {
         setTemplates(data);
       } else {
         setTemplates((prev) => [...prev, ...data]);
       }
     } catch (error) {
+      if (requestId !== requestIdRef.current) return;
       console.error("Error fetching templates:", error);
       toast.error("Failed to load templates");
     } finally {
-      setLoading(false);
+      if (requestId === requestIdRef.current) {
+        setLoading(false);
+      }
     }
-  }, [page, debouncedSearchQuery]);
+  }, []);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -90,11 +98,13 @@ export default function Templates() {
     setPage(0);
     setHasMore(true);
     setTemplates([]);
-  }, [debouncedSearchQuery]);
+    fetchTemplates(0, debouncedSearchQuery);
+  }, [debouncedSearchQuery, fetchTemplates]);
 
   useEffect(() => {
-    fetchTemplates();
-  }, [fetchTemplates]);
+    if (page === 0) return;
+    fetchTemplates(page, debouncedSearchQuery);
+  }, [page, debouncedSearchQuery, fetchTemplates]);
 
   const handleUseTemplate = async (template: Template) => {
     try {
