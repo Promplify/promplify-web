@@ -1,0 +1,22 @@
+title = "Promplify gitleaks config"
+
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "Allow placeholder secrets in docs and examples"
+paths = [
+  '''(?:^|/)README\.md$''',
+  '''(?:^|/)CONTRIBUTING\.md$''',
+  '''(?:^|/)supabase/README\.md$''',
+  '''(?:^|/)cloudflare-worker/README\.md$''',
+  '''(?:^|/)\.env\.example$''',
+]
+regexes = [
+  '''your_[a-z0-9_]+''',
+  '''your-project-id''',
+  '''your-anon-key''',
+  '''YOUR_PROJECT_ID''',
+  '''YOUR_SUPABASE_URL''',
+  '''YOUR_SUPABASE_ANON_KEY''',
+]
