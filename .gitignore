@@ -82,3 +82,6 @@ coverage/
 # Temporary folders
 tmp/
 temp/
+
+# Supabase baseline snapshots that may include sensitive auth config fields
+supabase/advisor_baseline/**/auth_config_*.json
