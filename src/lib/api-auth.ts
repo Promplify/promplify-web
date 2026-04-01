@@ -40,28 +40,27 @@ export async function validateApiToken(token: string): Promise<{ userId: string 
   }
 
   try {
-    const { data, error } = await supabase.from("api_tokens").select("user_id, expires_at, token").eq("token", tokenValue).single();
+    const { data, error } = await supabase.rpc("validate_api_token", {
+      p_token: tokenValue,
+    });
 
     if (error) {
-      if (error.code === "PGRST116") {
-        return { userId: null, error: "Invalid API token" };
-      }
       return { userId: null, error: "Failed to validate token" };
     }
 
-    if (!data) {
+    const rows = Array.isArray(data) ? data : data ? [data] : [];
+    const tokenRecord = rows[0];
+
+    if (!tokenRecord) {
       return { userId: null, error: "Invalid API token" };
     }
 
     // Check expiration if expires_at is set
-    if (data.expires_at && new Date(data.expires_at) < new Date()) {
+    if (tokenRecord.expires_at && new Date(tokenRecord.expires_at) < new Date()) {
       return { userId: null, error: "API token expired" };
     }
 
-    // Comment out last_used_at update to avoid circular requests
-    // await supabase.from("api_tokens").update({ last_used_at: new Date().toISOString() }).eq("token", tokenValue);
-
-    return { userId: data.user_id, error: null };
+    return { userId: tokenRecord.user_id, error: null };
   } catch (err) {
     return { userId: null, error: "Internal server error during token validation" };
   }

@@ -35,6 +35,22 @@ const generateToken = () => {
   return timeStr + randomPart;
 };
 
+interface SharedPromptRpcRow {
+  id: string;
+  prompt_id: string;
+  share_token: string;
+  views: number | null;
+  created_at: string;
+  created_by: string;
+  prompt_title: string | null;
+  prompt_description: string | null;
+  prompt_system_prompt: string | null;
+  prompt_user_prompt: string | null;
+  prompt_version: string | null;
+  prompt_token_count: number | null;
+  prompt_category_id: string | null;
+}
+
 export const createShareLink = async (promptId: string, userId: string) => {
   try {
     console.log("Starting createShareLink for promptId:", promptId);
@@ -56,12 +72,7 @@ export const createShareLink = async (promptId: string, userId: string) => {
     }
 
     console.log("No existing share found, generating new token");
-    // Generate token directly here to ensure it works
-    const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-    let shareToken = "";
-    for (let i = 0; i < 8; i++) {
-      shareToken += characters.charAt(Math.floor(Math.random() * characters.length));
-    }
+    const shareToken = generateToken();
 
     console.log("Generated token:", shareToken);
 
@@ -99,60 +110,24 @@ export const createShareLink = async (promptId: string, userId: string) => {
 
 export const getSharedPrompt = async (shareToken: string) => {
   try {
-    console.log("[getSharedPrompt] Called with token:", shareToken);
+    const { data, error } = await supabase.rpc("get_shared_prompt_by_token", { p_share_token: shareToken });
 
-    // First, get just the share record without relationships
-    const { data: shareRecord, error: shareError } = await supabase.from("prompt_shares").select("*").eq("share_token", shareToken).single();
-
-    if (shareError) {
-      console.error("[getSharedPrompt] Error fetching share record:", shareError);
-      if (shareError.code === "PGRST116") {
-        throw new Error("Share link not found or has been removed");
-      }
-      throw shareError;
+    if (error) {
+      console.error("[getSharedPrompt] Error fetching shared prompt:", error);
+      throw error;
     }
 
-    if (!shareRecord) {
-      console.error("[getSharedPrompt] No share record found for token:", shareToken);
+    const rows = Array.isArray(data) ? (data as SharedPromptRpcRow[]) : data ? ([data] as SharedPromptRpcRow[]) : [];
+    const sharedPrompt = rows[0];
+
+    if (!sharedPrompt) {
       throw new Error("Share link not found or has been removed");
     }
 
-    console.log("[getSharedPrompt] Retrieved share record:", JSON.stringify(shareRecord, null, 2));
-
-    // Now fetch the prompt separately
-    const { data: promptData, error: promptError } = await supabase
-      .from("prompts")
-      .select(
-        `
-        id,
-        title,
-        description,
-        system_prompt,
-        user_prompt,
-        version,
-        token_count,
-        category_id
-      `
-      )
-      .eq("id", shareRecord.prompt_id)
-      .single();
-
-    if (promptError) {
-      console.error("[getSharedPrompt] Error fetching prompt:", promptError);
-      if (promptError.code === "PGRST116") {
-        throw new Error("The shared prompt has been removed or is no longer accessible");
-      }
-      throw promptError;
-    }
-
-    if (!promptData) {
-      console.error("[getSharedPrompt] No prompt found for ID:", shareRecord.prompt_id);
+    if (!sharedPrompt.prompt_title) {
       throw new Error("The shared prompt has been removed or is no longer accessible");
     }
 
-    console.log("[getSharedPrompt] Retrieved prompt data:", JSON.stringify(promptData, null, 2));
-
-    // Fetch tags separately
     const { data: tagData, error: tagError } = await supabase
       .from("prompt_tags")
       .select(
@@ -164,34 +139,31 @@ export const getSharedPrompt = async (shareToken: string) => {
         )
       `
       )
-      .eq("prompt_id", shareRecord.prompt_id);
+      .eq("prompt_id", sharedPrompt.prompt_id);
 
     if (tagError) {
       console.error("[getSharedPrompt] Error fetching tags:", tagError);
-      // Don't throw, we can continue without tags
     }
 
-    // Add prompt data and tags to the share record
-    shareRecord.prompts = {
-      ...promptData,
-      prompt_tags: tagData || [],
+    return {
+      id: sharedPrompt.id,
+      prompt_id: sharedPrompt.prompt_id,
+      share_token: sharedPrompt.share_token,
+      views: sharedPrompt.views ?? 0,
+      created_at: sharedPrompt.created_at,
+      created_by: sharedPrompt.created_by,
+      prompts: {
+        id: sharedPrompt.prompt_id,
+        title: sharedPrompt.prompt_title,
+        description: sharedPrompt.prompt_description,
+        system_prompt: sharedPrompt.prompt_system_prompt,
+        user_prompt: sharedPrompt.prompt_user_prompt,
+        version: sharedPrompt.prompt_version,
+        token_count: sharedPrompt.prompt_token_count ?? 0,
+        category_id: sharedPrompt.prompt_category_id,
+        prompt_tags: tagData || [],
+      },
     };
-
-    // Increment view count
-    try {
-      const { error: updateError } = await supabase
-        .from("prompt_shares")
-        .update({ views: (shareRecord.views || 0) + 1 })
-        .eq("id", shareRecord.id);
-
-      if (updateError) {
-        console.error("[getSharedPrompt] Error updating view count:", updateError);
-      }
-    } catch (updateError) {
-      console.error("[getSharedPrompt] Exception updating view count:", updateError);
-    }
-
-    return shareRecord;
   } catch (error) {
     console.error("[getSharedPrompt] Error:", error);
     throw error;
