@@ -1,0 +1,1 @@
+{"message":"Failed to run sql query: ERROR:  42883: operator does not exist: bigint = uuid\nLINE 478:     WHERE pt.id = p_template_id\n                          ^\nHINT:  No operator matches the given name and argument types. You might need to add explicit type casts.\n"}

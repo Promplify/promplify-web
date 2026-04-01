@@ -1,0 +1,5 @@
+Auth Config HIBP Check (sanitized)
+Date: 2026-04-01
+Project: jnwfnaexsmxqtbotkcon
+Result: password_hibp_enabled remains false
+Reason: Feature requires Supabase Pro plan or above

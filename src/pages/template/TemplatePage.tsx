@@ -47,25 +47,21 @@ export default function TemplatePage() {
         setTemplateData(template);
         setViewCount(template.views || 0);
 
-        // Update view count
+        // Update view count through RPC
         try {
-          // Execute update operation
-          const { error: updateError } = await supabase
-            .from("prompt_template")
-            .update({ views: (template.views || 0) + 1 })
-            .eq("id", template.id);
+          const { data: updatedViews, error: updateError } = await supabase.rpc("increment_template_views", {
+            p_template_id: template.id,
+          });
 
           if (updateError) {
             console.warn("Failed to update view count:", updateError);
-          } else {
-            // Re-fetch data after update to confirm success
-            const { data: refreshData, error: refreshError } = await supabase.from("prompt_template").select("views").eq("id", template.id).single();
+            return;
+          }
 
-            if (!refreshError && refreshData) {
-              setViewCount(refreshData.views);
-            } else {
-              setViewCount((template.views || 0) + 1);
-            }
+          if (typeof updatedViews === "number") {
+            setViewCount(updatedViews);
+          } else {
+            setViewCount((template.views || 0) + 1);
           }
         } catch (updateErr) {
           console.warn("Failed to update view count:", updateErr);

@@ -93,17 +93,6 @@ export const likeDiscoverPrompt = async (discoverPromptId: string) => {
 
   if (!userId) throw new Error("User not authenticated");
 
-  // First verify that a corresponding record exists in plaza_prompts and get current likes_count
-  const { data: promptData, error: promptError } = await supabase.from("plaza_prompts").select("id, likes_count").eq("id", discoverPromptId).single();
-
-  if (promptError) {
-    console.error("Error checking prompt existence:", promptError);
-    throw new Error(`Plaza prompt ${discoverPromptId} not found: ${promptError.message}`);
-  }
-
-  // Get current likes_count
-  const currentLikesCount = promptData.likes_count || 0;
-
   try {
     // 1. Check if user has already liked
     const { data: existingLike, error: checkError } = await supabase.from("plaza_likes").select("id").eq("plaza_prompt_id", discoverPromptId).eq("user_id", userId).maybeSingle();
@@ -130,18 +119,7 @@ export const likeDiscoverPrompt = async (discoverPromptId: string) => {
       throw error;
     }
 
-    // 3. Directly update likes_count in plaza_prompts table (important change)
-    console.log(`Updating likes_count for prompt ${discoverPromptId} from ${currentLikesCount} to ${currentLikesCount + 1}`);
-    const { error: updateError } = await supabase
-      .from("plaza_prompts")
-      .update({ likes_count: currentLikesCount + 1 })
-      .eq("id", discoverPromptId);
-
-    if (updateError) {
-      console.error("Error updating likes_count:", updateError);
-      console.error("Full error object:", JSON.stringify(updateError));
-    }
-
+    // likes_count is maintained by database trigger
     return data;
   } catch (error: any) {
     console.error("Failed to like prompt:", error);
@@ -156,17 +134,6 @@ export const unlikeDiscoverPrompt = async (discoverPromptId: string) => {
   const userId = sessionData.session?.user?.id;
 
   if (!userId) throw new Error("User not authenticated");
-
-  // First get current likes_count
-  const { data: promptData, error: promptError } = await supabase.from("plaza_prompts").select("id, likes_count").eq("id", discoverPromptId).single();
-
-  if (promptError) {
-    console.error("Error checking prompt existence:", promptError);
-    throw new Error(`Plaza prompt ${discoverPromptId} not found: ${promptError.message}`);
-  }
-
-  // Get current likes_count
-  const currentLikesCount = promptData.likes_count || 0;
 
   try {
     // 1. Check if user has already liked
@@ -190,16 +157,7 @@ export const unlikeDiscoverPrompt = async (discoverPromptId: string) => {
       throw error;
     }
 
-    // 3. Directly update likes_count in plaza_prompts table, ensure it's not negative
-    const newLikesCount = Math.max(0, currentLikesCount - 1);
-    console.log(`Updating likes_count for prompt ${discoverPromptId} from ${currentLikesCount} to ${newLikesCount}`);
-    const { error: updateError } = await supabase.from("plaza_prompts").update({ likes_count: newLikesCount }).eq("id", discoverPromptId);
-
-    if (updateError) {
-      console.error("Error updating likes_count:", updateError);
-      console.error("Full error object:", JSON.stringify(updateError));
-    }
-
+    // likes_count is maintained by database trigger
     return true;
   } catch (error) {
     console.error("Failed to unlike prompt:", error);

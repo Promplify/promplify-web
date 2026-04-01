@@ -7,6 +7,7 @@ import { SocialShare } from "@/components/share/SocialShare";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import { getSharedPrompt } from "@/services/shareService";
 import { supabase } from "@/lib/supabase";
 import { updateMeta } from "@/utils/meta";
 import { ChevronRight, Copy, Eye } from "lucide-react";
@@ -28,68 +29,19 @@ export default function SharedPromptPage() {
         setIsLoading(true);
         setError(null);
 
-        // 1. Get the share record first
-        const { data: shareRecord, error: shareError } = await supabase.from("prompt_shares").select("*").eq("share_token", token).single();
-
-        if (shareError) {
-          if (shareError.code === "PGRST116") {
-            setError("Share link not found or has been removed");
-          } else {
-            setError(shareError.message || "Failed to load shared prompt");
-          }
-          return;
-        }
-
-        if (!shareRecord) {
+        if (!token) {
           setError("Share link not found or has been removed");
           return;
         }
 
-        setViewCount(shareRecord.views || 0);
-
-        // 2. Get the prompt data
-        const { data: prompt, error: promptError } = await supabase
-          .from("prompts")
-          .select(
-            `
-            id,
-            title,
-            description,
-            system_prompt,
-            user_prompt,
-            version,
-            token_count,
-            category_id
-          `
-          )
-          .eq("id", shareRecord.prompt_id)
-          .single();
-
-        if (promptError) {
-          if (promptError.code === "PGRST116") {
-            setError("The shared prompt has been removed or is no longer accessible");
-          } else {
-            setError(promptError.message || "Failed to load prompt data");
-          }
-          return;
-        }
-
-        if (!prompt) {
+        const sharedPrompt = await getSharedPrompt(token);
+        if (!sharedPrompt?.prompts) {
           setError("The shared prompt has been removed or is no longer accessible");
           return;
         }
 
-        setPromptData(prompt);
-
-        // 3. Increment view count
-        const { error: updateError } = await supabase
-          .from("prompt_shares")
-          .update({ views: (shareRecord.views || 0) + 1 })
-          .eq("id", shareRecord.id);
-
-        if (!updateError) {
-          setViewCount((shareRecord.views || 0) + 1);
-        }
+        setPromptData(sharedPrompt.prompts);
+        setViewCount(sharedPrompt.views || 0);
       } catch (err: any) {
         console.error("Error loading shared prompt:", err);
         setError(err.message || "Failed to load shared prompt");
