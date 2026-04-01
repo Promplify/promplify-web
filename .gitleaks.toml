@@ -20,3 +20,9 @@ regexes = [
   '''YOUR_SUPABASE_URL''',
   '''YOUR_SUPABASE_ANON_KEY''',
 ]
+
+[[allowlists]]
+description = "Ignore sanitized Supabase advisor auth snapshots"
+paths = [
+  '''(?:^|/)supabase/advisor_baseline/.*/auth_config_.*\.json$''',
+]
