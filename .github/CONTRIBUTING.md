@@ -4,7 +4,7 @@ Thank you for contributing to Promplify. This guide describes the required workf
 
 ## Prerequisites
 
-- Node.js `>=20.18.3`
+- Node.js `^20.19.0 || >=22.12.0`
 - npm
 - Supabase CLI (for database/function related changes)
 

@@ -34,7 +34,7 @@ Promplify helps teams and individual builders manage prompts in a structured way
 
 ## Requirements
 
-- Node.js `>=20.18.3`
+- Node.js `^20.19.0 || >=22.12.0`
 - npm
 - Supabase account
 
