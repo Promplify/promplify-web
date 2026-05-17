@@ -3,11 +3,11 @@ import { Navigation } from "@/components/landing/Navigation";
 import { SEO } from "@/components/SEO";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { trackEvent } from "@/lib/analytics";
 import { supabase } from "@/lib/supabase";
 import { createPrompt } from "@/services/promptService";
-import { updateMeta } from "@/utils/meta";
 import { countTokens } from "gpt-tokenizer/model/gpt-4";
-import { ArrowRight, Search, Tag, X } from "lucide-react";
+import { ArrowRight, Search, Sparkles, Tag, X } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import { useNavigate } from "react-router-dom";
@@ -24,6 +24,7 @@ type Template = {
 };
 
 const PAGE_SIZE = 30;
+const templateQuickFilters = ["ChatGPT", "Claude", "Marketing", "Writing", "Coding", "Workflow"];
 
 export default function Templates() {
   const [templates, setTemplates] = useState<Template[]>([]);
@@ -39,10 +40,6 @@ export default function Templates() {
     threshold: 0.5,
     delay: 100,
   });
-
-  useEffect(() => {
-    updateMeta("Prompt Templates", "Browse and use our curated collection of AI prompt templates", "AI prompts, prompt templates, prompt engineering, AI assistant templates");
-  }, []);
 
   const fetchTemplates = useCallback(async (targetPage: number, queryValue: string) => {
     const requestId = ++requestIdRef.current;
@@ -115,7 +112,8 @@ export default function Templates() {
     try {
       const session = await supabase.auth.getSession();
       if (!session.data.session?.user.id) {
-        toast.error("Please login first");
+        toast.info("Create an account to save templates to your prompt workspace");
+        navigate("/auth?mode=register");
         return;
       }
 
@@ -144,6 +142,11 @@ export default function Templates() {
       };
 
       const newPrompt = await createPrompt(promptData);
+      trackEvent("use_template", {
+        source: "templates",
+        template_id: template.id,
+        category: template.category || "uncategorized",
+      });
       toast.success("Template copied to your prompts");
 
       navigate("/dashboard", {
@@ -161,22 +164,34 @@ export default function Templates() {
   return (
     <>
       <SEO
-        canonicalPath="/templates"
-        title="AI Prompt Templates - Promplify"
-        description="Discover and use professionally crafted AI prompt templates to enhance your productivity with ChatGPT, Claude, and other AI models."
-        keywords="AI prompt templates, ChatGPT templates, Claude templates, prompt library, AI workflow templates"
+        canonicalPath="/templates/"
+        title="AI Prompt Templates for ChatGPT and Claude - Promplify"
+        description="Browse reusable AI prompt templates for ChatGPT, Claude, content creation, coding, research, and repeatable prompt engineering workflows."
+        keywords="AI prompt templates, ChatGPT templates, Claude templates, prompt engineering templates, workflow prompts, reusable prompts"
       />
       <div className="flex flex-col min-h-screen bg-gradient-to-b from-white to-gray-50">
         <Navigation />
 
         <main className="flex-1 pt-20 sm:pt-24 pb-12 sm:pb-16">
           <div className="container mx-auto px-3 sm:px-4 md:px-6">
-            <div className="max-w-3xl mx-auto text-center mb-6">
-              <div className="inline-block mb-6 px-4 py-1.5 rounded-full bg-[#2C106A]/5 text-[#2C106A] text-sm font-medium border border-[#2C106A]/10">
-                <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#2C106A] to-purple-600">Discover AI Prompt Templates</span>
+            <div className="max-w-4xl mx-auto text-center mb-8">
+              <div className="inline-flex items-center gap-2 mb-6 px-4 py-1.5 rounded-full bg-[#2C106A]/5 text-[#2C106A] text-sm font-medium border border-[#2C106A]/10">
+                <Sparkles className="w-4 h-4" />
+                <span>AI Prompt Templates for ChatGPT and Claude</span>
               </div>
-              <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight mb-5 bg-clip-text text-transparent bg-gradient-to-r from-[#2C106A] to-purple-600">Prompt Templates</h1>
-              <p className="text-gray-600 text-base sm:text-lg mb-5 font-medium">Browse and use our curated collection of prompt templates</p>
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight mb-5 text-gray-950">Reusable AI Prompt Templates</h1>
+              <p className="text-gray-600 text-base sm:text-lg mb-6 font-medium max-w-3xl mx-auto">
+                Start faster with structured prompt templates for writing, coding, research, marketing, and repeatable AI workflows.
+              </p>
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+                <Button onClick={() => navigate("/auth?mode=register")} className="w-full sm:w-auto bg-[#2C106A] hover:bg-[#1F0B4C] text-white">
+                  Start building prompts
+                  <ArrowRight className="w-4 h-4 ml-2" />
+                </Button>
+                <Button variant="outline" onClick={() => navigate("/discover")} className="w-full sm:w-auto">
+                  Explore community prompts
+                </Button>
+              </div>
             </div>
 
             {/* Search Section */}
@@ -207,6 +222,18 @@ export default function Templates() {
                 </div>
               </div>
               {searchQuery && !loading && templates.length === 0 && <div className="text-center mt-4 text-sm text-gray-500">No templates found for "{searchQuery}"</div>}
+            </div>
+            <div className="max-w-3xl mx-auto mb-8 flex flex-wrap items-center justify-center gap-2">
+              {templateQuickFilters.map((filter) => (
+                <button
+                  key={filter}
+                  type="button"
+                  onClick={() => setSearchQuery(filter)}
+                  className="px-3 py-1.5 rounded-full border border-gray-200 bg-white text-sm text-gray-600 hover:border-[#2C106A]/30 hover:text-[#2C106A] transition-colors"
+                >
+                  {filter}
+                </button>
+              ))}
             </div>
             <div className="flex items-center justify-center gap-2 text-sm text-gray-500 mb-10">
               <span>Templates are sourced from</span>
