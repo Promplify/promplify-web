@@ -7,7 +7,6 @@ import { SEO } from "@/components/SEO";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getDiscoverPrompts, getFeaturedDiscoverPrompts } from "@/services/plazaService";
 import { DiscoverPrompt } from "@/types/discover";
-import { updateMeta } from "@/utils/meta";
 import { useEffect, useState } from "react";
 
 const Discover = () => {
@@ -18,14 +17,6 @@ const Discover = () => {
   const [sortBy, setSortBy] = useState<"likes_count" | "created_at">("likes_count");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 12;
-
-  useEffect(() => {
-    updateMeta(
-      "Prompt Discover - Discover and Share AI Prompts",
-      "Explore and share the best AI prompts in our community. Find inspiration for ChatGPT, Claude, and other AI models. Create, save, and remix your favorite prompts.",
-      "AI prompt discover, prompt sharing, community prompts, AI prompt library, ChatGPT prompts, Claude prompts, prompt engineering, AI prompt templates"
-    );
-  }, []);
 
   useEffect(() => {
     const fetchDiscoverContent = async () => {
@@ -62,10 +53,10 @@ const Discover = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <SEO
-        canonicalPath="/discover"
-        title="Discover AI Prompts - Promplify"
-        description="Explore and share the best AI prompts in our community. Find inspiration for ChatGPT, Claude, and other AI models. Create, save, and remix your favorite prompts."
-        keywords="AI prompt discover, prompt sharing, community prompts, AI prompt library, ChatGPT prompts, Claude prompts, prompt engineering, AI prompt templates"
+        canonicalPath="/discover/"
+        title="Discover Community AI Prompts - Promplify"
+        description="Explore shared AI prompts from the Promplify community, find prompt engineering ideas, and save useful prompts into your own workflow."
+        keywords="AI prompt discovery, community prompts, shared prompts, ChatGPT prompts, Claude prompts, prompt library"
       />
       <Navigation />
       <main className="pt-12 sm:pt-16 pb-12 sm:pb-16">

@@ -6,16 +6,18 @@ import { Badge } from "@/components/ui/badge";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage } from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import { trackEvent } from "@/lib/analytics";
 import { supabase } from "@/lib/supabase";
 import { updateMeta } from "@/utils/meta";
 import { countTokens } from "gpt-tokenizer/model/gpt-4";
 import { ChevronRight, Copy, Eye } from "lucide-react";
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 
 export default function TemplatePage() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [isSaving, setIsSaving] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -102,7 +104,8 @@ export default function TemplatePage() {
       } = await supabase.auth.getSession();
 
       if (!session) {
-        toast.error("Please sign in to save this template");
+        toast.info("Create an account to save templates to your prompt workspace");
+        navigate("/auth?mode=register");
         return;
       }
 
@@ -136,6 +139,11 @@ export default function TemplatePage() {
         throw error;
       }
 
+      trackEvent("use_template", {
+        source: "template_detail",
+        template_id: templateData.id,
+        category: templateData.category || "uncategorized",
+      });
       toast.success("Template saved successfully");
     } catch (err: any) {
       console.error("Error saving template:", err);

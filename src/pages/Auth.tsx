@@ -8,15 +8,23 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/lib/supabase";
 import { updateMeta } from "@/utils/meta";
 import { ArrowLeft, Github } from "lucide-react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { FcGoogle } from "react-icons/fc";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 
 export default function Auth() {
+  const [searchParams] = useSearchParams();
+  const requestedMode = searchParams.get("mode") === "register" ? "register" : "login";
+  const [authMode, setAuthMode] = useState<"login" | "register">(requestedMode);
+
   useEffect(() => {
     updateMeta("Sign In", "Sign in or create an account to start managing your AI prompts with Promplify.", "sign in, login, register, account, AI prompt management");
   }, []);
+
+  useEffect(() => {
+    setAuthMode(requestedMode);
+  }, [requestedMode]);
 
   const handleSocialLogin = async (provider: "github" | "google") => {
     try {
@@ -154,7 +162,7 @@ export default function Auth() {
                     <span className="bg-background px-3 sm:px-4 text-muted-foreground">Or continue with email</span>
                   </div>
                 </div>
-                <Tabs defaultValue="login" className="w-full">
+                <Tabs value={authMode} onValueChange={(value) => setAuthMode(value as "login" | "register")} className="w-full">
                   <TabsList className="grid w-full grid-cols-2 h-10 sm:h-12 mb-2">
                     <TabsTrigger value="login" className="text-sm sm:text-base">
                       Login
