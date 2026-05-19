@@ -7,12 +7,12 @@ import "./index.css";
 const SENTRY_DSN = "https://792b1d5e0b71fc2444800289dd48bd9b@o4504698557693952.ingest.us.sentry.io/4509172418084864";
 Sentry.init({
   dsn: SENTRY_DSN,
-  integrations: [Sentry.browserTracingIntegration(), Sentry.replayIntegration()],
+  integrations: [Sentry.browserTracingIntegration()],
   // Performance Monitoring
   tracesSampleRate: 1.0,
-  // Session Replay
-  replaysSessionSampleRate: 0.1,
-  replaysOnErrorSampleRate: 1.0,
+  // Session Replay disabled to avoid consuming reserved replay volume.
+  replaysSessionSampleRate: 0,
+  replaysOnErrorSampleRate: 0,
 });
 
 createRoot(document.getElementById("root")!).render(<App />);
