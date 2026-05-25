@@ -188,7 +188,7 @@ export default function Templates() {
                   Start building prompts
                   <ArrowRight className="w-4 h-4 ml-2" />
                 </Button>
-                <Button variant="outline" onClick={() => navigate("/discover")} className="w-full sm:w-auto">
+                <Button variant="outline" onClick={() => navigate("/discover/")} className="w-full sm:w-auto">
                   Explore community prompts
                 </Button>
               </div>

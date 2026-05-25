@@ -3,8 +3,9 @@ User-agent: *
 
 # Allow access to public pages
 Allow: /
-Allow: /templates
-Allow: /discover
+Allow: /templates/
+Allow: /discover/
+Allow: /api-docs/
 Allow: /privacy
 Allow: /terms
 

@@ -253,7 +253,7 @@ export default function TemplatePage() {
               </BreadcrumbItem>
               <BreadcrumbItem>
                 <BreadcrumbLink asChild>
-                  <Link to="/templates" className="text-gray-400 hover:text-white transition-colors">
+                  <Link to="/templates/" className="text-gray-400 hover:text-white transition-colors">
                     Templates
                   </Link>
                 </BreadcrumbLink>

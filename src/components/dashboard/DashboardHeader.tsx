@@ -6,7 +6,8 @@ import { DashboardUserNav } from "./DashboardUserNav";
 export function DashboardHeader() {
   const location = useLocation();
 
-  const isActive = (path: string) => location.pathname === path;
+  const normalizePath = (path: string) => (path === "/" ? "/" : path.replace(/\/+$/, ""));
+  const isActive = (path: string) => normalizePath(location.pathname) === normalizePath(path);
 
   return (
     <header className="sticky top-0 w-full bg-black/95 backdrop-blur-sm border-b border-white/10 z-40">
@@ -33,27 +34,27 @@ export function DashboardHeader() {
                 }`}
               />
             </Link>
-            <Link to="/discover" className={`hidden sm:inline-block transition-colors text-xs sm:text-sm relative group whitespace-nowrap ${isActive("/discover") ? "text-white" : "text-gray-400 hover:text-white"}`}>
+            <Link to="/discover/" className={`hidden sm:inline-block transition-colors text-xs sm:text-sm relative group whitespace-nowrap ${isActive("/discover/") ? "text-white" : "text-gray-400 hover:text-white"}`}>
               Discover
               <span
                 className={`absolute -bottom-1 left-0 w-full h-0.5 bg-white transform origin-left transition-transform duration-200 ${
-                  isActive("/discover") ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
+                  isActive("/discover/") ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
                 }`}
               />
             </Link>
-            <Link to="/templates" className={`hidden md:inline-block transition-colors text-xs sm:text-sm relative group whitespace-nowrap ${isActive("/templates") ? "text-white" : "text-gray-400 hover:text-white"}`}>
+            <Link to="/templates/" className={`hidden md:inline-block transition-colors text-xs sm:text-sm relative group whitespace-nowrap ${isActive("/templates/") ? "text-white" : "text-gray-400 hover:text-white"}`}>
               Templates
               <span
                 className={`absolute -bottom-1 left-0 w-full h-0.5 bg-white transform origin-left transition-transform duration-200 ${
-                  isActive("/templates") ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
+                  isActive("/templates/") ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
                 }`}
               />
             </Link>
-            <Link to="/api-docs" className={`hidden lg:inline-block transition-colors text-xs sm:text-sm relative group whitespace-nowrap ${isActive("/api-docs") ? "text-white" : "text-gray-400 hover:text-white"}`}>
+            <Link to="/api-docs/" className={`hidden lg:inline-block transition-colors text-xs sm:text-sm relative group whitespace-nowrap ${isActive("/api-docs/") ? "text-white" : "text-gray-400 hover:text-white"}`}>
               API
               <span
                 className={`absolute -bottom-1 left-0 w-full h-0.5 bg-white transform origin-left transition-transform duration-200 ${
-                  isActive("/api-docs") ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
+                  isActive("/api-docs/") ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
                 }`}
               />
             </Link>
