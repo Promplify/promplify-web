@@ -17,7 +17,8 @@ export const Navigation = () => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const location = useLocation();
 
-  const isActive = (path: string) => location.pathname === path;
+  const normalizePath = (path: string) => (path === "/" ? "/" : path.replace(/\/+$/, ""));
+  const isActive = (path: string) => normalizePath(location.pathname) === normalizePath(path);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -115,27 +116,27 @@ export const Navigation = () => {
                   }`}
                 />
               </Link>
-              <Link to="/discover" className={`transition-colors text-sm relative group ${isActive("/discover") ? "text-white" : "text-gray-400 hover:text-white"}`}>
+              <Link to="/discover/" className={`transition-colors text-sm relative group ${isActive("/discover/") ? "text-white" : "text-gray-400 hover:text-white"}`}>
                 Discover
                 <span
                   className={`absolute -bottom-1 left-0 w-full h-0.5 bg-white transform origin-left transition-transform duration-200 ${
-                    isActive("/discover") ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
+                    isActive("/discover/") ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
                   }`}
                 />
               </Link>
-              <Link to="/templates" className={`transition-colors text-sm relative group ${isActive("/templates") ? "text-white" : "text-gray-400 hover:text-white"}`}>
+              <Link to="/templates/" className={`transition-colors text-sm relative group ${isActive("/templates/") ? "text-white" : "text-gray-400 hover:text-white"}`}>
                 Templates
                 <span
                   className={`absolute -bottom-1 left-0 w-full h-0.5 bg-white transform origin-left transition-transform duration-200 ${
-                    isActive("/templates") ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
+                    isActive("/templates/") ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
                   }`}
                 />
               </Link>
-              <Link to="/api-docs" className={`transition-colors text-sm relative group ${isActive("/api-docs") ? "text-white" : "text-gray-400 hover:text-white"}`}>
+              <Link to="/api-docs/" className={`transition-colors text-sm relative group ${isActive("/api-docs/") ? "text-white" : "text-gray-400 hover:text-white"}`}>
                 API
                 <span
                   className={`absolute -bottom-1 left-0 w-full h-0.5 bg-white transform origin-left transition-transform duration-200 ${
-                    isActive("/api-docs") ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
+                    isActive("/api-docs/") ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
                   }`}
                 />
               </Link>
@@ -303,22 +304,22 @@ export const Navigation = () => {
                       Home
                     </Link>
                     <Link
-                      to="/templates"
-                      className={`text-base px-3 py-3 rounded-lg transition-colors ${isActive("/templates") ? "text-white bg-white/10" : "text-white/70 hover:text-white hover:bg-white/5"}`}
+                      to="/templates/"
+                      className={`text-base px-3 py-3 rounded-lg transition-colors ${isActive("/templates/") ? "text-white bg-white/10" : "text-white/70 hover:text-white hover:bg-white/5"}`}
                       onClick={() => setIsMenuOpen(false)}
                     >
                       Templates
                     </Link>
                     <Link
-                      to="/api-docs"
-                      className={`text-base px-3 py-3 rounded-lg transition-colors ${isActive("/api-docs") ? "text-white bg-white/10" : "text-white/70 hover:text-white hover:bg-white/5"}`}
+                      to="/api-docs/"
+                      className={`text-base px-3 py-3 rounded-lg transition-colors ${isActive("/api-docs/") ? "text-white bg-white/10" : "text-white/70 hover:text-white hover:bg-white/5"}`}
                       onClick={() => setIsMenuOpen(false)}
                     >
                       API
                     </Link>
                     <Link
-                      to="/discover"
-                      className={`text-base px-3 py-3 rounded-lg transition-colors ${isActive("/discover") ? "text-white bg-white/10" : "text-white/70 hover:text-white hover:bg-white/5"}`}
+                      to="/discover/"
+                      className={`text-base px-3 py-3 rounded-lg transition-colors ${isActive("/discover/") ? "text-white bg-white/10" : "text-white/70 hover:text-white hover:bg-white/5"}`}
                       onClick={() => setIsMenuOpen(false)}
                     >
                       Discover

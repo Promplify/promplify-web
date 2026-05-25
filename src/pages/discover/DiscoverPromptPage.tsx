@@ -284,7 +284,7 @@ export default function DiscoverPromptPage() {
       }
 
       toast.success("Prompt removed from Discover");
-      navigate("/discover");
+      navigate("/discover/");
     } catch (error) {
       console.error("Error removing prompt:", error);
       toast.error("Failed to remove prompt, please try again");
@@ -370,7 +370,7 @@ export default function DiscoverPromptPage() {
                 </BreadcrumbItem>
                 <BreadcrumbItem>
                   <BreadcrumbLink asChild>
-                    <Link to="/discover" className="text-gray-500 hover:text-gray-900">
+                    <Link to="/discover/" className="text-gray-500 hover:text-gray-900">
                       Discover
                     </Link>
                   </BreadcrumbLink>
@@ -387,7 +387,7 @@ export default function DiscoverPromptPage() {
           <div className="bg-white shadow-lg rounded-lg overflow-hidden p-8 text-center">
             <h2 className="text-2xl font-semibold text-gray-900 mb-2">Prompt Not Found</h2>
             <p className="text-gray-500 mb-4">{error || "The prompt you're looking for might have been removed or is no longer accessible."}</p>
-            <Button variant="default" onClick={() => navigate("/discover")}>
+            <Button variant="default" onClick={() => navigate("/discover/")}>
               Return to Discover
             </Button>
           </div>
@@ -429,7 +429,7 @@ export default function DiscoverPromptPage() {
               </BreadcrumbItem>
               <BreadcrumbItem>
                 <BreadcrumbLink asChild>
-                  <Link to="/discover" className="text-gray-500 hover:text-gray-900">
+                  <Link to="/discover/" className="text-gray-500 hover:text-gray-900">
                     Discover
                   </Link>
                 </BreadcrumbLink>
