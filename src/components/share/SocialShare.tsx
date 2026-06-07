@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { trackPromptShared } from "@/lib/analytics";
 import { Facebook, Linkedin, Share2 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -34,7 +35,7 @@ export function SocialShare({ title, url, description = "", className = "" }: So
     )}&source=Promplify`,
   };
 
-  const handleShare = async (platform: string) => {
+  const handleShare = async (platform: "twitter" | "facebook" | "linkedin") => {
     const shareUrl = shareLinks[platform as keyof typeof shareLinks];
     if (shareUrl) {
       // Calculate window size and position
@@ -49,6 +50,12 @@ export function SocialShare({ title, url, description = "", className = "" }: So
         `Share on ${platform}`,
         `toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width=${width}, height=${height}, top=${top}, left=${left}`
       );
+      const surfaces = {
+        twitter: "template_x",
+        facebook: "template_facebook",
+        linkedin: "template_linkedin",
+      } as const;
+      trackPromptShared(surfaces[platform]);
     }
   };
 
@@ -57,6 +64,7 @@ export function SocialShare({ title, url, description = "", className = "" }: So
       // Create text with more information
       const shareText = `${title}\n${description}\n\nCheck out this AI prompt template on Promplify:\n${url}`;
       await navigator.clipboard.writeText(shareText);
+      trackPromptShared("template_copy_link");
       toast.success("Link copied to clipboard");
     } catch (err) {
       toast.error("Failed to copy link");

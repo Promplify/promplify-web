@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { trackEvent } from "@/lib/analytics";
+import { trackLogin, trackSignUp } from "@/lib/analytics";
 import { supabase } from "@/lib/supabase";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -109,7 +109,7 @@ export function SignUpForm() {
             }
           } else {
             if (signInData.user) {
-              trackEvent("login", { method: "email" });
+              trackLogin("email");
             }
             toast.success("Sign in successful! Redirecting to dashboard...");
             navigate("/dashboard");
@@ -118,7 +118,7 @@ export function SignUpForm() {
           toast.error("Registration failed: " + error.message);
         }
       } else if (data.user) {
-        trackEvent("sign_up", { method: "email" });
+        trackSignUp("email");
         toast.success("Registration successful! Please check your email for the verification link.", {
           duration: 6000,
         });
