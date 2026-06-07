@@ -1,7 +1,7 @@
 import { Copy } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { trackEvent } from "../lib/analytics";
+import { trackApiTokenCreated } from "../lib/analytics";
 import { generateApiToken } from "../lib/api-auth";
 import { supabase } from "../lib/supabase";
 import { Button } from "./ui/button";
@@ -90,7 +90,7 @@ export function ApiTokenManager() {
       setNewTokenValue(token);
       setShowTokenDialog(true);
       setNewTokenName("");
-      trackEvent("create_api_token", { surface: "settings" });
+      trackApiTokenCreated("settings");
       await fetchTokens();
     } catch (error) {
       console.error("Error creating token:", error);
