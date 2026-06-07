@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { trackEvent } from "@/lib/analytics";
+import { trackLogin } from "@/lib/analytics";
 import { supabase } from "@/lib/supabase";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
@@ -83,7 +83,7 @@ export function LoginForm() {
           toast.error("Login failed: " + error.message);
         }
       } else if (data.user) {
-        trackEvent("login", { method: "email" });
+        trackLogin("email");
         toast.success("Login successful! Redirecting to dashboard...");
         navigate("/dashboard");
       }

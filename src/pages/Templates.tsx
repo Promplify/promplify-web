@@ -3,14 +3,14 @@ import { Navigation } from "@/components/landing/Navigation";
 import { SEO } from "@/components/SEO";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { trackEvent } from "@/lib/analytics";
+import { trackPromptCreated, trackTemplateUsed } from "@/lib/analytics";
 import { supabase } from "@/lib/supabase";
 import { createPrompt } from "@/services/promptService";
 import { countTokens } from "gpt-tokenizer/model/gpt-4";
-import { ArrowRight, Search, Sparkles, Tag, X } from "lucide-react";
+import { ArrowRight, BookOpen, Code2, Megaphone, Search, Sparkles, Tag, Workflow, X } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useInView } from "react-intersection-observer";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { v4 as uuidv4 } from "uuid";
 
@@ -25,6 +25,52 @@ type Template = {
 
 const PAGE_SIZE = 30;
 const templateQuickFilters = ["ChatGPT", "Claude", "Marketing", "Writing", "Coding", "Workflow"];
+const templateUseCases = [
+  {
+    title: "ChatGPT prompt templates",
+    description: "Reusable prompts for content planning, brainstorming, editing, summaries, and daily assistant workflows.",
+    filter: "ChatGPT",
+    Icon: Sparkles,
+  },
+  {
+    title: "Claude prompt templates",
+    description: "Structured instructions for long-form writing, research synthesis, review workflows, and careful reasoning tasks.",
+    filter: "Claude",
+    Icon: BookOpen,
+  },
+  {
+    title: "Coding prompt templates",
+    description: "Prompts for debugging, refactoring, test planning, code review, and implementation checklists.",
+    filter: "Coding",
+    Icon: Code2,
+  },
+  {
+    title: "Marketing prompt templates",
+    description: "Campaign, landing page, positioning, email, and social content prompts for repeatable go-to-market work.",
+    filter: "Marketing",
+    Icon: Megaphone,
+  },
+];
+const workflowLinks = [
+  {
+    title: "Build a prompt library",
+    description: "Save strong templates into your own searchable workspace and keep them ready for future projects.",
+    to: "/auth?mode=register",
+    cta: "Create your library",
+  },
+  {
+    title: "Explore community prompts",
+    description: "Find shared prompt ideas before you write from scratch, then adapt the best ones to your workflow.",
+    to: "/discover/",
+    cta: "Browse Discover",
+  },
+  {
+    title: "Connect prompts to apps",
+    description: "Use saved prompts through the Promplify API when your workflow needs the same instruction set repeatedly.",
+    to: "/api-docs/",
+    cta: "View API docs",
+  },
+];
 
 export default function Templates() {
   const [templates, setTemplates] = useState<Template[]>([]);
@@ -142,9 +188,10 @@ export default function Templates() {
       };
 
       const newPrompt = await createPrompt(promptData);
-      trackEvent("use_template", {
+      trackPromptCreated("template");
+      trackTemplateUsed({
         source: "templates",
-        template_id: template.id,
+        templateId: template.id,
         category: template.category || "uncategorized",
       });
       toast.success("Template copied to your prompts");
@@ -165,9 +212,9 @@ export default function Templates() {
     <>
       <SEO
         canonicalPath="/templates/"
-        title="AI Prompt Templates for ChatGPT and Claude - Promplify"
-        description="Browse reusable AI prompt templates for ChatGPT, Claude, content creation, coding, research, and repeatable prompt engineering workflows."
-        keywords="AI prompt templates, ChatGPT templates, Claude templates, prompt engineering templates, workflow prompts, reusable prompts"
+        title="AI Prompt Templates, Prompt Library & Workflow Prompts - Promplify"
+        description="Browse reusable AI prompt templates for ChatGPT, Claude, coding, marketing, research, prompt optimization, and repeatable AI workflow tools."
+        keywords="AI prompt templates, prompt library, ChatGPT prompt templates, Claude prompt templates, prompt engineering templates, prompt workflow templates, prompt optimization, AI workflow tools"
       />
       <div className="flex flex-col min-h-screen bg-gradient-to-b from-white to-gray-50">
         <Navigation />
@@ -181,7 +228,7 @@ export default function Templates() {
               </div>
               <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight mb-5 text-gray-950">Reusable AI Prompt Templates</h1>
               <p className="text-gray-600 text-base sm:text-lg mb-6 font-medium max-w-3xl mx-auto">
-                Start faster with structured prompt templates for writing, coding, research, marketing, and repeatable AI workflows.
+                Start faster with structured prompt templates for writing, coding, research, marketing, prompt optimization, and repeatable AI workflows.
               </p>
               <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
                 <Button onClick={() => navigate("/auth?mode=register")} className="w-full sm:w-auto bg-[#2C106A] hover:bg-[#1F0B4C] text-white">
@@ -235,7 +282,36 @@ export default function Templates() {
                 </button>
               ))}
             </div>
-            <div className="flex items-center justify-center gap-2 text-sm text-gray-500 mb-10">
+            <section className="max-w-6xl mx-auto mb-10 space-y-6">
+              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                {templateUseCases.map(({ title, description, filter, Icon }) => (
+                  <button
+                    key={title}
+                    type="button"
+                    onClick={() => setSearchQuery(filter)}
+                    className="text-left bg-white border border-gray-200 rounded-lg p-4 shadow-sm hover:border-[#2C106A]/30 hover:shadow-md transition-all"
+                  >
+                    <Icon className="w-5 h-5 text-[#2C106A] mb-3" />
+                    <h2 className="text-base font-semibold text-gray-950 mb-2">{title}</h2>
+                    <p className="text-sm leading-6 text-gray-600">{description}</p>
+                  </button>
+                ))}
+              </div>
+              <div className="grid gap-3 md:grid-cols-3">
+                {workflowLinks.map((item) => (
+                  <Link key={item.title} to={item.to} className="group bg-white border border-gray-200 rounded-lg p-4 shadow-sm hover:border-[#2C106A]/30 hover:shadow-md transition-all">
+                    <Workflow className="w-5 h-5 text-gray-500 group-hover:text-[#2C106A] mb-3 transition-colors" />
+                    <h2 className="text-base font-semibold text-gray-950 mb-2">{item.title}</h2>
+                    <p className="text-sm leading-6 text-gray-600 mb-3">{item.description}</p>
+                    <span className="inline-flex items-center text-sm font-medium text-[#2C106A]">
+                      {item.cta}
+                      <ArrowRight className="w-4 h-4 ml-1" />
+                    </span>
+                  </Link>
+                ))}
+              </div>
+            </section>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-2 text-sm text-gray-500 mb-10">
               <span>Templates are sourced from</span>
               <a
                 href="https://github.com/f/awesome-chatgpt-prompts"

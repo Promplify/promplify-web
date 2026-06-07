@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Textarea } from "@/components/ui/textarea";
-import { trackEvent } from "@/lib/analytics";
+import { trackPromptCreated, trackPromptShared } from "@/lib/analytics";
 import { supabase } from "@/lib/supabase";
 import { sharePromptToDiscover } from "@/services/plazaService";
 import { addTagToPrompt, createPrompt, createTag, deletePrompt, getCategories, getPromptById, getTags, optimizeSystemPrompt, updatePrompt } from "@/services/promptService";
@@ -308,7 +308,7 @@ export function PromptEditor({ promptId, onSave, onDelete }: PromptEditorProps) 
 
       if (promptId === "new") {
         const newPrompt = await createPrompt(promptData);
-        trackEvent("create_prompt", { source: "dashboard" });
+        trackPromptCreated("dashboard");
         toast.success("Prompt created successfully");
         onSave?.(newPrompt.id);
       } else {
@@ -563,7 +563,7 @@ export function PromptEditor({ promptId, onSave, onDelete }: PromptEditorProps) 
       const { shareUrl } = await createShareLink(promptId, session.user.id);
       setShareUrl(shareUrl);
       setShowShareDialog(true);
-      trackEvent("share_prompt", { surface: "private_link" });
+      trackPromptShared("private_link");
     } catch (error) {
       console.error("Error sharing prompt:", error);
       toast.error("Failed to create share link");
@@ -583,7 +583,7 @@ export function PromptEditor({ promptId, onSave, onDelete }: PromptEditorProps) 
     try {
       setIsSharingToDiscover(true);
       await sharePromptToDiscover(promptId);
-      trackEvent("share_prompt", { surface: "discover" });
+      trackPromptShared("discover");
       toast.success("Successfully shared to Discover!");
     } catch (error: any) {
       console.error("Error sharing to discover:", error);

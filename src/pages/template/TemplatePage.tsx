@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage } from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { trackEvent } from "@/lib/analytics";
+import { trackPromptCreated, trackTemplateUsed } from "@/lib/analytics";
 import { supabase } from "@/lib/supabase";
 import { updateMeta } from "@/utils/meta";
 import { countTokens } from "gpt-tokenizer/model/gpt-4";
@@ -139,9 +139,10 @@ export default function TemplatePage() {
         throw error;
       }
 
-      trackEvent("use_template", {
+      trackPromptCreated("template_detail");
+      trackTemplateUsed({
         source: "template_detail",
-        template_id: templateData.id,
+        templateId: templateData.id,
         category: templateData.category || "uncategorized",
       });
       toast.success("Template saved successfully");
