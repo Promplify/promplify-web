@@ -1,6 +1,5 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { supabase } from "@/lib/supabase";
 import { likeDiscoverPrompt, unlikeDiscoverPrompt } from "@/services/plazaService";
@@ -15,14 +14,21 @@ interface DiscoverCardProps {
   featured?: boolean;
 }
 
+type DiscoverTagItem = {
+  id?: string;
+  name?: string;
+  tags?: {
+    id?: string;
+    name?: string;
+  };
+};
+
 export function DiscoverCard({ discoverPrompt, featured = false }: DiscoverCardProps) {
   const [liked, setLiked] = useState(discoverPrompt.user_has_liked || false);
   const [likesCount, setLikesCount] = useState(discoverPrompt.likes_count || 0);
   const [isLoading, setIsLoading] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
-  const [fetchedTags, setFetchedTags] = useState<any[]>([]);
-  const [isLoadingTags, setIsLoadingTags] = useState(false);
 
   useEffect(() => {
     // Check if user is logged in
@@ -91,70 +97,14 @@ export function DiscoverCard({ discoverPrompt, featured = false }: DiscoverCardP
   const title = discoverPrompt.prompt?.title || "Untitled";
   const description = discoverPrompt.prompt?.description || "";
 
-  // Check if the prompt_tags array exists and has elements
-  const hasTags = discoverPrompt.prompt?.prompt_tags && Array.isArray(discoverPrompt.prompt.prompt_tags) && discoverPrompt.prompt.prompt_tags.length > 0;
-
-  // Auto-fetch tags - get directly from database, bypassing RLS
-  useEffect(() => {
-    const fetchTags = async () => {
-      if (!hasTags && discoverPrompt.prompt?.id) {
-        setIsLoadingTags(true);
-
-        try {
-          // Get tags directly from Supabase without using wrapper functions
-          const { data, error } = await supabase
-            .from("prompt_tags")
-            .select(
-              `
-              tags (
-                id,
-                name
-              )
-            `
-            )
-            .eq("prompt_id", discoverPrompt.prompt.id);
-
-          if (error) {
-            console.error("Error fetching tags:", error);
-            return;
-          }
-
-          if (data && Array.isArray(data) && data.length > 0) {
-            // Extract tags from nested data
-            const extractedTags = data.map((item) => item.tags).filter(Boolean);
-            setFetchedTags(extractedTags);
-
-            // Add logging for tag loading debug
-            console.log("Loaded tags for prompt:", discoverPrompt.prompt.id, extractedTags);
-          } else {
-            console.log("No tags found for prompt:", discoverPrompt.prompt.id);
-          }
-        } catch (e) {
-          console.error("Failed to fetch tags:", e);
-        } finally {
-          setIsLoadingTags(false);
-        }
-      } else {
-        setIsLoadingTags(false);
-      }
+  const promptTags: DiscoverTagItem[] = Array.isArray(discoverPrompt.prompt?.prompt_tags) ? discoverPrompt.prompt.prompt_tags : [];
+  const tagsList = promptTags.slice(0, 2).map((tagItem, index) => {
+    const tag = tagItem.tags || tagItem;
+    return {
+      id: tag?.id || `tag-${index}`,
+      name: tag?.name || "Tag",
     };
-
-    fetchTags();
-  }, [discoverPrompt.prompt?.id, hasTags]);
-
-  // Tags list for rendering
-  const tagsList = hasTags
-    ? (discoverPrompt.prompt?.prompt_tags || []).slice(0, 2).map((tagItem: any, index: number) => {
-        const tag = tagItem.tags || tagItem;
-        return {
-          id: tag?.id || `tag-${index}`,
-          name: tag?.name || "Tag",
-        };
-      })
-    : fetchedTags.slice(0, 2).map((tag: any, index: number) => ({
-        id: tag.id || `tag-${index}`,
-        name: tag.name || "Tag",
-      }));
+  });
 
   return (
     <div
@@ -195,12 +145,7 @@ export function DiscoverCard({ discoverPrompt, featured = false }: DiscoverCardP
         <div className="flex items-center justify-between gap-3">
           {/* Tags */}
           <div className="flex flex-wrap gap-1.5 flex-1 min-w-0">
-            {isLoadingTags ? (
-              <>
-                <Skeleton className="h-6 w-16 rounded-full" />
-                <Skeleton className="h-6 w-20 rounded-full" />
-              </>
-            ) : tagsList.length > 0 ? (
+            {tagsList.length > 0 ? (
               tagsList.map((tag, index) => {
                 const colorIndex = index % 6;
                 const colors = [
