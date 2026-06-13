@@ -12,7 +12,7 @@ export const getDiscoverPrompts = async (limit = 20, offset = 0, sortBy = "likes
     .select(
       `
       *,
-      prompt:prompts(*),
+      prompt:prompts(*, prompt_tags(tags(id, name))),
       user_has_liked:plaza_likes!plaza_likes_plaza_prompt_id_fkey(user_id)
     `,
       { count: "exact" }
@@ -42,7 +42,7 @@ export const getFeaturedDiscoverPrompts = async (limit = 5) => {
     .select(
       `
       *,
-      prompt:prompts(*),
+      prompt:prompts(*, prompt_tags(tags(id, name))),
       user_has_liked:plaza_likes!plaza_likes_plaza_prompt_id_fkey(user_id)
     `
     )
