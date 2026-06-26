@@ -1,3 +1,4 @@
 /templates /templates/ 301
 /discover /discover/ 301
 /api-docs /api-docs/ 301
+/api /api-docs/ 301

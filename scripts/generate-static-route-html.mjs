@@ -10,9 +10,9 @@ const routes = [
   {
     outputPath: "templates",
     urlPath: "/templates/",
-    title: "AI Prompt Templates for ChatGPT and Claude - Promplify",
-    description: "Browse reusable AI prompt templates for ChatGPT, Claude, content creation, coding, research, and repeatable prompt engineering workflows.",
-    keywords: "AI prompt templates, ChatGPT templates, Claude templates, prompt engineering templates, workflow prompts, reusable prompts",
+    title: "AI Prompt Templates, Prompt Library & Workflow Templates - Promplify",
+    description: "Browse AI prompt templates for ChatGPT, Claude, coding, research, marketing, prompt optimization, and repeatable AI workflow tools.",
+    keywords: "AI prompt templates, prompt library, prompt template tool, ChatGPT prompt templates, Claude prompt templates, prompt workflow templates, prompt optimization, AI workflow tools",
   },
   {
     outputPath: "discover",

@@ -7,7 +7,7 @@ import { trackPromptCreated, trackTemplateUsed } from "@/lib/analytics";
 import { supabase } from "@/lib/supabase";
 import { createPrompt } from "@/services/promptService";
 import { countTokens } from "gpt-tokenizer/model/gpt-4";
-import { ArrowRight, BookOpen, Code2, Megaphone, Search, Sparkles, Tag, Workflow, X } from "lucide-react";
+import { ArrowRight, BookOpen, Code2, HelpCircle, Megaphone, PenTool, Search, Sparkles, Tag, Workflow, X } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import { Link, useNavigate } from "react-router-dom";
@@ -24,7 +24,7 @@ type Template = {
 };
 
 const PAGE_SIZE = 30;
-const templateQuickFilters = ["ChatGPT", "Claude", "Marketing", "Writing", "Coding", "Workflow"];
+const templateQuickFilters = ["ChatGPT", "Claude", "Marketing", "Writing", "Coding", "Research", "Workflow"];
 const templateUseCases = [
   {
     title: "ChatGPT prompt templates",
@@ -50,6 +50,18 @@ const templateUseCases = [
     filter: "Marketing",
     Icon: Megaphone,
   },
+  {
+    title: "Research prompt templates",
+    description: "Prompts for literature reviews, source synthesis, interview notes, market scans, and structured analysis.",
+    filter: "Research",
+    Icon: BookOpen,
+  },
+  {
+    title: "AI workflow templates",
+    description: "Prompt workflow templates for repeatable handoffs, review loops, task planning, and multi-step AI work.",
+    filter: "Workflow",
+    Icon: Workflow,
+  },
 ];
 const workflowLinks = [
   {
@@ -69,6 +81,24 @@ const workflowLinks = [
     description: "Use saved prompts through the Promplify API when your workflow needs the same instruction set repeatedly.",
     to: "/api-docs/",
     cta: "View API docs",
+  },
+];
+const faqItems = [
+  {
+    question: "What makes a prompt template useful?",
+    answer: "A useful prompt template gives the model a clear role, context, task, output format, and quality bar so you can reuse it without rebuilding the same instruction from scratch.",
+  },
+  {
+    question: "Can I use these templates with ChatGPT and Claude?",
+    answer: "Yes. Promplify templates are written as reusable AI prompts, so you can adapt them for ChatGPT, Claude, Gemini, and other AI tools that support structured instructions.",
+  },
+  {
+    question: "How do prompt workflow templates help teams?",
+    answer: "Workflow templates keep recurring tasks consistent across writing, coding, research, marketing, and review work, making it easier for teams to share strong prompts and improve them over time.",
+  },
+  {
+    question: "How should I choose a prompt template?",
+    answer: "Start with the closest use case, then adjust the context, examples, tone, and output format for your task before saving the prompt to your own library.",
   },
 ];
 
@@ -212,9 +242,9 @@ export default function Templates() {
     <>
       <SEO
         canonicalPath="/templates/"
-        title="AI Prompt Templates, Prompt Library & Workflow Prompts - Promplify"
-        description="Browse reusable AI prompt templates for ChatGPT, Claude, coding, marketing, research, prompt optimization, and repeatable AI workflow tools."
-        keywords="AI prompt templates, prompt library, ChatGPT prompt templates, Claude prompt templates, prompt engineering templates, prompt workflow templates, prompt optimization, AI workflow tools"
+        title="AI Prompt Templates, Prompt Library & Workflow Templates - Promplify"
+        description="Browse AI prompt templates for ChatGPT, Claude, coding, research, marketing, prompt optimization, and repeatable AI workflow tools."
+        keywords="AI prompt templates, prompt library, prompt template tool, ChatGPT prompt templates, Claude prompt templates, prompt workflow templates, prompt optimization, AI workflow tools"
       />
       <div className="flex flex-col min-h-screen bg-gradient-to-b from-white to-gray-50">
         <Navigation />
@@ -224,11 +254,11 @@ export default function Templates() {
             <div className="max-w-4xl mx-auto text-center mb-8">
               <div className="inline-flex items-center gap-2 mb-6 px-4 py-1.5 rounded-full bg-[#2C106A]/5 text-[#2C106A] text-sm font-medium border border-[#2C106A]/10">
                 <Sparkles className="w-4 h-4" />
-                <span>AI Prompt Templates for ChatGPT and Claude</span>
+                <span>AI prompt templates for repeatable workflows</span>
               </div>
-              <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight mb-5 text-gray-950">Reusable AI Prompt Templates</h1>
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight mb-5 text-gray-950">AI Prompt Templates for Better Workflows</h1>
               <p className="text-gray-600 text-base sm:text-lg mb-6 font-medium max-w-3xl mx-auto">
-                Start faster with structured prompt templates for writing, coding, research, marketing, prompt optimization, and repeatable AI workflows.
+                Find reusable prompt templates for ChatGPT, Claude, coding, research, marketing, prompt optimization, and repeatable AI workflows. Save the best ones into your own prompt library.
               </p>
               <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
                 <Button onClick={() => navigate("/auth?mode=register")} className="w-full sm:w-auto bg-[#2C106A] hover:bg-[#1F0B4C] text-white">
@@ -283,7 +313,7 @@ export default function Templates() {
               ))}
             </div>
             <section className="max-w-6xl mx-auto mb-10 space-y-6">
-              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                 {templateUseCases.map(({ title, description, filter, Icon }) => (
                   <button
                     key={title}
@@ -310,6 +340,49 @@ export default function Templates() {
                   </Link>
                 ))}
               </div>
+              <div className="grid gap-3 lg:grid-cols-[1.1fr_0.9fr]">
+                <article className="bg-white border border-gray-200 rounded-lg p-5 shadow-sm">
+                  <PenTool className="w-5 h-5 text-[#2C106A] mb-3" />
+                  <h2 className="text-lg font-semibold text-gray-950 mb-2">Use Promplify as your prompt template tool</h2>
+                  <p className="text-sm leading-6 text-gray-600 mb-4">
+                    Search proven prompt templates, adapt them for your task, and keep your strongest instructions organized for the next time you need them.
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {["Prompt library", "Prompt optimization", "Team workflows", "API-ready prompts"].map((label) => (
+                      <span key={label} className="rounded-full bg-gray-50 border border-gray-200 px-3 py-1 text-xs font-medium text-gray-600">
+                        {label}
+                      </span>
+                    ))}
+                  </div>
+                </article>
+                <article className="bg-white border border-gray-200 rounded-lg p-5 shadow-sm">
+                  <HelpCircle className="w-5 h-5 text-[#2C106A] mb-3" />
+                  <h2 className="text-lg font-semibold text-gray-950 mb-2">Popular prompt template searches</h2>
+                  <div className="flex flex-wrap gap-2">
+                    {["AI prompt templates", "prompt workflow templates", "prompt template tool", "ChatGPT prompts", "Claude prompts", "coding prompts"].map((label) => (
+                      <button
+                        key={label}
+                        type="button"
+                        onClick={() => setSearchQuery(label)}
+                        className="rounded-full border border-gray-200 bg-gray-50 px-3 py-1.5 text-xs font-medium text-gray-600 hover:border-[#2C106A]/30 hover:text-[#2C106A] transition-colors"
+                      >
+                        {label}
+                      </button>
+                    ))}
+                  </div>
+                </article>
+              </div>
+              <section className="bg-white border border-gray-200 rounded-lg p-5 shadow-sm">
+                <h2 className="text-xl font-semibold text-gray-950 mb-4">Prompt Template FAQ</h2>
+                <div className="grid gap-4 md:grid-cols-2">
+                  {faqItems.map((item) => (
+                    <article key={item.question} className="rounded-lg border border-gray-100 bg-gray-50 p-4">
+                      <h3 className="text-base font-semibold text-gray-950 mb-2">{item.question}</h3>
+                      <p className="text-sm leading-6 text-gray-600">{item.answer}</p>
+                    </article>
+                  ))}
+                </div>
+              </section>
             </section>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-2 text-sm text-gray-500 mb-10">
               <span>Templates are sourced from</span>
