@@ -54,9 +54,9 @@ const Discover = () => {
     <div className="min-h-screen bg-gray-50">
       <SEO
         canonicalPath="/discover/"
-        title="Discover Community AI Prompts - Promplify"
-        description="Explore shared AI prompts from the Promplify community, find prompt engineering ideas, and save useful prompts into your own workflow."
-        keywords="AI prompt discovery, community prompts, shared prompts, ChatGPT prompts, Claude prompts, prompt library"
+        title="Community Prompts, Shared AI Prompts & Prompt Library - Promplify"
+        description="Discover community prompts, browse shared AI prompt examples, and save useful prompts into your own prompt library for repeatable AI workflows."
+        keywords="community prompts, shared prompts, AI prompt library, shared AI prompts, ChatGPT prompts, Claude prompts, prompt discovery"
       />
       <Navigation />
       <main className="pt-12 sm:pt-16 pb-12 sm:pb-16">
@@ -64,14 +64,14 @@ const Discover = () => {
 
         {featuredPrompts.length > 0 && (
           <section className="container mx-auto px-3 sm:px-4 md:px-6 max-w-7xl mt-8 sm:mt-10">
-            <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">Featured Prompts</h2>
+            <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">Featured Community Prompts</h2>
             <DiscoverFeatured featuredPrompts={featuredPrompts} />
           </section>
         )}
 
         <section className="container mx-auto px-3 sm:px-4 md:px-6 max-w-7xl mt-8 sm:mt-10">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 sm:gap-0 mb-4 sm:mb-6">
-            <h2 className="text-xl sm:text-2xl font-bold">All Prompts</h2>
+            <h2 className="text-xl sm:text-2xl font-bold">Shared Prompt Library</h2>
             <Tabs defaultValue={sortBy} onValueChange={(value) => handleSortChange(value as any)}>
               <TabsList>
                 <TabsTrigger value="likes_count">Most Popular</TabsTrigger>
