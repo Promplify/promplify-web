@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { trackPromptShared } from "@/lib/analytics";
+import { trackPromptShared, trackShareLinkCopied } from "@/lib/analytics";
 import { Facebook, Linkedin, Share2 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -65,6 +65,7 @@ export function SocialShare({ title, url, description = "", className = "" }: So
       const shareText = `${title}\n${description}\n\nCheck out this AI prompt template on Promplify:\n${url}`;
       await navigator.clipboard.writeText(shareText);
       trackPromptShared("template_copy_link");
+      trackShareLinkCopied("template_copy_link");
       toast.success("Link copied to clipboard");
     } catch (err) {
       toast.error("Failed to copy link");

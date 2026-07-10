@@ -5,6 +5,7 @@ import { SEO } from "@/components/SEO";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { trackAuthStarted } from "@/lib/analytics";
 import { supabase } from "@/lib/supabase";
 import { updateMeta } from "@/utils/meta";
 import { ArrowLeft, Github } from "lucide-react";
@@ -28,6 +29,7 @@ export default function Auth() {
 
   const handleSocialLogin = async (provider: "github" | "google") => {
     try {
+      trackAuthStarted("login", provider);
       const { error } = await supabase.auth.signInWithOAuth({
         provider,
         options: {

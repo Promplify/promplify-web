@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Textarea } from "@/components/ui/textarea";
-import { trackPromptCreated, trackPromptShared } from "@/lib/analytics";
+import { trackPromptCopied, trackPromptCreated, trackPromptOptimized, trackPromptShared, trackPromptUpdated, trackShareLinkCopied } from "@/lib/analytics";
 import { supabase } from "@/lib/supabase";
 import { sharePromptToDiscover } from "@/services/plazaService";
 import { addTagToPrompt, createPrompt, createTag, deletePrompt, getCategories, getPromptById, getTags, optimizeSystemPrompt, updatePrompt } from "@/services/promptService";
@@ -226,6 +226,7 @@ export function PromptEditor({ promptId, onSave, onDelete }: PromptEditorProps) 
   const handleCopyContent = () => {
     const combinedPrompt = `System: ${prompt.system_prompt}\n\nUser: ${prompt.user_prompt}`;
     navigator.clipboard.writeText(combinedPrompt);
+    trackPromptCopied("dashboard");
     toast.success("Content copied to clipboard");
   };
 
@@ -314,6 +315,7 @@ export function PromptEditor({ promptId, onSave, onDelete }: PromptEditorProps) 
       } else {
         const { id, created_at, updated_at, ...updateData } = promptData;
         await updatePrompt(promptId, updateData);
+        trackPromptUpdated("dashboard");
         toast.success("Prompt updated successfully");
         onSave?.(promptId);
       }
@@ -479,6 +481,7 @@ export function PromptEditor({ promptId, onSave, onDelete }: PromptEditorProps) 
         system_prompt: optimizedPrompt,
       }));
 
+      trackPromptOptimized("dashboard");
       toast.success("System prompt optimized successfully");
     } catch (error) {
       console.error("Error optimizing system prompt:", error);
@@ -574,6 +577,7 @@ export function PromptEditor({ promptId, onSave, onDelete }: PromptEditorProps) 
 
   const handleCopyShareLink = () => {
     navigator.clipboard.writeText(shareUrl);
+    trackShareLinkCopied("private_link");
     toast.success("Share link copied to clipboard");
   };
 

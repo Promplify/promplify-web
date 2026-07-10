@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { trackLogin } from "@/lib/analytics";
+import { trackAuthStarted, trackLogin } from "@/lib/analytics";
 import { supabase } from "@/lib/supabase";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
@@ -47,6 +47,7 @@ export function LoginForm() {
     }
 
     setIsLoading(true);
+    trackAuthStarted("login", "email");
 
     try {
       const { data, error } = await supabase.auth.signInWithPassword({

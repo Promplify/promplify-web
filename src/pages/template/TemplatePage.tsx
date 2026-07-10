@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage } from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { trackPromptCreated, trackTemplateUsed } from "@/lib/analytics";
+import { trackPromptCopied, trackPromptCreated, trackTemplateCtaClicked, trackTemplateUsed } from "@/lib/analytics";
 import { supabase } from "@/lib/supabase";
 import { updateMeta } from "@/utils/meta";
 import { countTokens } from "gpt-tokenizer/model/gpt-4";
@@ -104,6 +104,7 @@ export default function TemplatePage() {
       } = await supabase.auth.getSession();
 
       if (!session) {
+        trackTemplateCtaClicked("create_library");
         toast.info("Create an account to save templates to your prompt workspace");
         navigate("/auth?mode=register");
         return;
@@ -157,6 +158,7 @@ export default function TemplatePage() {
   const handleCopyPrompt = async (text: string) => {
     try {
       await navigator.clipboard.writeText(text);
+      trackPromptCopied("template_detail");
       toast.success("Copied to clipboard");
     } catch (err) {
       toast.error("Failed to copy to clipboard");

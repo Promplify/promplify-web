@@ -3,7 +3,7 @@ import { Navigation } from "@/components/landing/Navigation";
 import { SEO } from "@/components/SEO";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { trackPromptCreated, trackTemplateUsed } from "@/lib/analytics";
+import { trackPromptCreated, trackTemplateCtaClicked, trackTemplateOpened, trackTemplateSearch, trackTemplateUsed } from "@/lib/analytics";
 import { supabase } from "@/lib/supabase";
 import { createPrompt } from "@/services/promptService";
 import { countTokens } from "gpt-tokenizer/model/gpt-4";
@@ -75,18 +75,21 @@ const workflowLinks = [
     description: "Save reusable AI prompt templates into a searchable prompt library so your best instructions are easy to find again.",
     to: "/auth?mode=register",
     cta: "Create your library",
+    target: "create_library",
   },
   {
     title: "Explore community prompts",
     description: "Find shared prompts from the community before you write from scratch, then adapt the best ones to your workflow.",
     to: "/discover/",
     cta: "Browse Discover",
+    target: "discover",
   },
   {
     title: "Connect prompts to apps",
     description: "Use saved prompt workflow templates through the Promplify API when your tools need the same instruction set repeatedly.",
     to: "/api-docs/",
     cta: "View API docs",
+    target: "api_docs",
   },
 ];
 const longTailSearches = [
@@ -108,16 +111,20 @@ const longTailSearches = [
 ];
 const faqItems = [
   {
-    question: "What makes a prompt template useful?",
-    answer: "A useful prompt template gives the model a clear role, context, task, output format, and quality bar so you can reuse it without rebuilding the same instruction from scratch.",
+    question: "What are AI prompt templates?",
+    answer: "AI prompt templates are reusable instructions for common ChatGPT, Claude, coding, research, marketing, and writing tasks, so you can start from a proven structure instead of a blank prompt.",
+  },
+  {
+    question: "How does a prompt template tool help?",
+    answer: "A prompt template tool helps you search, adapt, save, and reuse prompts across projects, keeping your strongest instructions easy to find when the same workflow comes back.",
+  },
+  {
+    question: "What are prompt workflow templates?",
+    answer: "Prompt workflow templates organize multi-step tasks such as research, review, editing, and implementation into repeatable prompts with clear context, output format, and quality checks.",
   },
   {
     question: "Can I use these templates with ChatGPT and Claude?",
     answer: "Yes. Promplify templates are written as reusable AI prompts, so you can adapt them for ChatGPT, Claude, Gemini, and other AI tools that support structured instructions.",
-  },
-  {
-    question: "How do prompt workflow templates help teams?",
-    answer: "Workflow templates keep recurring tasks consistent across writing, coding, research, marketing, and review work, making it easier for teams to share strong prompts and improve them over time.",
   },
   {
     question: "How should I choose a prompt template?",
@@ -134,6 +141,8 @@ export default function Templates() {
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
   const requestIdRef = useRef(0);
   const latestQueryRef = useRef(debouncedSearchQuery);
+  const searchSurfaceRef = useRef<Parameters<typeof trackTemplateSearch>[1]>("search_input");
+  const lastTrackedSearchRef = useRef("");
   const navigate = useNavigate();
   const { ref, inView } = useInView({
     threshold: 0.5,
@@ -187,7 +196,22 @@ export default function Templates() {
 
   useEffect(() => {
     latestQueryRef.current = debouncedSearchQuery;
+    const query = debouncedSearchQuery.trim();
+    if (!query) return;
+
+    const surface = searchSurfaceRef.current;
+    const trackingKey = `${surface}:${query}`;
+    if (trackingKey !== lastTrackedSearchRef.current) {
+      trackTemplateSearch(query, surface);
+      lastTrackedSearchRef.current = trackingKey;
+    }
+    searchSurfaceRef.current = "search_input";
   }, [debouncedSearchQuery]);
+
+  const applyTemplateSearch = (query: string, surface: Parameters<typeof trackTemplateSearch>[1]) => {
+    searchSurfaceRef.current = surface;
+    setSearchQuery(query);
+  };
 
   useEffect(() => {
     if (inView && hasMore && !loading) {
@@ -211,6 +235,7 @@ export default function Templates() {
     try {
       const session = await supabase.auth.getSession();
       if (!session.data.session?.user.id) {
+        trackTemplateCtaClicked("create_library");
         toast.info("Create an account to save templates to your prompt workspace");
         navigate("/auth?mode=register");
         return;
@@ -265,8 +290,8 @@ export default function Templates() {
     <>
       <SEO
         canonicalPath="/templates/"
-        title="AI Prompt Templates, Prompt Template Tool & Workflow Templates - Promplify"
-        description="Browse AI prompt templates, use Promplify as a prompt template tool, and build repeatable prompt workflow templates for ChatGPT, Claude, coding, research, and marketing."
+        title="AI Prompt Templates & Workflow Tool - Promplify"
+        description="Browse AI prompt templates, find a prompt template tool for repeatable work, and build prompt workflow templates for ChatGPT, Claude, coding, research, and marketing."
         keywords="AI prompt templates, prompt library, prompt template tool, ChatGPT prompt templates, Claude prompt templates, prompt workflow templates, prompt optimization, AI workflow tools"
       />
       <div className="flex flex-col min-h-screen bg-gradient-to-b from-white to-gray-50">
@@ -279,16 +304,29 @@ export default function Templates() {
                 <Sparkles className="w-4 h-4" />
                 <span>AI prompt templates for repeatable workflows</span>
               </div>
-              <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight mb-5 text-gray-950">AI Prompt Templates for Better Workflows</h1>
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight mb-5 text-gray-950">AI Prompt Templates for Repeatable Workflows</h1>
               <p className="text-gray-600 text-base sm:text-lg mb-6 font-medium max-w-3xl mx-auto">
-                Find reusable AI prompt templates for ChatGPT, Claude, coding, research, marketing, prompt optimization, and repeatable AI workflows. Use Promplify as your prompt template tool and save the best ones into your own prompt library.
+                Find reusable AI prompt templates for ChatGPT, Claude, coding, research, and marketing. Use Promplify as your prompt template tool to turn strong instructions into prompt workflow templates you can save, reuse, and connect to your apps.
               </p>
               <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-                <Button onClick={() => navigate("/auth?mode=register")} className="w-full sm:w-auto bg-[#2C106A] hover:bg-[#1F0B4C] text-white">
+                <Button
+                  onClick={() => {
+                    trackTemplateCtaClicked("create_library");
+                    navigate("/auth?mode=register");
+                  }}
+                  className="w-full sm:w-auto bg-[#2C106A] hover:bg-[#1F0B4C] text-white"
+                >
                   Start building prompts
                   <ArrowRight className="w-4 h-4 ml-2" />
                 </Button>
-                <Button variant="outline" onClick={() => navigate("/discover/")} className="w-full sm:w-auto">
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    trackTemplateCtaClicked("discover");
+                    navigate("/discover/");
+                  }}
+                  className="w-full sm:w-auto"
+                >
                   Explore community prompts
                 </Button>
               </div>
@@ -310,12 +348,12 @@ export default function Templates() {
                     type="text"
                     placeholder="Search templates by title, content, or category..."
                     value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onChange={(e) => applyTemplateSearch(e.target.value, "search_input")}
                     className="flex-1 h-12 sm:h-14 px-3 sm:px-4 py-3 sm:py-4 bg-transparent border-0 focus:ring-0 focus:outline-none text-sm sm:text-base placeholder:text-gray-400"
                     style={{ boxShadow: "none" }}
                   />
                   {searchQuery && (
-                    <button onClick={() => setSearchQuery("")} className="flex-none pr-5 text-gray-400 hover:text-gray-600 transition-colors">
+                    <button onClick={() => applyTemplateSearch("", "search_input")} className="flex-none pr-5 text-gray-400 hover:text-gray-600 transition-colors">
                       <X className="w-5 h-5" />
                     </button>
                   )}
@@ -328,7 +366,7 @@ export default function Templates() {
                 <button
                   key={filter}
                   type="button"
-                  onClick={() => setSearchQuery(filter)}
+                  onClick={() => applyTemplateSearch(filter, "quick_filter")}
                   className="px-3 py-1.5 rounded-full border border-gray-200 bg-white text-sm text-gray-600 hover:border-[#2C106A]/30 hover:text-[#2C106A] transition-colors"
                 >
                   {filter}
@@ -341,7 +379,7 @@ export default function Templates() {
                   <button
                     key={title}
                     type="button"
-                    onClick={() => setSearchQuery(filter)}
+                    onClick={() => applyTemplateSearch(filter, "use_case")}
                     className="text-left bg-white border border-gray-200 rounded-lg p-4 shadow-sm hover:border-[#2C106A]/30 hover:shadow-md transition-all"
                   >
                     <Icon className="w-5 h-5 text-[#2C106A] mb-3" />
@@ -352,7 +390,12 @@ export default function Templates() {
               </div>
               <div className="grid gap-3 md:grid-cols-3">
                 {workflowLinks.map((item) => (
-                  <Link key={item.title} to={item.to} className="group bg-white border border-gray-200 rounded-lg p-4 shadow-sm hover:border-[#2C106A]/30 hover:shadow-md transition-all">
+                  <Link
+                    key={item.title}
+                    to={item.to}
+                    onClick={() => trackTemplateCtaClicked(item.target as Parameters<typeof trackTemplateCtaClicked>[0])}
+                    className="group bg-white border border-gray-200 rounded-lg p-4 shadow-sm hover:border-[#2C106A]/30 hover:shadow-md transition-all"
+                  >
                     <Workflow className="w-5 h-5 text-gray-500 group-hover:text-[#2C106A] mb-3 transition-colors" />
                     <h2 className="text-base font-semibold text-gray-950 mb-2">{item.title}</h2>
                     <p className="text-sm leading-6 text-gray-600 mb-3">{item.description}</p>
@@ -386,7 +429,7 @@ export default function Templates() {
                       <button
                         key={label}
                         type="button"
-                        onClick={() => setSearchQuery(label)}
+                        onClick={() => applyTemplateSearch(label, "popular_search")}
                         className="rounded-full border border-gray-200 bg-gray-50 px-3 py-1.5 text-xs font-medium text-gray-600 hover:border-[#2C106A]/30 hover:text-[#2C106A] transition-colors"
                       >
                         {label}
@@ -402,7 +445,7 @@ export default function Templates() {
                     <button
                       key={item.title}
                       type="button"
-                      onClick={() => setSearchQuery(item.query)}
+                      onClick={() => applyTemplateSearch(item.query, "long_tail")}
                       className="text-left rounded-lg border border-gray-100 bg-gray-50 p-4 hover:border-[#2C106A]/30 hover:bg-white transition-colors"
                     >
                       <h3 className="text-base font-semibold text-gray-950 mb-2">{item.title}</h3>
@@ -444,7 +487,10 @@ export default function Templates() {
                 <div
                   key={template.id}
                   className="group relative bg-white border border-gray-200 hover:border-[#2C106A]/20 rounded-lg p-5 transition-all duration-300 hover:shadow-md cursor-pointer"
-                  onClick={() => navigate(`/template/${template.id}`)}
+                  onClick={() => {
+                    trackTemplateOpened({ templateId: template.id, category: template.category });
+                    navigate(`/template/${template.id}`);
+                  }}
                 >
                   {/* Header Section with Title and Actions */}
                   <div className="flex items-start justify-between gap-4 mb-4">

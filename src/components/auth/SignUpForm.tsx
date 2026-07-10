@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { trackLogin, trackSignUp } from "@/lib/analytics";
+import { trackAuthStarted, trackLogin, trackSignUp } from "@/lib/analytics";
 import { supabase } from "@/lib/supabase";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -54,6 +54,7 @@ export function SignUpForm() {
     }
 
     setIsLoading(true);
+    trackAuthStarted("register", "email");
 
     try {
       const { data: existingUser } = await supabase.from("users").select("id").eq("email", email).single();

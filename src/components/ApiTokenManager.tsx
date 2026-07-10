@@ -1,7 +1,7 @@
 import { Copy } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { trackApiTokenCreated } from "../lib/analytics";
+import { trackApiTokenCopied, trackApiTokenCreated } from "../lib/analytics";
 import { generateApiToken } from "../lib/api-auth";
 import { supabase } from "../lib/supabase";
 import { Button } from "./ui/button";
@@ -116,6 +116,7 @@ export function ApiTokenManager() {
   async function handleCopyToken() {
     try {
       await navigator.clipboard.writeText(newTokenValue);
+      trackApiTokenCopied("settings");
       toast.success("Token copied to clipboard");
     } catch (error) {
       console.error("Error copying token:", error);
