@@ -7,28 +7,28 @@ const steps = [
     number: "01",
     icon: BookMarked,
     title: "Create & Save",
-    description: "Create and store your AI prompts in our intuitive editor with multi-model support",
+    description: "Create prompts and keep them organized for different models and tasks.",
     comingSoon: false,
   },
   {
     number: "02",
     icon: Sparkles,
     title: "Optimize & Improve",
-    description: "Get AI-powered suggestions to enhance your prompts and improve their effectiveness",
+    description: "Use focused suggestions to improve clarity, structure, and output quality.",
     comingSoon: false,
   },
   {
     number: "03",
     icon: Share2,
     title: "Share & Collaborate",
-    description: "Share your best prompts with teammates through links and versioned updates",
+    description: "Share prompts through links and keep changes organized by version.",
     comingSoon: false,
   },
   {
     number: "04",
     icon: Gauge,
     title: "Monitor & Analyze",
-    description: "Track token usage and review prompt performance trends over time",
+    description: "Review token usage and prompt performance trends over time.",
     comingSoon: true,
   },
 ];
@@ -39,8 +39,8 @@ export const HowItWorks = () => {
       <div className="container mx-auto px-4 max-w-7xl">
         <div className="text-center mb-8 sm:mb-12">
           <span className="inline-block px-4 py-1.5 mb-4 text-sm font-semibold rounded-full bg-gradient-to-r from-[#2C106A]/10 to-purple-500/10 text-[#2C106A]">How It Works</span>
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-[#2C106A] to-purple-600">Start Your AI Prompt Journey in 4 Steps</h2>
-          <p className="text-sm sm:text-base text-gray-600 max-w-2xl mx-auto px-4">Simple and intuitive process to help you get started and achieve the best results</p>
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-[#2C106A] to-purple-600">Build a Repeatable Prompt Workflow</h2>
+          <p className="text-sm sm:text-base text-gray-600 max-w-2xl mx-auto px-4">Create, improve, share, and review prompts in one consistent workflow.</p>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 mb-8 sm:mb-12 px-4 sm:px-6 lg:px-8">
@@ -54,7 +54,10 @@ export const HowItWorks = () => {
                     <step.icon className="w-7 h-7 text-[#2C106A]" />
                   </div>
                   <div className="flex-grow">
-                    <h3 className="text-xl font-semibold text-gray-900 mb-1">{step.title}</h3>
+                    <div className="flex items-center gap-2">
+                      <h3 className="text-xl font-semibold text-gray-900 mb-1">{step.title}</h3>
+                      {step.comingSoon && <span className="text-xs font-medium text-gray-500">Coming soon</span>}
+                    </div>
                     <p className="text-gray-600 text-sm mt-2 line-clamp-3">{step.description}</p>
                   </div>
                 </div>

@@ -100,7 +100,7 @@ export function SignUpForm() {
                     if (resendError) {
                       toast.error("Failed to send verification email: " + resendError.message);
                     } else {
-                      toast.success("Verification email sent!");
+                      toast.success("Verification email sent. Check your inbox.");
                     }
                   },
                 },
@@ -112,7 +112,7 @@ export function SignUpForm() {
             if (signInData.user) {
               trackLogin("email");
             }
-            toast.success("Sign in successful! Redirecting to dashboard...");
+            toast.success("Signed in. Opening your dashboard...");
             navigate("/dashboard");
           }
         } else {
@@ -120,7 +120,7 @@ export function SignUpForm() {
         }
       } else if (data.user) {
         trackSignUp("email");
-        toast.success("Registration successful! Please check your email for the verification link.", {
+        toast.success("Account created. Check your inbox for the verification link.", {
           duration: 6000,
         });
         setEmail("");
@@ -129,7 +129,7 @@ export function SignUpForm() {
       }
     } catch (error) {
       console.error("Registration error:", error);
-      toast.error("An error occurred during registration. Please try again later.");
+      toast.error("Unable to create your account. Please try again later.");
     } finally {
       setIsLoading(false);
     }

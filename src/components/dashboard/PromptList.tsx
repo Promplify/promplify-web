@@ -379,8 +379,8 @@ export function PromptList({ categoryId, onCategorySelect, onPromptSelect, selec
     <div className="w-full h-full bg-white flex flex-col">
       <div className="p-3 sm:p-4 border-b border-gray-200 flex-shrink-0">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="font-medium">Prompts</h2>
-          <Button onClick={handleNewPrompt} className="bg-[#2C106A] hover:bg-[#1F0B4C] text-white transition-colors duration-200">
+          <h2 className="text-sm font-semibold text-gray-900">Prompts</h2>
+          <Button size="sm" onClick={handleNewPrompt} className="h-9 bg-[#2C106A] px-3 text-white transition-colors hover:bg-[#1F0B4C]">
             <Plus className="w-4 h-4" />
             New Prompt
           </Button>
@@ -434,7 +434,7 @@ export function PromptList({ categoryId, onCategorySelect, onPromptSelect, selec
             </Select>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="sm" className="px-2 focus-visible:ring-0 focus-visible:ring-offset-0">
+                <Button variant="outline" size="icon" className="h-10 w-10" aria-label="Manage categories" title="Manage categories">
                   <Settings size={16} />
                 </Button>
               </DropdownMenuTrigger>
@@ -505,10 +505,11 @@ export function PromptList({ categoryId, onCategorySelect, onPromptSelect, selec
           <Input type="text" placeholder="Search prompts..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="pl-9 transition-all duration-200 focus:border-[#2C106A]" />
         </div>
         <div className="flex items-center justify-between text-xs text-gray-500">
-          <span className="bg-gray-100 px-2 py-0.5 rounded-md transition-colors duration-200">{sortedPrompts.filter((p) => p.id !== "new").length} prompts</span>
+          <span className="rounded-md bg-gray-100 px-2 py-1">{sortedPrompts.filter((p) => p.id !== "new").length} prompts</span>
           <button
+            type="button"
             onClick={() => setSortByDate(!sortByDate)}
-            className="flex items-center space-x-1 min-w-[100px] justify-center hover:text-gray-900 bg-gray-50 px-2 py-0.5 rounded-md transition-all duration-200 hover:bg-gray-100"
+            className="flex min-h-8 min-w-[112px] items-center justify-center space-x-1 rounded-md bg-gray-50 px-2 transition-colors hover:bg-gray-100 hover:text-gray-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2C106A] focus-visible:ring-offset-1"
           >
             <ArrowDownUp size={12} className="transition-transform duration-200" />
             <span>Sort by {sortByDate ? "newest" : "oldest"}</span>
@@ -518,11 +519,18 @@ export function PromptList({ categoryId, onCategorySelect, onPromptSelect, selec
       <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-200 scrollbar-track-transparent">
         <div className="p-2">
           <div className="space-y-2 pb-4">
+            {sortedPrompts.length === 0 && (
+              <div className="rounded-lg border border-dashed border-gray-200 px-4 py-10 text-center">
+                <p className="text-sm font-medium text-gray-700">No prompts found</p>
+                <p className="mt-1 text-xs text-gray-500">Try another search or create a new prompt.</p>
+              </div>
+            )}
             {sortedPrompts.map((prompt) => (
               <div
                 key={prompt.id}
-                className={`p-3 hover:bg-gray-50 rounded-lg cursor-pointer border border-gray-100 hover:border-gray-200 group relative transition-all duration-200 ${
-                  selectedPromptId === prompt.id ? "bg-gradient-to-r from-purple-50 to-indigo-50 border-[#2C106A] ring-1 ring-[#2C106A] shadow-sm" : ""
+                aria-current={selectedPromptId === prompt.id ? "true" : undefined}
+                className={`group relative cursor-pointer rounded-lg border p-3 transition-colors ${
+                  selectedPromptId === prompt.id ? "border-[#2C106A]/30 bg-[#2C106A]/5" : "border-transparent hover:border-gray-200 hover:bg-gray-50"
                 }`}
                 onClick={() => (prompt.id !== "new" ? onPromptSelect?.(prompt.id) : null)}
               >
@@ -535,7 +543,12 @@ export function PromptList({ categoryId, onCategorySelect, onPromptSelect, selec
                     <div className="flex items-center justify-between mb-1.5">
                       <h3 className="font-medium text-gray-900 truncate flex-1 pr-2">{prompt.title}</h3>
                       <div className="flex items-center space-x-1">
-                        <button type="button" onClick={(e) => handleToggleFavorite(e, prompt.id, prompt.is_favorite)} className="text-gray-400 hover:text-gray-700 group-hover:visible">
+                        <button
+                          type="button"
+                          onClick={(e) => handleToggleFavorite(e, prompt.id, prompt.is_favorite)}
+                          className="inline-flex h-8 w-8 items-center justify-center rounded-md text-gray-400 transition-colors hover:bg-white hover:text-gray-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2C106A]"
+                          aria-label={prompt.is_favorite ? `Remove ${prompt.title} from favorites` : `Add ${prompt.title} to favorites`}
+                        >
                           <Heart size={16} className={`${prompt.is_favorite ? "fill-red-500 text-red-500" : ""}`} />
                         </button>
                       </div>

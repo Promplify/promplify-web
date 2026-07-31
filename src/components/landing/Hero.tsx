@@ -35,7 +35,7 @@ export const Hero = () => {
         <div className="mb-4 animate-bounce-slow flex flex-col items-center gap-3">
           <span className="inline-block px-4 py-1.5 text-sm font-semibold rounded-full bg-gradient-to-r from-[#2C106A]/10 to-purple-500/10 border border-[#2C106A]/20">
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#2C106A] via-purple-600 via-pink-500 via-rose-400 to-indigo-500 animate-gradient-x bg-[length:200%_auto]">
-              AI Prompt Management Made Simple
+              Open-source prompt management
             </span>
           </span>
         </div>
@@ -43,12 +43,12 @@ export const Hero = () => {
           <span className="block bg-clip-text text-transparent bg-gradient-to-r from-[#2C106A] to-purple-600 md:text-7xl animate-gradient-x" style={{ lineHeight: "1.1" }}>
             Promplify
           </span>
-          <span className="block bg-clip-text text-transparent bg-gradient-to-r from-[#2C106A] to-purple-600">Amplify Your AI Potential</span>
+          <span className="block bg-clip-text text-transparent bg-gradient-to-r from-[#2C106A] to-purple-600">Manage Better Prompts</span>
         </h1>
 
-        <p className="text-xl md:text-2xl font-semibold text-gray-700 mb-3 max-w-2xl mx-auto">Open Source AI Prompt Management Platform</p>
+        <p className="text-xl md:text-2xl font-semibold text-gray-700 mb-3 max-w-2xl mx-auto">An Open-source Prompt Workspace</p>
         <p className="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto mb-8">
-          Create and optimize your AI prompts with our open-source platform. Track tokens, manage versions, and integrate seamlessly with your applications. Built by the community for practical daily use.
+          Create, organize, version, and reuse prompts in one place. Track tokens, share prompts, and connect them to your applications through the API.
         </p>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-6">
@@ -59,7 +59,7 @@ export const Hero = () => {
           >
             <Link to="/dashboard" className="relative z-10">
               <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
-              Get Started <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform duration-300" />
+              Open Dashboard <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform duration-300" />
             </Link>
           </Button>
           <Button
@@ -73,7 +73,7 @@ export const Hero = () => {
               <div className="flex items-center justify-center w-5 h-5 rounded-full bg-gray-100 group-hover:bg-gray-200 transition-all duration-300 mr-2">
                 <Github className="h-3 w-3 text-gray-600 group-hover:text-gray-700 transition-colors duration-300" />
               </div>
-              <span className="font-medium">View Source Code</span>
+              <span className="font-medium">View on GitHub</span>
               <div className="ml-1 opacity-60 group-hover:opacity-100 transition-opacity duration-300">
                 <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
                   <path

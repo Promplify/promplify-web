@@ -3,28 +3,28 @@ import { BookMarked, Code2, Gauge, Github, Sparkles } from "lucide-react";
 const features = [
   {
     icon: BookMarked,
-    title: "Centralized Prompt Management",
-    description: "Store, organize, and access all your AI prompts in one secure location",
+    title: "Organize Every Prompt",
+    description: "Keep prompts, versions, and tags organized in one workspace.",
   },
   {
     icon: Sparkles,
     title: "AI-Powered Optimization",
-    description: "Get intelligent suggestions to improve your prompts and learn best practices",
+    description: "Get focused suggestions to make prompts clearer and more effective.",
   },
   {
     icon: Gauge,
-    title: "Token Management",
-    description: "Track and optimize your prompt lengths with built-in token management",
+    title: "Token Tracking",
+    description: "Track prompt length and make informed edits before you run it.",
   },
   {
     icon: Code2,
     title: "API Access",
-    description: "Access your prompts programmatically through our RESTful API with version control support",
+    description: "Retrieve saved prompt versions from your applications.",
   },
   {
     icon: Github,
-    title: "User-Driven Development",
-    description: "Help shape Promplify by submitting bug reports and feature requests through our GitHub issue tracker",
+    title: "Open-source Development",
+    description: "Report issues, request features, and follow development on GitHub.",
   },
 ];
 
@@ -53,7 +53,7 @@ export const Features = () => {
         <div className="text-center mb-12">
           <span className="inline-block px-4 py-1.5 mb-4 text-sm font-semibold rounded-full bg-gradient-to-r from-[#2C106A]/10 to-purple-500/10 text-[#2C106A]">Features</span>
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-[#2C106A] to-purple-600">Everything You Need for Better Prompts</h2>
-          <p className="text-sm sm:text-base text-gray-600 max-w-2xl mx-auto">Streamline your AI workflow with our comprehensive suite of prompt management tools</p>
+          <p className="text-sm sm:text-base text-gray-600 max-w-2xl mx-auto">Organize, improve, and reuse prompts across your AI workflow.</p>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 sm:gap-6">

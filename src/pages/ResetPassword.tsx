@@ -87,7 +87,7 @@ export default function ResetPassword() {
         <Card className="p-8">
           <CardHeader className="space-y-2 pb-6">
             <CardTitle className="text-2xl text-center font-semibold">Reset Password</CardTitle>
-            <CardDescription className="text-center text-base">Enter your email address and we'll send you a link to reset your password</CardDescription>
+            <CardDescription className="text-center text-base">Enter your email and we'll send you a password reset link.</CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSendResetLink} className="space-y-4">
@@ -119,7 +119,7 @@ export default function ResetPassword() {
       <Card className="p-8">
         <CardHeader className="space-y-2 pb-6">
           <CardTitle className="text-2xl text-center font-semibold">Set New Password</CardTitle>
-          <CardDescription className="text-center text-base">Please enter your new password below</CardDescription>
+          <CardDescription className="text-center text-base">Enter a new password for your account.</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleResetPassword} className="space-y-4">
@@ -170,7 +170,7 @@ export default function ResetPassword() {
         <div className="relative z-20 mt-6">
           <div className="space-y-4">
             <h1 className="text-4xl font-bold">Promplify</h1>
-            <p className="text-lg text-white/80">Your AI prompt management platform. Create, organize, and optimize your prompts with ease.</p>
+            <p className="text-lg text-white/80">Create, organize, version, and reuse AI prompts in one workspace.</p>
           </div>
           <div className="mt-12 space-y-6">
             <div className="flex items-center space-x-4">
@@ -180,8 +180,8 @@ export default function ResetPassword() {
                 </svg>
               </div>
               <div>
-                <h3 className="text-xl font-semibold">Streamline Your Workflow</h3>
-                <p className="text-white/70">Manage all your AI prompts in one place</p>
+                <h3 className="text-xl font-semibold">One Prompt Workspace</h3>
+                <p className="text-white/70">Keep prompts, versions, and tags organized.</p>
               </div>
             </div>
             <div className="flex items-center space-x-4">
@@ -207,8 +207,8 @@ export default function ResetPassword() {
                 </svg>
               </div>
               <div>
-                <h3 className="text-xl font-semibold">Secure & Reliable</h3>
-                <p className="text-white/70">Your prompts are safe and always available</p>
+                <h3 className="text-xl font-semibold">Reusable Prompts</h3>
+                <p className="text-white/70">Save useful prompts and adapt them for future tasks.</p>
               </div>
             </div>
           </div>
