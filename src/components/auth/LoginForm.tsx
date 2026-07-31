@@ -71,7 +71,7 @@ export function LoginForm() {
                     toast.error("Failed to send verification email: " + resendError.message);
                     return;
                   }
-                  toast.success("Verification email has been resent, please check your inbox");
+                  toast.success("Verification email sent. Check your inbox.");
                 } catch (error) {
                   console.error("Error resending verification email:", error);
                 }
@@ -79,18 +79,18 @@ export function LoginForm() {
             },
           });
         } else if (error.message.includes("Invalid login credentials")) {
-          toast.error("Email or password is incorrect, please try again");
+          toast.error("Incorrect email or password. Please try again.");
         } else {
           toast.error("Login failed: " + error.message);
         }
       } else if (data.user) {
         trackLogin("email");
-        toast.success("Login successful! Redirecting to dashboard...");
+        toast.success("Signed in. Opening your dashboard...");
         navigate("/dashboard");
       }
     } catch (error) {
       console.error("Login error:", error);
-      toast.error("An error occurred during login, please try again later");
+      toast.error("Unable to sign in. Please try again later.");
     } finally {
       setIsLoading(false);
     }

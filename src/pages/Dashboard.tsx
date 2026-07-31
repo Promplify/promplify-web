@@ -19,7 +19,7 @@ export default function Dashboard() {
   const [showMobilePromptList, setShowMobilePromptList] = useState(false);
 
   useEffect(() => {
-    updateMeta("Dashboard", "Manage and optimize your AI prompts with Promplify's intuitive dashboard.", "AI prompt management, prompt organization, prompt optimization, AI workflow");
+    updateMeta("Dashboard", "Create, organize, version, and reuse your AI prompts in Promplify.", "AI prompt management, prompt organization, prompt optimization, AI workflow");
   }, []);
 
   useEffect(() => {
@@ -92,7 +92,7 @@ export default function Dashboard() {
       <SEO
         canonicalPath="/dashboard"
         title="Dashboard - Promplify"
-        description="Manage and optimize your AI prompts with Promplify's intuitive dashboard."
+        description="Create, organize, version, and reuse your AI prompts in Promplify."
         keywords="AI prompt management, prompt organization, prompt optimization, AI workflow"
         robots="noindex, nofollow"
       />
@@ -106,27 +106,31 @@ export default function Dashboard() {
         {/* Mobile Hamburger Button */}
         <button
           onClick={() => setShowMobilePromptList(!showMobilePromptList)}
-          className="md:hidden fixed bottom-4 right-4 z-50 bg-[#2C106A] text-white p-3 rounded-full shadow-lg hover:bg-[#1F0B4C] transition-colors"
+          className="fixed right-3 top-[4.25rem] z-50 inline-flex h-10 items-center gap-2 rounded-md bg-[#2C106A] px-3 text-sm font-medium text-white shadow-sm transition-colors hover:bg-[#1F0B4C] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2C106A] focus-visible:ring-offset-2 md:hidden"
           aria-label="Toggle prompt list"
+          aria-controls="mobile-prompt-list"
+          aria-expanded={showMobilePromptList}
         >
-          {showMobilePromptList ? <X size={24} /> : <Menu size={24} />}
+          {showMobilePromptList ? <X size={18} /> : <Menu size={18} />}
+          <span>{showMobilePromptList ? "Close" : "Prompts"}</span>
         </button>
 
         {/* Mobile Overlay */}
         {showMobilePromptList && (
           <div
-            className="md:hidden fixed inset-0 bg-black bg-opacity-50 z-30"
+            className="fixed inset-x-0 bottom-0 top-14 z-30 bg-black/40 md:hidden"
             onClick={() => setShowMobilePromptList(false)}
           />
         )}
 
         {/* Prompt List - Desktop: sidebar, Mobile: drawer */}
         <div
+          id="mobile-prompt-list"
           className={`
             ${showMobilePromptList ? "translate-x-0" : "-translate-x-full"}
             md:translate-x-0
             fixed md:relative
-            inset-y-0 left-0
+            bottom-0 left-0 top-14 md:inset-y-0
             z-40 md:z-0
             w-[280px] sm:w-[320px]
             border-r border-gray-200

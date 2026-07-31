@@ -18,6 +18,7 @@ export default function Auth() {
   const [searchParams] = useSearchParams();
   const requestedMode = searchParams.get("mode") === "register" ? "register" : "login";
   const [authMode, setAuthMode] = useState<"login" | "register">(requestedMode);
+  const isRegistering = authMode === "register";
 
   useEffect(() => {
     updateMeta("Sign In", "Sign in or create an account to start managing your AI prompts with Promplify.", "sign in, login, register, account, AI prompt management");
@@ -29,7 +30,7 @@ export default function Auth() {
 
   const handleSocialLogin = async (provider: "github" | "google") => {
     try {
-      trackAuthStarted("login", provider);
+      trackAuthStarted(authMode, provider);
       const { error } = await supabase.auth.signInWithOAuth({
         provider,
         options: {
@@ -65,7 +66,7 @@ export default function Auth() {
             </Link>
             <Link to="/" className="text-white/70 hover:text-white transition-colors inline-flex items-center gap-2 text-sm">
               <ArrowLeft className="w-4 h-4" />
-              <span className="hidden sm:inline">Back to Home</span>
+              <span className="hidden sm:inline">Back home</span>
               <span className="sm:hidden">Home</span>
             </Link>
           </div>
@@ -84,7 +85,7 @@ export default function Auth() {
           <div className="relative z-20 mt-6">
             <div className="space-y-4">
               <h1 className="text-3xl font-bold">Welcome to Promplify</h1>
-              <p className="text-lg text-white/80">Your AI prompt management platform. Create, organize, and optimize your prompts with ease.</p>
+              <p className="text-lg text-white/80">Create, organize, version, and reuse AI prompts in one workspace.</p>
             </div>
             <div className="mt-12 space-y-6">
               <div className="flex items-center space-x-4">
@@ -94,8 +95,8 @@ export default function Auth() {
                   </svg>
                 </div>
                 <div>
-                  <h3 className="text-xl font-semibold">Streamline Your Workflow</h3>
-                  <p className="text-white/70">Manage all your AI prompts in one place</p>
+                  <h3 className="text-xl font-semibold">One Prompt Workspace</h3>
+                  <p className="text-white/70">Keep prompts, versions, and tags organized.</p>
                 </div>
               </div>
               <div className="flex items-center space-x-4">
@@ -121,8 +122,8 @@ export default function Auth() {
                   </svg>
                 </div>
                 <div>
-                  <h3 className="text-xl font-semibold">Secure Storage</h3>
-                  <p className="text-white/70">Your prompts are safe with us</p>
+                  <h3 className="text-xl font-semibold">Reusable Prompts</h3>
+                  <p className="text-white/70">Save useful prompts and adapt them for future tasks.</p>
                 </div>
               </div>
             </div>
@@ -140,8 +141,10 @@ export default function Auth() {
           <div className="w-full max-w-[480px] sm:max-w-[520px]">
             <Card className="p-4 sm:p-6 md:p-8 shadow-xl">
               <CardHeader className="space-y-2 pb-4 sm:pb-6 px-0">
-                <CardTitle className="text-2xl sm:text-3xl text-center font-bold">Welcome Back</CardTitle>
-                <CardDescription className="text-center text-sm sm:text-base">Choose your preferred sign-in method</CardDescription>
+                <CardTitle className="text-2xl sm:text-3xl text-center font-bold">{isRegistering ? "Create Your Account" : "Welcome Back"}</CardTitle>
+                <CardDescription className="text-center text-sm sm:text-base">
+                  {isRegistering ? "Create an account to start managing prompts." : "Sign in to continue to your prompt workspace."}
+                </CardDescription>
               </CardHeader>
               <CardContent className="grid gap-6 sm:gap-8 px-0">
                 <div className="grid grid-cols-2 gap-3 sm:gap-4">
@@ -152,8 +155,8 @@ export default function Auth() {
                   </Button>
                   <Button variant="outline" size="lg" className="w-full h-10 sm:h-12 text-sm sm:text-base" onClick={() => handleSocialLogin("github")}>
                     <Github className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
-                    <span className="hidden sm:inline">Github</span>
-                    <span className="sm:hidden">Github</span>
+                    <span className="hidden sm:inline">GitHub</span>
+                    <span className="sm:hidden">GitHub</span>
                   </Button>
                 </div>
                 <div className="relative">
@@ -183,7 +186,7 @@ export default function Auth() {
               </CardContent>
               <CardFooter className="flex flex-col space-y-4 pt-4 px-0">
                 <div className="text-xs sm:text-sm text-muted-foreground text-center leading-relaxed">
-                  By clicking continue, you agree to our{" "}
+                  By continuing, you agree to our{" "}
                   <a href="/terms" className="underline underline-offset-4 hover:text-primary">
                     Terms of Service
                   </a>{" "}

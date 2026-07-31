@@ -625,8 +625,8 @@ export function PromptEditor({ promptId, onSave, onDelete }: PromptEditorProps) 
   // Add empty state when no prompt is selected
   if (!promptId) {
     return (
-      <div className="flex-1 h-full bg-gray-50 flex items-center justify-center">
-        <div className="text-center space-y-2 max-w-md mx-auto p-8">
+      <div className="flex flex-1 items-center justify-center bg-gray-50 p-4">
+        <div className="mx-auto max-w-md rounded-lg border border-dashed border-gray-200 bg-white p-8 text-center shadow-sm">
           <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 mx-auto text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path
               strokeLinecap="round"
@@ -635,7 +635,8 @@ export function PromptEditor({ promptId, onSave, onDelete }: PromptEditorProps) 
               d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
             />
           </svg>
-          <p className="text-gray-500">Select a prompt from the list or create a new one to get started</p>
+          <h2 className="text-sm font-semibold text-gray-900">Choose a prompt</h2>
+          <p className="mt-1 text-sm text-gray-500">Select a prompt from the list or create a new one to get started.</p>
         </div>
       </div>
     );
@@ -643,7 +644,7 @@ export function PromptEditor({ promptId, onSave, onDelete }: PromptEditorProps) 
 
   return (
     <div className="flex-1 h-full bg-gray-50 flex flex-col">
-      <div className="p-2 sm:p-3 border-b border-gray-200 bg-white flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-0 sm:justify-between">
+      <div className="z-10 flex flex-col items-start gap-2 border-b border-gray-200 bg-white p-2 sm:flex-row sm:items-center sm:justify-between sm:gap-0 sm:p-3">
         <div className="flex items-center space-x-2 sm:space-x-4 w-full sm:w-auto">
           <h2 className="font-medium text-sm sm:text-base truncate">{prompt.title || "New Prompt"}</h2>
           <div className="flex items-center space-x-1">
@@ -864,12 +865,12 @@ export function PromptEditor({ promptId, onSave, onDelete }: PromptEditorProps) 
         <div className="w-full px-2 sm:px-3 lg:px-4">
           <div className="space-y-3 sm:space-y-4">
             {/* Basic Information */}
-            <section className="bg-white border-b border-gray-200">
+            <section className="border-b border-gray-200 bg-white">
               <div className="px-4 py-4 border-b border-gray-100">
                 <div className="flex items-center gap-4">
                   <div className="flex items-center gap-2">
-                    <div className="w-1 h-6 bg-gradient-to-b from-[#2C106A] to-purple-600 rounded-full"></div>
-                    <h3 className="text-base font-semibold bg-clip-text text-transparent bg-gradient-to-r from-[#2C106A] to-purple-600">Basic Information</h3>
+                    <div className="h-5 w-1 rounded-full bg-[#2C106A]"></div>
+                    <h3 className="text-sm font-semibold text-gray-900">Basic Information</h3>
                   </div>
                   <span className="font-mono text-sm text-gray-500 flex-1">
                     <div className="inline-flex items-center gap-1.5">
@@ -956,8 +957,8 @@ export function PromptEditor({ promptId, onSave, onDelete }: PromptEditorProps) 
               <div className="px-4 py-4 border-b border-gray-100">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <div className="w-1 h-6 bg-gradient-to-b from-[#2C106A] to-purple-600 rounded-full"></div>
-                    <h3 className="text-base font-semibold bg-clip-text text-transparent bg-gradient-to-r from-[#2C106A] to-purple-600">Classification</h3>
+                    <div className="h-5 w-1 rounded-full bg-[#2C106A]"></div>
+                    <h3 className="text-sm font-semibold text-gray-900">Classification</h3>
                   </div>
                   <span className="text-xs text-gray-500">Optional</span>
                 </div>
@@ -1087,15 +1088,15 @@ export function PromptEditor({ promptId, onSave, onDelete }: PromptEditorProps) 
             {/* Content */}
             <section className="bg-white border-b border-gray-200">
               <div className="px-4 py-4 border-b border-gray-100">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <div className="w-1 h-6 bg-gradient-to-b from-[#2C106A] to-purple-600 rounded-full"></div>
-                    <h3 className="text-base font-semibold bg-clip-text text-transparent bg-gradient-to-r from-[#2C106A] to-purple-600">Content</h3>
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <div className="h-5 w-1 rounded-full bg-[#2C106A]"></div>
+                    <h3 className="text-sm font-semibold text-gray-900">Content</h3>
                     <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium border border-blue-200 text-blue-700">
                       System: {prompt.system_tokens || 0} + User: {prompt.user_tokens || 0} = {prompt.token_count} tokens
                     </span>
                   </div>
-                  <div className="flex items-center text-xs text-gray-500">
+                  <div className="hidden items-center text-xs text-gray-500 sm:flex">
                     <AlertCircle size={14} className="mr-1" />
                     Supports XML/Markdown format
                   </div>
