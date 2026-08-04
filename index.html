@@ -45,16 +45,22 @@
     <div id="root"></div>
     <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
     <script type="module" src="/src/main.tsx"></script>
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-YC641PMZ52"></script>
     <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag() {
-        dataLayer.push(arguments);
-      }
-      gtag("js", new Date());
+      const analyticsHosts = new Set(["promplify.com", "www.promplify.com"]);
 
-      gtag("config", "G-YC641PMZ52");
+      if (analyticsHosts.has(window.location.hostname)) {
+        const analyticsScript = document.createElement("script");
+        analyticsScript.async = true;
+        analyticsScript.src = "https://www.googletagmanager.com/gtag/js?id=G-YC641PMZ52";
+        document.head.append(analyticsScript);
+
+        window.dataLayer = window.dataLayer || [];
+        window.gtag = function () {
+          window.dataLayer.push(arguments);
+        };
+        window.gtag("js", new Date());
+        window.gtag("config", "G-YC641PMZ52");
+      }
     </script>
   </body>
 </html>
