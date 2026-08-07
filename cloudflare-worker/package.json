@@ -1,0 +1,19 @@
+{
+  "name": "promplify-api",
+  "version": "1.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "types": "wrangler types --env-file .dev.vars.example --strict-vars=false --include-runtime=false",
+    "type-check": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.3",
+    "wrangler": "^4.119.0"
+  }
+}

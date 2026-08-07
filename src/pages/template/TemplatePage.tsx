@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { trackPromptCopied, trackPromptCreated, trackTemplateCtaClicked, trackTemplateUsed } from "@/lib/analytics";
 import { supabase } from "@/lib/supabase";
+import { recordTemplateSaved } from "@/services/productAnalyticsService";
 import { updateMeta } from "@/utils/meta";
 import { countTokens } from "gpt-tokenizer/model/gpt-4";
 import { ChevronRight, Copy, Eye } from "lucide-react";
@@ -134,10 +135,16 @@ export default function TemplatePage() {
         user_id: session.user.id,
       };
 
-      const { error } = await supabase.from("prompts").insert(promptData);
+      const { data: savedPrompt, error } = await supabase.from("prompts").insert(promptData).select("id").single();
 
       if (error) {
         throw error;
+      }
+
+      try {
+        await recordTemplateSaved(savedPrompt.id, templateData.id, "template_detail");
+      } catch {
+        console.warn("Failed to record template save");
       }
 
       trackPromptCreated("template_detail");

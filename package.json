@@ -36,7 +36,7 @@
     "lint:fix": "eslint . --fix",
     "type-check": "tsc --noEmit",
     "preview": "vite preview",
-    "test": "echo \"No tests specified\" && exit 0",
+    "test": "node --experimental-strip-types --test tests/*.test.mjs",
     "clean": "rm -rf dist node_modules/.vite",
     "prepare": "npm run type-check"
   },
