@@ -1,5 +1,6 @@
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import { Toaster } from "sonner";
+import { useProductSessionTracking } from "./hooks/useProductSessionTracking";
 import ApiDocs from "./pages/ApiDocs";
 import Auth from "./pages/Auth";
 import Callback from "./pages/auth/Callback";
@@ -17,6 +18,8 @@ import Templates from "./pages/Templates";
 import Terms from "./pages/Terms";
 
 function App() {
+  useProductSessionTracking();
+
   return (
     <Router>
       {/* Increase bottom offset by 20px to avoid footer overlap */}

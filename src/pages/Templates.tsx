@@ -7,6 +7,7 @@ import { trackPromptCreated, trackTemplateCtaClicked, trackTemplateOpened, track
 import { supabase } from "@/lib/supabase";
 import { createPrompt } from "@/services/promptService";
 import { countTokens } from "gpt-tokenizer/model/gpt-4";
+import { recordTemplateSaved } from "@/services/productAnalyticsService";
 import { ArrowRight, BookOpen, Code2, HelpCircle, Megaphone, PenTool, Search, Sparkles, Tag, Workflow, X } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useInView } from "react-intersection-observer";
@@ -266,6 +267,11 @@ export default function Templates() {
       };
 
       const newPrompt = await createPrompt(promptData);
+      try {
+        await recordTemplateSaved(newPrompt.id, template.id, "templates");
+      } catch {
+        console.warn("Failed to record template save");
+      }
       trackPromptCreated("template");
       trackTemplateUsed({
         source: "templates",

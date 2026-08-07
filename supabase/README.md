@@ -89,6 +89,23 @@ The database includes the following main tables:
 - **api_tokens** - API access tokens for external integrations
 - **plaza_prompts** - Shared prompts in the community plaza
 - **plaza_likes** - Likes for plaza prompts
+- **product_events** - Privacy-safe activation, retention, sharing, and API usage milestones
+
+## Product Analytics Contract
+
+The `product_events` table is the durable business source for these milestones:
+
+- `first_prompt_created`
+- `template_saved`
+- `second_session_started`
+- `prompt_shared`
+- `plaza_prompt_published`
+- `api_first_used`
+- `api_used`
+
+Prompt, share, and plaza milestones are recorded from database writes. Web sessions and template saves use authenticated RPCs. Clients cannot insert product events directly. API usage is recorded by `get_prompt_by_api_token`, which also validates prompt ownership and updates `api_tokens.last_used_at`.
+
+Apply the database migration before releasing the frontend or API Worker so analytics failures never block a successful product action.
 
 ## Edge Functions
 
