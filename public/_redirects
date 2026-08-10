@@ -2,3 +2,13 @@
 /discover /discover/ 301
 /api-docs /api-docs/ 301
 /api /api-docs/ 301
+/auth/* /index.html 200
+/reset-password /index.html 200
+/dashboard /index.html 200
+/profile /index.html 200
+/settings /index.html 200
+/terms /index.html 200
+/privacy /index.html 200
+/template/* /index.html 200
+/share/* /index.html 200
+/discover/prompt/* /index.html 200
