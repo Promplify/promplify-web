@@ -6,9 +6,9 @@
 /reset-password /index.html 200
 /dashboard /index.html 200
 /profile /index.html 200
-/settings /index.html 200
-/terms /index.html 200
-/privacy /index.html 200
+/settings /settings/ 301
+/terms /terms/ 301
+/privacy /privacy/ 301
 /template/* /index.html 200
 /share/* /index.html 200
 /discover/prompt/* /index.html 200

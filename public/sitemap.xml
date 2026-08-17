@@ -34,7 +34,7 @@
 
   <!-- Privacy policy -->
   <url>
-    <loc>https://promplify.com/privacy</loc>
+    <loc>https://promplify.com/privacy/</loc>
     <lastmod>2026-03-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
@@ -42,7 +42,7 @@
 
   <!-- Terms of service -->
   <url>
-    <loc>https://promplify.com/terms</loc>
+    <loc>https://promplify.com/terms/</loc>
     <lastmod>2026-03-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>

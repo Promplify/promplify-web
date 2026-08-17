@@ -28,6 +28,28 @@ const routes = [
     description: "Integrate Promplify prompts into your applications with API token authentication, version-aware prompt retrieval, and secure prompt workflows.",
     keywords: "Promplify API, prompt API, prompt management API, prompt versioning, AI prompt integration",
   },
+  {
+    outputPath: "privacy",
+    urlPath: "/privacy/",
+    title: "Privacy Policy - Promplify",
+    description: "Read Promplify's Privacy Policy to learn how we collect, use, and protect your data.",
+    keywords: "Promplify privacy policy, data protection, user privacy",
+  },
+  {
+    outputPath: "terms",
+    urlPath: "/terms/",
+    title: "Terms of Service - Promplify",
+    description: "Read Promplify's Terms of Service to understand your rights and responsibilities when using the platform.",
+    keywords: "Promplify terms of service, user agreement, legal terms",
+  },
+  {
+    outputPath: "settings",
+    urlPath: "/settings/",
+    title: "Account Settings - Promplify",
+    description: "Manage your Promplify account, preferences, and API access.",
+    keywords: "Promplify account settings, API access",
+    robots: "noindex, follow",
+  },
 ];
 
 const escapeAttribute = (value) =>
@@ -63,6 +85,10 @@ const applyRouteMetadata = (html, route) => {
   output = upsertTag(output, /<meta name="twitter:title" content="[^"]*" \/>/, buildMetaTag("name", "twitter:title", route.title));
   output = upsertTag(output, /<meta name="twitter:description" content="[^"]*" \/>/, buildMetaTag("name", "twitter:description", route.description));
   output = upsertTag(output, /<meta name="twitter:image" content="[^"]*" \/>/, buildMetaTag("name", "twitter:image", defaultImage));
+
+  if (route.robots) {
+    output = upsertTag(output, /<meta name="robots" content="[^"]*" \/>/, buildMetaTag("name", "robots", route.robots));
+  }
 
   return output;
 };

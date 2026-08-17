@@ -14,10 +14,10 @@ export function Footer() {
           <div className="flex flex-col items-center gap-3 sm:flex-row sm:flex-wrap sm:justify-center sm:gap-4 md:gap-6">
             {/* Links and social icons grouped together */}
             <div className="flex items-center flex-wrap justify-center gap-3 sm:gap-4 md:gap-6">
-              <Link to="/privacy" className="text-white/60 hover:text-white text-sm transition-colors whitespace-nowrap">
+              <Link to="/privacy/" className="text-white/60 hover:text-white text-sm transition-colors whitespace-nowrap">
                 Privacy Policy
               </Link>
-              <Link to="/terms" className="text-white/60 hover:text-white text-sm transition-colors whitespace-nowrap">
+              <Link to="/terms/" className="text-white/60 hover:text-white text-sm transition-colors whitespace-nowrap">
                 Terms of Service
               </Link>
 

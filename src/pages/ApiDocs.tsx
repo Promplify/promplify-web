@@ -50,7 +50,7 @@ export default function ApiDocs() {
               <h2 className="text-xl sm:text-2xl font-semibold mb-3 sm:mb-4 text-white">Authentication</h2>
               <p className="text-gray-300 mb-4 sm:mb-6 leading-relaxed text-base sm:text-lg">
                 All API requests require authentication using a Bearer token. You can generate an API token in your{" "}
-                <a href="/settings" className="text-purple-400 hover:text-purple-300 underline">
+                <a href="/settings/" className="text-purple-400 hover:text-purple-300 underline">
                   Settings
                 </a>{" "}
                 page.
