@@ -5,6 +5,8 @@ import { test } from "node:test";
 const generator = await readFile(new URL("../scripts/generate-static-route-html.mjs", import.meta.url), "utf8");
 const redirects = await readFile(new URL("../public/_redirects", import.meta.url), "utf8");
 const sitemap = await readFile(new URL("../public/sitemap.xml", import.meta.url), "utf8");
+const privacyPage = await readFile(new URL("../src/pages/Privacy.tsx", import.meta.url), "utf8");
+const termsPage = await readFile(new URL("../src/pages/Terms.tsx", import.meta.url), "utf8");
 
 test("generates canonical static pages for public legal routes", () => {
   for (const route of ["privacy", "terms"]) {
@@ -12,6 +14,9 @@ test("generates canonical static pages for public legal routes", () => {
     assert.match(redirects, new RegExp(`^/${route} /${route}/ 301$`, "m"));
     assert.match(sitemap, new RegExp(`<loc>https://promplify\\.com/${route}/</loc>`));
   }
+
+  assert.match(privacyPage, /canonicalPath="\/privacy\/"/);
+  assert.match(termsPage, /canonicalPath="\/terms\/"/);
 });
 
 test("serves settings without an internal redirect target", () => {

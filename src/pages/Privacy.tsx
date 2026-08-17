@@ -12,7 +12,7 @@ export default function Privacy() {
   return (
     <div className="min-h-screen bg-white">
       <SEO
-        canonicalPath="/privacy"
+        canonicalPath="/privacy/"
         title="Privacy Policy - Promplify"
         description="Learn how Promplify protects your privacy and handles your data when you use our AI prompt management platform."
         keywords="privacy policy, data protection, user privacy"
