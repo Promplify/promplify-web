@@ -3,19 +3,19 @@ import { test } from "node:test";
 import { isAppShellPath, onRequest } from "../functions/_middleware.ts";
 
 test("classifies only known client application routes", () => {
-  for (const pathname of ["/auth", "/auth/callback", "/dashboard", "/template/209", "/share/example", "/discover/prompt/42"]) {
+  for (const pathname of ["/dashboard", "/template/209", "/share/example", "/discover/prompt/42"]) {
     assert.equal(isAppShellPath(pathname), true, pathname);
   }
-  for (const pathname of ["/", "/templates/", "/unknown", "/api-docs/"]) {
+  for (const pathname of ["/", "/auth", "/auth/callback", "/templates/", "/unknown", "/api-docs/"]) {
     assert.equal(isAppShellPath(pathname), false, pathname);
   }
 });
 
-test("serves the app shell for direct auth continuation URLs", async () => {
+test("serves the app shell for dynamic application URLs", async () => {
   let assetUrl = "";
   let nextCalled = false;
   const response = await onRequest({
-    request: new Request("https://promplify.com/auth?mode=register&next=%2Ftemplate%2F209%3Fuse%3D1"),
+    request: new Request("https://promplify.com/template/209?use=1"),
     env: {
       ASSETS: {
         async fetch(request) {

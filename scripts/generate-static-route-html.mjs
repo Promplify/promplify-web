@@ -8,6 +8,22 @@ const defaultImage = "https://promplify.com/web-app-manifest-512x512.png";
 
 const routes = [
   {
+    outputPath: "auth",
+    urlPath: "/auth/",
+    title: "Sign In - Promplify",
+    description: "Sign in or create an account to continue managing your AI prompts with Promplify.",
+    keywords: "Promplify sign in, prompt management account",
+    robots: "noindex, nofollow",
+  },
+  {
+    outputPath: "auth/callback",
+    urlPath: "/auth/callback/",
+    title: "Complete Sign In - Promplify",
+    description: "Complete your Promplify sign-in and continue to your prompt workspace.",
+    keywords: "Promplify authentication callback",
+    robots: "noindex, nofollow",
+  },
+  {
     outputPath: "templates",
     urlPath: "/templates/",
     title: "AI Prompt Templates & Workflow Tool - Promplify",

@@ -1,6 +1,6 @@
 const CANONICAL_HOST = "promplify.com";
-const APP_SHELL_PATHS = new Set(["/auth", "/reset-password", "/dashboard", "/profile"]);
-const APP_SHELL_PREFIXES = ["/auth/", "/template/", "/share/", "/discover/prompt/"];
+const APP_SHELL_PATHS = new Set(["/reset-password", "/dashboard", "/profile"]);
+const APP_SHELL_PREFIXES = ["/template/", "/share/", "/discover/prompt/"];
 
 export const isAppShellPath = (pathname: string) =>
   APP_SHELL_PATHS.has(pathname) || APP_SHELL_PREFIXES.some((prefix) => pathname.startsWith(prefix));

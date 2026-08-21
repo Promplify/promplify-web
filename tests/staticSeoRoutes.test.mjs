@@ -25,6 +25,6 @@ test("serves settings without an internal redirect target", () => {
 });
 
 test("serves direct auth and callback routes through the app shell", () => {
-  assert.match(redirects, /^\/auth \/index\.html 200$/m);
-  assert.match(redirects, /^\/auth\/\* \/index\.html 200$/m);
+  assert.match(generator, /outputPath: "auth"[\s\S]*?urlPath: "\/auth\/"[\s\S]*?robots: "noindex, nofollow"/);
+  assert.match(generator, /outputPath: "auth\/callback"[\s\S]*?urlPath: "\/auth\/callback\/"[\s\S]*?robots: "noindex, nofollow"/);
 });
