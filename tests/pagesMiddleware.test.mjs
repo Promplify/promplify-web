@@ -31,7 +31,7 @@ test("serves the app shell for direct auth continuation URLs", async () => {
   });
 
   assert.equal(response.status, 200);
-  assert.equal(assetUrl, "https://promplify.com/index.html");
+  assert.equal(assetUrl, "https://promplify.com/");
   assert.equal(nextCalled, false);
 });
 

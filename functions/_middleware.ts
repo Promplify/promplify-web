@@ -15,7 +15,7 @@ export const onRequest: PagesFunction = async (context) => {
   }
 
   if (isAppShellPath(url.pathname)) {
-    url.pathname = "/index.html";
+    url.pathname = "/";
     url.search = "";
     return context.env.ASSETS.fetch(new Request(url.toString(), context.request));
   }
