@@ -23,3 +23,8 @@ test("serves settings without an internal redirect target", () => {
   assert.match(generator, /outputPath: "settings"[\s\S]*?urlPath: "\/settings\/"[\s\S]*?robots: "noindex, follow"/);
   assert.match(redirects, /^\/settings \/settings\/ 301$/m);
 });
+
+test("serves direct auth and callback routes through the app shell", () => {
+  assert.match(redirects, /^\/auth \/index\.html 200$/m);
+  assert.match(redirects, /^\/auth\/\* \/index\.html 200$/m);
+});

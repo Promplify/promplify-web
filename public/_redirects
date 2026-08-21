@@ -2,6 +2,7 @@
 /discover /discover/ 301
 /api-docs /api-docs/ 301
 /api /api-docs/ 301
+/auth /index.html 200
 /auth/* /index.html 200
 /reset-password /index.html 200
 /dashboard /index.html 200
