@@ -358,17 +358,49 @@ export const exportUserData = async (userId: string) => {
   };
 };
 
+interface ImportNamedItem {
+  name?: string;
+}
+
+interface ImportPrompt {
+  title?: string;
+  description?: string;
+  content?: string;
+  system_prompt?: string;
+  user_prompt?: string;
+  version?: string;
+  token_count?: number;
+  system_tokens?: number;
+  user_tokens?: number;
+  performance?: number;
+  is_favorite?: boolean;
+  category_id?: string | null;
+  category_name?: string;
+  category?: string;
+  model?: string;
+  temperature?: number;
+  max_tokens?: number;
+  prompt_tags?: Array<{ tags?: ImportNamedItem }>;
+}
+
+interface ImportPayload {
+  categories?: ImportNamedItem[];
+  tags?: ImportNamedItem[];
+  prompts?: ImportPrompt[];
+}
+
 // Import user data from a previously exported JSON
-export const importUserData = async (userId: string, payload: any) => {
+export const importUserData = async (userId: string, payload: unknown) => {
   if (!userId) throw new Error("User ID is required for import");
 
   if (!payload || typeof payload !== "object") {
     throw new Error("Invalid import payload");
   }
 
-  const categories: Array<{ name: string }> = Array.isArray(payload.categories) ? payload.categories : [];
-  const tags: Array<{ name: string }> = Array.isArray(payload.tags) ? payload.tags : [];
-  const prompts: Array<any> = Array.isArray(payload.prompts) ? payload.prompts : [];
+  const importPayload = payload as ImportPayload;
+  const categories = Array.isArray(importPayload.categories) ? importPayload.categories : [];
+  const tags = Array.isArray(importPayload.tags) ? importPayload.tags : [];
+  const prompts = Array.isArray(importPayload.prompts) ? importPayload.prompts : [];
 
   let createdCategories = 0;
   let createdTags = 0;
@@ -416,7 +448,7 @@ export const importUserData = async (userId: string, payload: any) => {
   }
 
   // Helper to resolve a category name on prompt if present
-  const resolvePromptCategoryId = (p: any): string | null => {
+  const resolvePromptCategoryId = (p: ImportPrompt): string | null => {
     const cname = (p?.category_name || p?.category || "").trim();
     if (!cname) return null;
     return categoryIdByName.get(cname) ?? null;
@@ -449,7 +481,7 @@ export const importUserData = async (userId: string, payload: any) => {
       if (error) throw error;
       createdPrompts += 1;
 
-      const incomingTags: Array<{ tags: { name: string } }> = Array.isArray(p.prompt_tags) ? p.prompt_tags : [];
+      const incomingTags = Array.isArray(p.prompt_tags) ? p.prompt_tags : [];
       for (const pt of incomingTags) {
         const tagName = (pt?.tags?.name || "").trim();
         if (!tagName) continue;

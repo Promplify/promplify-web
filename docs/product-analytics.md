@@ -4,16 +4,16 @@ Promplify keeps GA4 for acquisition and interaction analysis, while Supabase sto
 
 ## Event definitions
 
-| Event | Definition | Source |
-| --- | --- | --- |
-| `first_prompt_created` | The user's earliest saved prompt | Database trigger, with historical backfill |
-| `template_saved` | A template successfully copied into the user's prompt library | Authenticated RPC after the prompt insert succeeds |
-| `session_started` | An authenticated product session using a 30-minute inactivity window | Authenticated web RPC |
-| `second_session_started` | The first session whose ID differs from the user's initial recorded session | Authenticated web RPC |
-| `prompt_shared` | A private share link is first created | Database trigger, with historical backfill |
-| `plaza_prompt_published` | A prompt is published to Discover | Database trigger, with historical backfill |
-| `api_first_used` | The first successful API request observed for a token after durable tracking is released | API retrieval RPC |
-| `api_used` | Every idempotently identified successful API request | API retrieval RPC |
+| Event                    | Definition                                                                               | Source                                             |
+| ------------------------ | ---------------------------------------------------------------------------------------- | -------------------------------------------------- |
+| `first_prompt_created`   | The user's earliest saved prompt                                                         | Database trigger, with historical backfill         |
+| `template_saved`         | A template successfully copied into the user's prompt library                            | Authenticated RPC after the prompt insert succeeds |
+| `session_started`        | An authenticated product session using a 30-minute inactivity window                     | Authenticated web RPC                              |
+| `second_session_started` | The first session whose ID differs from the user's initial recorded session              | Authenticated web RPC                              |
+| `prompt_shared`          | A private share link is first created                                                    | Database trigger, with historical backfill         |
+| `plaza_prompt_published` | A prompt is published to Discover                                                        | Database trigger, with historical backfill         |
+| `api_first_used`         | The first successful API request observed for a token after durable tracking is released | API retrieval RPC                                  |
+| `api_used`               | Every idempotently identified successful API request                                     | API retrieval RPC                                  |
 
 ## Data boundaries
 

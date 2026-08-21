@@ -43,7 +43,12 @@ export function DiscoverGrid({ prompts, isLoading, currentPage, totalItems, item
 
     return (
       <div className="flex items-center justify-center space-x-1 sm:space-x-2 mt-8">
-        <Button variant="outline" className="h-8 sm:h-10 px-2 sm:px-4 border-gray-200" onClick={() => onPageChange(Math.max(1, currentPage - 1))} disabled={currentPage === 1}>
+        <Button
+          variant="outline"
+          className="h-8 sm:h-10 px-2 sm:px-4 border-gray-200"
+          onClick={() => onPageChange(Math.max(1, currentPage - 1))}
+          disabled={currentPage === 1}
+        >
           <ChevronLeft className="h-4 w-4" />
           <span className="sr-only">Previous</span>
         </Button>
@@ -68,7 +73,12 @@ export function DiscoverGrid({ prompts, isLoading, currentPage, totalItems, item
           </>
         )}
 
-        <Button variant="outline" className="h-8 sm:h-10 px-2 sm:px-4 border-gray-200" onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))} disabled={currentPage === totalPages}>
+        <Button
+          variant="outline"
+          className="h-8 sm:h-10 px-2 sm:px-4 border-gray-200"
+          onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
+          disabled={currentPage === totalPages}
+        >
           <ChevronRight className="h-4 w-4" />
           <span className="sr-only">Next</span>
         </Button>

@@ -14,13 +14,13 @@ const removeChildEvent = {
               filename: "../../node_modules/react-dom/cjs/react-dom.production.min.js",
               module: "react-dom/cjs/react-dom.production",
               function: "Uc",
-              in_app: false
-            }
-          ]
-        }
-      }
-    ]
-  }
+              in_app: false,
+            },
+          ],
+        },
+      },
+    ],
+  },
 };
 
 test("drops React DOM removeChild noise without application frames", () => {
@@ -33,7 +33,7 @@ test("keeps removeChild errors when application frames are present", () => {
     filename: "src/components/dashboard/PromptEditor.tsx",
     module: "src.components.dashboard.PromptEditor",
     function: "PromptEditor",
-    in_app: true
+    in_app: true,
   });
 
   assert.equal(shouldDropReactRemoveChildNoise(event), false);

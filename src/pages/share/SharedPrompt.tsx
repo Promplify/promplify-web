@@ -7,7 +7,8 @@ import { SocialShare } from "@/components/share/SocialShare";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { getSharedPrompt } from "@/services/shareService";
+import { getErrorMessage } from "@/lib/errors";
+import { getSharedPrompt, type SharedPromptContent } from "@/services/shareService";
 import { supabase } from "@/lib/supabase";
 import { updateMeta } from "@/utils/meta";
 import { ChevronRight, Copy, Eye } from "lucide-react";
@@ -20,7 +21,7 @@ export default function SharedPromptPage() {
   const [isSaving, setIsSaving] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [promptData, setPromptData] = useState<any>(null);
+  const [promptData, setPromptData] = useState<SharedPromptContent | null>(null);
   const [viewCount, setViewCount] = useState(0);
 
   useEffect(() => {
@@ -42,9 +43,9 @@ export default function SharedPromptPage() {
 
         setPromptData(sharedPrompt.prompts);
         setViewCount(sharedPrompt.views || 0);
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error("Error loading shared prompt:", err);
-        setError(err.message || "Failed to load shared prompt");
+        setError(getErrorMessage(err, "Failed to load shared prompt"));
       } finally {
         setIsLoading(false);
       }
@@ -83,7 +84,7 @@ export default function SharedPromptPage() {
         return;
       }
 
-      const { id, created_at, updated_at, ...dataToSave } = promptData;
+      const { id: _id, created_at: _createdAt, updated_at: _updatedAt, prompt_tags: _promptTags, ...dataToSave } = promptData;
 
       const { data: newPrompt, error } = await supabase
         .from("prompts")
@@ -100,9 +101,9 @@ export default function SharedPromptPage() {
       }
 
       toast.success("Prompt saved successfully");
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Error saving prompt:", err);
-      toast.error(err.message || "Failed to save prompt");
+      toast.error(getErrorMessage(err, "Failed to save prompt"));
     } finally {
       setIsSaving(false);
     }
@@ -155,7 +156,11 @@ export default function SharedPromptPage() {
   if (error || !promptData) {
     return (
       <div className="min-h-screen bg-black">
-        <SEO title="Prompt Not Found - Promplify" description="The shared prompt you're looking for might have been removed or is no longer accessible" canonicalPath={`/share/${token}`} />
+        <SEO
+          title="Prompt Not Found - Promplify"
+          description="The shared prompt you're looking for might have been removed or is no longer accessible"
+          canonicalPath={`/share/${token}`}
+        />
         <Navigation />
         <div className="max-w-7xl mx-auto py-20 px-4 sm:px-6 lg:px-8">
           <div className="mb-8">
@@ -241,7 +246,12 @@ export default function SharedPromptPage() {
               <div>
                 <div className="flex items-center justify-between mb-2">
                   <Label className="text-sm font-medium text-gray-300">System Prompt</Label>
-                  <Button variant="ghost" size="sm" className="text-gray-400 hover:text-white hover:bg-white/10" onClick={() => handleCopyPrompt(promptData.system_prompt)}>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="text-gray-400 hover:text-white hover:bg-white/10"
+                    onClick={() => handleCopyPrompt(promptData.system_prompt)}
+                  >
                     <Copy className="w-4 h-4 mr-2" />
                     Copy
                   </Button>
@@ -256,7 +266,12 @@ export default function SharedPromptPage() {
               <div>
                 <div className="flex items-center justify-between mb-2">
                   <Label className="text-sm font-medium text-gray-300">User Prompt</Label>
-                  <Button variant="ghost" size="sm" className="text-gray-400 hover:text-white hover:bg-white/10" onClick={() => handleCopyPrompt(promptData.user_prompt)}>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="text-gray-400 hover:text-white hover:bg-white/10"
+                    onClick={() => handleCopyPrompt(promptData.user_prompt)}
+                  >
                     <Copy className="w-4 h-4 mr-2" />
                     Copy
                   </Button>

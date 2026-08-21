@@ -8,7 +8,9 @@ import { Button } from "@/components/ui/button";
 import { supabase } from "@/lib/supabase";
 import { likeDiscoverPrompt, saveDiscoverPromptToMyList, unlikeDiscoverPrompt } from "@/services/plazaService";
 import { getTagsByPromptId } from "@/services/promptService";
-import { DiscoverPrompt } from "@/types/discover";
+import { DiscoverProfile, DiscoverPrompt, DiscoverPromptRow } from "@/types/discover";
+import { Tag } from "@/types/prompt";
+import { getErrorMessage } from "@/lib/errors";
 import { ArrowUp, ChevronRight, Copy, Save, Share2, ThumbsUp, Trash } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
@@ -22,12 +24,12 @@ export default function DiscoverPromptPage() {
   const [isDeleting, setIsDeleting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [discoverPrompt, setDiscoverPrompt] = useState<DiscoverPrompt | null>(null);
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<DiscoverProfile | null>(null);
   const [liked, setLiked] = useState(false);
   const [likesCount, setLikesCount] = useState(0);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
-  const [tags, setTags] = useState<any[]>([]);
+  const [tags, setTags] = useState<Tag[]>([]);
   const [showBackToTop, setShowBackToTop] = useState(false);
   const [metaData, setMetaData] = useState({
     title: "Prompt Details - Promplify Discover",
@@ -75,10 +77,11 @@ export default function DiscoverPromptPage() {
         }
 
         // Process user likes
-        const userHasLiked = promptData.user_has_liked?.some((like: any) => like.user_id === sessionData.session?.user.id) || false;
+        const promptRow = promptData as DiscoverPromptRow;
+        const userHasLiked = promptRow.user_has_liked?.some((like) => like.user_id === sessionData.session?.user.id) || false;
 
         const processedPrompt = {
-          ...promptData,
+          ...promptRow,
           user_has_liked: userHasLiked,
         };
 
@@ -121,9 +124,9 @@ export default function DiscoverPromptPage() {
             });
           }
         }
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error("Error loading discover prompt:", err);
-        setError(err.message || "Failed to load prompt");
+        setError(getErrorMessage(err, "Failed to load prompt"));
       } finally {
         setIsLoading(false);
       }
@@ -149,7 +152,7 @@ export default function DiscoverPromptPage() {
     if (discoverPrompt?.prompt) {
       const title = `${discoverPrompt.prompt.title} - Promplify Discover`;
       const description = discoverPrompt.prompt.description || `Explore this "${discoverPrompt.prompt.title}" prompt shared by the Promplify community.`;
-      const keywords = `AI prompt, ${discoverPrompt.prompt.title}, prompt sharing, ChatGPT prompts, Claude prompts, AI assistant, prompt engineering, ${tags.map((tag: any) => tag.name).join(", ")}`;
+      const keywords = `AI prompt, ${discoverPrompt.prompt.title}, prompt sharing, ChatGPT prompts, Claude prompts, AI assistant, prompt engineering, ${tags.map((tag) => tag.name).join(", ")}`;
 
       setMetaData({ title, description, keywords });
     }
@@ -352,7 +355,11 @@ export default function DiscoverPromptPage() {
   if (error || !discoverPrompt || !discoverPrompt.prompt) {
     return (
       <div className="min-h-screen bg-gray-50">
-        <SEO title="Prompt Not Found - Promplify Discover" description="The prompt you're looking for might have been removed or is no longer accessible" canonicalPath={`/discover/prompt/${id}`} />
+        <SEO
+          title="Prompt Not Found - Promplify Discover"
+          description="The prompt you're looking for might have been removed or is no longer accessible"
+          canonicalPath={`/discover/prompt/${id}`}
+        />
         <Navigation />
         <div className="max-w-7xl mx-auto py-20 px-4 sm:px-6 lg:px-8">
           <div className="mb-6">
@@ -455,13 +462,24 @@ export default function DiscoverPromptPage() {
 
               {/* Action buttons group */}
               <div className="flex flex-wrap gap-2 sm:gap-3 items-center">
-                <Button variant="outline" size="sm" onClick={handleLike} className={`gap-1 sm:gap-1.5 text-xs sm:text-sm ${liked ? "text-blue-500 border-blue-200 bg-blue-50" : ""}`}>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleLike}
+                  className={`gap-1 sm:gap-1.5 text-xs sm:text-sm ${liked ? "text-blue-500 border-blue-200 bg-blue-50" : ""}`}
+                >
                   <ThumbsUp className={`h-3.5 w-3.5 sm:h-4 sm:w-4 ${liked ? "fill-blue-500" : ""}`} />
                   <span>{likesCount}</span>
                 </Button>
 
                 {currentUserId !== discoverPrompt.user_id && isLoggedIn && (
-                  <Button variant="default" size="sm" className="gap-1 sm:gap-1.5 bg-[#2C106A] hover:bg-[#1F0B4C] text-xs sm:text-sm" onClick={handleSave} disabled={isSaving}>
+                  <Button
+                    variant="default"
+                    size="sm"
+                    className="gap-1 sm:gap-1.5 bg-[#2C106A] hover:bg-[#1F0B4C] text-xs sm:text-sm"
+                    onClick={handleSave}
+                    disabled={isSaving}
+                  >
                     <Save className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                     <span>{isSaving ? "Saving..." : "Save"}</span>
                   </Button>
@@ -473,7 +491,13 @@ export default function DiscoverPromptPage() {
                 </Button>
 
                 {currentUserId === discoverPrompt.user_id && (
-                  <Button variant="destructive" size="sm" className="gap-1 sm:gap-1.5 text-xs sm:text-sm" onClick={handleRemoveFromDiscover} disabled={isDeleting}>
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    className="gap-1 sm:gap-1.5 text-xs sm:text-sm"
+                    onClick={handleRemoveFromDiscover}
+                    disabled={isDeleting}
+                  >
                     <Trash className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                     <span>{isDeleting ? "Removing..." : "Remove"}</span>
                   </Button>
@@ -488,7 +512,9 @@ export default function DiscoverPromptPage() {
                 <div className="flex items-center text-xs sm:text-sm text-gray-500">
                   <Avatar className="h-6 w-6 sm:h-8 sm:w-8 mr-2">
                     <AvatarImage src={user?.avatar_url} alt={user?.full_name || user?.username || "Anonymous"} className="object-cover" />
-                    <AvatarFallback className="bg-primary/20 text-white text-xs">{(user?.full_name || user?.username || "A").charAt(0).toUpperCase()}</AvatarFallback>
+                    <AvatarFallback className="bg-primary/20 text-white text-xs">
+                      {(user?.full_name || user?.username || "A").charAt(0).toUpperCase()}
+                    </AvatarFallback>
                   </Avatar>
                   <span>{user ? user.full_name || user.username || "Anonymous" : "Anonymous"}</span>
                 </div>
@@ -496,8 +522,8 @@ export default function DiscoverPromptPage() {
                 {/* Tags */}
                 <div className="flex flex-wrap gap-1.5 sm:gap-2">
                   {(discoverPrompt.prompt.prompt_tags || tags).length > 0 ? (
-                    (discoverPrompt.prompt.prompt_tags || tags).map((tagItem: any) => {
-                      const tag = tagItem.tags || tagItem;
+                    (discoverPrompt.prompt.prompt_tags || tags).map((tagItem) => {
+                      const tag = "tags" in tagItem ? tagItem.tags : tagItem;
                       return (
                         <Badge key={tag.id} variant="secondary" className="bg-gray-100 text-gray-700 hover:bg-gray-200 text-xs py-0.5">
                           {tag.name}

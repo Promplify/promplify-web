@@ -93,12 +93,16 @@ export function PlazaCard({ plazaPrompt, featured = false }: PlazaCardProps) {
 
   return (
     <>
-      <div className={`bg-white rounded-lg shadow-md overflow-hidden flex flex-col h-full transition-all duration-300 ${featured ? "transform hover:-translate-y-1 hover:shadow-lg" : ""}`}>
+      <div
+        className={`bg-white rounded-lg shadow-md overflow-hidden flex flex-col h-full transition-all duration-300 ${featured ? "transform hover:-translate-y-1 hover:shadow-lg" : ""}`}
+      >
         {/* Cover image or gradient */}
         <div
           className={`h-40 bg-gradient-to-br ${gradientColors[cardGradient]} flex items-center justify-center`}
           onClick={() => setShowDetails(true)}
-          style={plazaPrompt.cover_image_url ? { backgroundImage: `url(${plazaPrompt.cover_image_url})`, backgroundSize: "cover", backgroundPosition: "center" } : {}}
+          style={
+            plazaPrompt.cover_image_url ? { backgroundImage: `url(${plazaPrompt.cover_image_url})`, backgroundSize: "cover", backgroundPosition: "center" } : {}
+          }
         >
           {!plazaPrompt.cover_image_url && (
             <span className="text-white text-2xl font-bold px-4 text-center">
@@ -136,7 +140,13 @@ export function PlazaCard({ plazaPrompt, featured = false }: PlazaCardProps) {
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Button variant="outline" size="sm" className="gap-1.5 border-[#2C106A] text-[#2C106A] hover:bg-[#2C106A]/10" onClick={handleSave} disabled={isLoading}>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="gap-1.5 border-[#2C106A] text-[#2C106A] hover:bg-[#2C106A]/10"
+                    onClick={handleSave}
+                    disabled={isLoading}
+                  >
                     <Save className="h-4 w-4" />
                     <span>Save to My Prompts</span>
                   </Button>
@@ -176,7 +186,13 @@ export function PlazaCard({ plazaPrompt, featured = false }: PlazaCardProps) {
               </div>
 
               <div className="flex gap-2">
-                <Button variant="outline" size="sm" className={`gap-1.5 ${liked ? "text-red-500 border-red-200" : "text-gray-500"}`} onClick={handleLike} disabled={isLoading}>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className={`gap-1.5 ${liked ? "text-red-500 border-red-200" : "text-gray-500"}`}
+                  onClick={handleLike}
+                  disabled={isLoading}
+                >
                   <Heart className={`h-4 w-4 ${liked ? "fill-red-500" : ""}`} />
                   <span>{likesCount}</span>
                 </Button>

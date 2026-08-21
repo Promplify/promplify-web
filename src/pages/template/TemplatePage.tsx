@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { trackPromptCopied, trackPromptCreated, trackTemplateCtaClicked, trackTemplateUsed } from "@/lib/analytics";
 import { buildAuthPath } from "@/lib/authRedirect";
+import { getErrorMessage } from "@/lib/errors";
 import { supabase } from "@/lib/supabase";
 import { recordTemplateSaved } from "@/services/productAnalyticsService";
 import { updateMeta } from "@/utils/meta";
@@ -17,6 +18,16 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 
+interface PromptTemplate {
+  id: number;
+  title: string;
+  description?: string;
+  system_prompt: string;
+  category: string;
+  views: number | null;
+  token_count?: number;
+}
+
 export default function TemplatePage() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -25,7 +36,7 @@ export default function TemplatePage() {
   const [isSaving, setIsSaving] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [templateData, setTemplateData] = useState<any>(null);
+  const [templateData, setTemplateData] = useState<PromptTemplate | null>(null);
   const [viewCount, setViewCount] = useState(0);
 
   useEffect(() => {
@@ -50,7 +61,7 @@ export default function TemplatePage() {
         const systemTokens = template.system_prompt ? Math.ceil(countTokens(template.system_prompt)) : 0;
         template.token_count = systemTokens;
 
-        setTemplateData(template);
+        setTemplateData(template as PromptTemplate);
         setViewCount(template.views || 0);
 
         // Update view count through RPC
@@ -72,8 +83,8 @@ export default function TemplatePage() {
         } catch (updateErr) {
           console.warn("Failed to update view count:", updateErr);
         }
-      } catch (err: any) {
-        setError(err.message || "Failed to load template");
+      } catch (err: unknown) {
+        setError(getErrorMessage(err, "Failed to load template"));
       } finally {
         setIsLoading(false);
       }
@@ -163,9 +174,9 @@ export default function TemplatePage() {
           source: "template",
         },
       });
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Error saving template:", err);
-      toast.error(err.message || "Failed to save template");
+      toast.error(getErrorMessage(err, "Failed to save template"));
     } finally {
       setIsSaving(false);
     }
@@ -241,7 +252,11 @@ export default function TemplatePage() {
   if (error || !templateData) {
     return (
       <div className="min-h-screen bg-black">
-        <SEO title="Template Not Found - Promplify" description="The template you're looking for might have been removed or is no longer accessible" canonicalPath={`/template/${id}`} />
+        <SEO
+          title="Template Not Found - Promplify"
+          description="The template you're looking for might have been removed or is no longer accessible"
+          canonicalPath={`/template/${id}`}
+        />
         <Navigation />
         <div className="flex items-center justify-center py-32">
           <div className="text-center">
@@ -313,7 +328,11 @@ export default function TemplatePage() {
                   <Eye className="w-4 h-4" />
                   <span>{viewCount}</span>
                 </div>
-                <SocialShare title={templateData.title} url={window.location.href} description={templateData.description || "A prompt template from Promplify"} />
+                <SocialShare
+                  title={templateData.title}
+                  url={window.location.href}
+                  description={templateData.description || "A prompt template from Promplify"}
+                />
                 <Button onClick={handleSavePrompt} disabled={isSaving} className="bg-purple-600 hover:bg-purple-700">
                   {isSaving ? "Saving..." : "Save to My Prompts"}
                 </Button>
@@ -326,7 +345,12 @@ export default function TemplatePage() {
               <div>
                 <div className="flex items-center justify-between mb-2">
                   <Label className="text-sm font-medium text-gray-300">System Prompt</Label>
-                  <Button variant="ghost" size="sm" className="text-gray-400 hover:text-white hover:bg-white/10" onClick={() => handleCopyPrompt(templateData.system_prompt)}>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="text-gray-400 hover:text-white hover:bg-white/10"
+                    onClick={() => handleCopyPrompt(templateData.system_prompt)}
+                  >
                     <Copy className="w-4 h-4 mr-2" />
                     Copy
                   </Button>

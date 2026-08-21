@@ -1,7 +1,8 @@
 import { supabase } from "@/lib/supabase";
+import type { DiscoverPromptRow, DiscoverSort } from "@/types/discover";
 
 // Get all prompts from discover
-export const getDiscoverPrompts = async (limit = 20, offset = 0, sortBy = "likes_count") => {
+export const getDiscoverPrompts = async (limit = 20, offset = 0, sortBy: DiscoverSort = "likes_count") => {
   // Get current user ID
   const { data: sessionData } = await supabase.auth.getSession();
   const currentUserId = sessionData.session?.user?.id;
@@ -17,15 +18,15 @@ export const getDiscoverPrompts = async (limit = 20, offset = 0, sortBy = "likes
     `,
       { count: "exact" }
     )
-    .order(sortBy as any, { ascending: false })
+    .order(sortBy, { ascending: false })
     .range(offset, offset + limit - 1);
 
   if (error) throw error;
 
   // Process user likes
-  const processedData = data.map((item: any) => ({
+  const processedData = (data as DiscoverPromptRow[]).map((item) => ({
     ...item,
-    user_has_liked: item.user_has_liked?.some((like: any) => like.user_id === currentUserId) || false,
+    user_has_liked: item.user_has_liked?.some((like) => like.user_id === currentUserId) || false,
   }));
 
   return { data: processedData, count };
@@ -53,9 +54,9 @@ export const getFeaturedDiscoverPrompts = async (limit = 5) => {
   if (error) throw error;
 
   // Process user likes
-  const processedData = data.map((item: any) => ({
+  const processedData = (data as DiscoverPromptRow[]).map((item) => ({
     ...item,
-    user_has_liked: item.user_has_liked?.some((like: any) => like.user_id === currentUserId) || false,
+    user_has_liked: item.user_has_liked?.some((like) => like.user_id === currentUserId) || false,
   }));
 
   return processedData;
@@ -95,7 +96,12 @@ export const likeDiscoverPrompt = async (discoverPromptId: string) => {
 
   try {
     // 1. Check if user has already liked
-    const { data: existingLike, error: checkError } = await supabase.from("plaza_likes").select("id").eq("plaza_prompt_id", discoverPromptId).eq("user_id", userId).maybeSingle();
+    const { data: existingLike, error: checkError } = await supabase
+      .from("plaza_likes")
+      .select("id")
+      .eq("plaza_prompt_id", discoverPromptId)
+      .eq("user_id", userId)
+      .maybeSingle();
 
     if (checkError) {
       console.error("Error checking existing like:", checkError);
@@ -121,7 +127,7 @@ export const likeDiscoverPrompt = async (discoverPromptId: string) => {
 
     // likes_count is maintained by database trigger
     return data;
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Failed to like prompt:", error);
     throw error;
   }
@@ -137,7 +143,12 @@ export const unlikeDiscoverPrompt = async (discoverPromptId: string) => {
 
   try {
     // 1. Check if user has already liked
-    const { data: existingLike, error: checkError } = await supabase.from("plaza_likes").select("id").eq("plaza_prompt_id", discoverPromptId).eq("user_id", userId).maybeSingle();
+    const { data: existingLike, error: checkError } = await supabase
+      .from("plaza_likes")
+      .select("id")
+      .eq("plaza_prompt_id", discoverPromptId)
+      .eq("user_id", userId)
+      .maybeSingle();
 
     if (checkError) {
       console.error("Error checking existing like:", checkError);

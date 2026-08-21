@@ -26,7 +26,10 @@ export function DashboardHeader() {
               <span>Vote on Product Hunt</span>
               <ExternalLink className="w-3.5 h-3.5 opacity-70 group-hover:opacity-100 transition-opacity" />
             </a>
-            <Link to="/" className={`transition-colors text-xs sm:text-sm relative group whitespace-nowrap ${isActive("/") ? "text-white" : "text-gray-400 hover:text-white"}`}>
+            <Link
+              to="/"
+              className={`transition-colors text-xs sm:text-sm relative group whitespace-nowrap ${isActive("/") ? "text-white" : "text-gray-400 hover:text-white"}`}
+            >
               Home
               <span
                 className={`absolute -bottom-1 left-0 w-full h-0.5 bg-white transform origin-left transition-transform duration-200 ${
@@ -34,7 +37,10 @@ export function DashboardHeader() {
                 }`}
               />
             </Link>
-            <Link to="/discover/" className={`hidden sm:inline-block transition-colors text-xs sm:text-sm relative group whitespace-nowrap ${isActive("/discover/") ? "text-white" : "text-gray-400 hover:text-white"}`}>
+            <Link
+              to="/discover/"
+              className={`hidden sm:inline-block transition-colors text-xs sm:text-sm relative group whitespace-nowrap ${isActive("/discover/") ? "text-white" : "text-gray-400 hover:text-white"}`}
+            >
               Discover
               <span
                 className={`absolute -bottom-1 left-0 w-full h-0.5 bg-white transform origin-left transition-transform duration-200 ${
@@ -42,7 +48,10 @@ export function DashboardHeader() {
                 }`}
               />
             </Link>
-            <Link to="/templates/" className={`hidden md:inline-block transition-colors text-xs sm:text-sm relative group whitespace-nowrap ${isActive("/templates/") ? "text-white" : "text-gray-400 hover:text-white"}`}>
+            <Link
+              to="/templates/"
+              className={`hidden md:inline-block transition-colors text-xs sm:text-sm relative group whitespace-nowrap ${isActive("/templates/") ? "text-white" : "text-gray-400 hover:text-white"}`}
+            >
               Templates
               <span
                 className={`absolute -bottom-1 left-0 w-full h-0.5 bg-white transform origin-left transition-transform duration-200 ${
@@ -50,7 +59,10 @@ export function DashboardHeader() {
                 }`}
               />
             </Link>
-            <Link to="/api-docs/" className={`hidden lg:inline-block transition-colors text-xs sm:text-sm relative group whitespace-nowrap ${isActive("/api-docs/") ? "text-white" : "text-gray-400 hover:text-white"}`}>
+            <Link
+              to="/api-docs/"
+              className={`hidden lg:inline-block transition-colors text-xs sm:text-sm relative group whitespace-nowrap ${isActive("/api-docs/") ? "text-white" : "text-gray-400 hover:text-white"}`}
+            >
               API
               <span
                 className={`absolute -bottom-1 left-0 w-full h-0.5 bg-white transform origin-left transition-transform duration-200 ${
@@ -69,7 +81,10 @@ export function DashboardHeader() {
               <ExternalLink className="w-3.5 h-3.5 opacity-50 group-hover:opacity-100 transition-opacity" />
               <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-white transform origin-left transition-transform duration-200 scale-x-0 group-hover:scale-x-100" />
             </a>
-            <Link to="/dashboard" className={`transition-colors text-xs sm:text-sm relative group whitespace-nowrap ${isActive("/dashboard") ? "text-white" : "text-gray-400 hover:text-white"}`}>
+            <Link
+              to="/dashboard"
+              className={`transition-colors text-xs sm:text-sm relative group whitespace-nowrap ${isActive("/dashboard") ? "text-white" : "text-gray-400 hover:text-white"}`}
+            >
               Dashboard
               <span
                 className={`absolute -bottom-1 left-0 w-full h-0.5 bg-white transform origin-left transition-transform duration-200 ${

@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { supabase } from "@/lib/supabase";
+import { getErrorMessage } from "@/lib/errors";
 import { updateMeta } from "@/utils/meta";
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
@@ -42,9 +43,9 @@ export default function ResetPassword() {
 
       toast.success("Password reset link has been sent to your email");
       setEmail("");
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error sending reset link:", error);
-      toast.error(error.message || "Failed to send reset link");
+      toast.error(getErrorMessage(error, "Failed to send reset link"));
     } finally {
       setIsLoading(false);
     }
@@ -73,9 +74,9 @@ export default function ResetPassword() {
 
       toast.success("Password has been reset successfully");
       navigate("/auth");
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error resetting password:", error);
-      toast.error(error.message || "Failed to reset password");
+      toast.error(getErrorMessage(error, "Failed to reset password"));
     } finally {
       setIsLoading(false);
     }
@@ -125,7 +126,16 @@ export default function ResetPassword() {
           <form onSubmit={handleResetPassword} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="password">New Password</Label>
-              <Input id="password" name="password" type="password" required value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Enter your new password" className="h-10" />
+              <Input
+                id="password"
+                name="password"
+                type="password"
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Enter your new password"
+                className="h-10"
+              />
             </div>
             <div className="space-y-2">
               <Label htmlFor="confirm-password">Confirm New Password</Label>
@@ -187,7 +197,12 @@ export default function ResetPassword() {
             <div className="flex items-center space-x-4">
               <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center">
                 <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                  />
                 </svg>
               </div>
               <div>

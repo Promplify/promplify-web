@@ -1,4 +1,4 @@
--- Create plaza prompts table
+-- Create plaza prompts table.
 CREATE TABLE IF NOT EXISTS plaza_prompts (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     prompt_id UUID NOT NULL REFERENCES prompts(id) ON DELETE CASCADE,
@@ -80,4 +80,4 @@ EXECUTE FUNCTION update_plaza_prompt_likes_count();
 CREATE TRIGGER update_likes_count_on_delete
 AFTER DELETE ON plaza_likes
 FOR EACH ROW
-EXECUTE FUNCTION update_plaza_prompt_likes_count(); 
+EXECUTE FUNCTION update_plaza_prompt_likes_count();

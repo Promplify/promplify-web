@@ -254,13 +254,18 @@ export default function Templates() {
                     style={{ boxShadow: "none" }}
                   />
                   {searchQuery && (
-                    <button onClick={() => applyTemplateSearch("", "search_input")} className="flex-none pr-5 text-gray-400 hover:text-gray-600 transition-colors">
+                    <button
+                      onClick={() => applyTemplateSearch("", "search_input")}
+                      className="flex-none pr-5 text-gray-400 hover:text-gray-600 transition-colors"
+                    >
                       <X className="w-5 h-5" />
                     </button>
                   )}
                 </div>
               </div>
-              {searchQuery && !loading && templates.length === 0 && <div className="text-center mt-4 text-sm text-gray-500">No templates found for "{searchQuery}"</div>}
+              {searchQuery && !loading && templates.length === 0 && (
+                <div className="text-center mt-4 text-sm text-gray-500">No templates found for "{searchQuery}"</div>
+              )}
             </div>
             <div className="max-w-3xl mx-auto mb-8 flex flex-wrap items-center justify-center gap-2">
               {templateQuickFilters.map((filter) => (
@@ -303,7 +308,9 @@ export default function Templates() {
                   {/* Header Section with Title and Actions */}
                   <div className="flex items-start justify-between gap-4 mb-4">
                     <div className="flex-1">
-                      <h3 className="text-xl font-semibold text-gray-900 leading-tight mb-3 line-clamp-1 group-hover:text-[#2C106A] transition-colors">{template.title}</h3>
+                      <h3 className="text-xl font-semibold text-gray-900 leading-tight mb-3 line-clamp-1 group-hover:text-[#2C106A] transition-colors">
+                        {template.title}
+                      </h3>
                       <div className="flex items-center flex-wrap gap-2.5 text-sm">
                         <div className="inline-flex items-center px-2.5 py-1 rounded-md bg-gradient-to-r from-purple-50 to-purple-50/50 text-purple-700 border border-purple-100/80 shadow-sm shadow-purple-100/50">
                           <span className="font-semibold">{countTokens(template.system_prompt)}</span>

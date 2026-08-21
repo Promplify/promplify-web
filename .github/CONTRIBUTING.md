@@ -1,120 +1,72 @@
 # Contributing to Promplify
 
-Thank you for contributing to Promplify. This guide describes the required workflow for code contributions.
+Thank you for helping improve Promplify. Keep changes focused, testable, and easy to review.
 
-## Prerequisites
+## Before you start
 
-- Node.js `^20.19.0 || >=22.12.0`
-- npm
-- Supabase CLI (for database/function related changes)
+- Search existing issues and pull requests before opening a duplicate.
+- Open an issue before implementing architectural changes.
+- Never include credentials, production data, or filled environment files.
 
-## Development Setup
+## Development setup
+
+Install Node.js 22.16+, npm 10+, the Supabase CLI, and Docker. Then follow either setup path in the main [`README.md`](../README.md): local Supabase or a new hosted Supabase project that you own.
+
+Install exactly the dependency versions in the lockfile:
 
 ```bash
-git clone https://github.com/your-username/promplify-web.git
-cd promplify-web
-npm install
-cp .env.example .env
+npm ci
 ```
 
-Fill `.env` with your own local values before running the app.
+## Branches
 
-Run local development server:
+Create a branch from the latest `main` using `feat/<topic>`, `fix/<topic>`, `docs/<topic>`, or `chore/<topic>`. Keep unrelated refactors out of feature and bug-fix pull requests.
 
-```bash
-npm run dev
-```
+## Quality requirements
 
-## Contribution Workflow
-
-1. Fork the repository and sync from `main`.
-2. Create a branch from `main`.
-3. Implement your change with focused scope.
-4. Run required checks.
-5. Open a pull request with clear context and testing notes.
-
-Suggested branch naming:
-
-- `feature/<short-topic>`
-- `bugfix/<short-topic>`
-- `chore/<short-topic>`
-
-## Required Checks Before PR
-
-Run these commands locally before opening or updating a PR:
+Before opening or updating a pull request, run:
 
 ```bash
-npm run type-check
-npm run lint
-```
-
-Optional but recommended for release-impacting changes:
-
-```bash
+npm run check
 npm run build
 ```
 
-## Commit Message Convention
-
-Use this format:
-
-```text
-type(scope): subject
-```
-
-Rules:
-
-- Use lowercase `type` and `scope`
-- Keep one-line subject concise and imperative
-- Keep subject within 50 characters when possible
-
-Recommended types:
-
-- `feature`
-- `bugfix`
-- `hotfix`
-- `chore`
-- `docs`
-- `refactor`
-- `test`
-
-Examples:
-
-- `feature(editor): add prompt diff preview`
-- `bugfix(auth): handle expired reset token`
-- `chore(ci): add secret scan workflow`
-
-## Pull Request Checklist
-
-- Explain what changed and why
-- Link related issues
-- Include screenshots for UI changes
-- Mention any required env, migration, or deployment updates
-- Confirm required checks passed locally
-
-## Security Requirements
-
-- Do not commit `.env`, private keys, API tokens, or secrets
-- Store local secrets only in untracked files
-- Use placeholders in docs and examples
-- If a secret is exposed, rotate it immediately and remove it from history
-
-This repository includes CI secret scanning via `.github/workflows/secret-scan.yml`.
-
-Run a local scan before pushing:
+For database changes, also run:
 
 ```bash
-# Git history and tracked files
-docker run --rm -v "$(pwd):/repo" -w /repo zricethezav/gitleaks:latest git --config .gitleaks.toml --redact
-
-# Optional working tree scan (includes untracked files)
-docker run --rm -v "$(pwd):/repo" -w /repo zricethezav/gitleaks:latest dir . --config .gitleaks.toml --redact
+npx supabase db reset
 ```
 
-## Reporting Security Issues
+Add or update automated tests for behavioral changes. Include screenshots for visible UI changes and describe any manual smoke test.
 
-Do not open public issues for vulnerabilities. Follow [SECURITY.md](SECURITY.md) to report responsibly.
+## Database migrations
 
-## Code of Conduct
+- Create migrations with `npx supabase migration new <name>`.
+- Never edit a migration that has already been applied to a shared environment.
+- Test the complete migration chain from an empty local database.
+- Preserve Row Level Security and use least-privilege grants.
+- Never expose a service-role or secret key to browser code.
+- Document new environment variables and operational steps.
 
-By participating in this project, you agree to follow [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md).
+## Commit messages
+
+Use [Conventional Commits](https://www.conventionalcommits.org/) in the form `type(scope): concise imperative subject`.
+
+Common types are `feat`, `fix`, `docs`, `refactor`, `test`, `build`, `ci`, `perf`, and `chore`.
+
+```text
+feat(editor): add prompt diff preview
+fix(auth): handle expired reset token
+docs(setup): explain local Supabase
+ci(checks): validate pull requests
+```
+
+Keep the subject to 50 characters when practical. Use the body to explain why, migration risk, or compatibility details.
+
+## Pull requests
+
+A pull request should explain the problem and solution, link related issues, list validation results, include UI evidence where applicable, and call out migrations or deployment steps. Keep it as a draft until required checks pass.
+
+## Security and conduct
+
+Do not report vulnerabilities in public issues. Follow [`SECURITY.md`](SECURITY.md) for private disclosure. All participation is governed by [`CODE_OF_CONDUCT.md`](CODE_OF_CONDUCT.md).

@@ -62,14 +62,6 @@ export function SignUpForm({ redirectPath = "/dashboard" }: SignUpFormProps) {
     trackAuthStarted("register", "email");
 
     try {
-      const { data: existingUser } = await supabase.from("users").select("id").eq("email", email).single();
-
-      if (existingUser) {
-        toast.error("This email is already registered with SSO. Please sign in with Google or GitHub.");
-        setIsLoading(false);
-        return;
-      }
-
       const { data, error } = await supabase.auth.signUp({
         email,
         password,

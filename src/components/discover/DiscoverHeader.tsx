@@ -30,7 +30,9 @@ export function DiscoverHeader() {
           <div className="inline-block mb-4 sm:mb-6 px-3 sm:px-4 py-1.5 rounded-full bg-[#2C106A]/5 text-[#2C106A] text-xs sm:text-sm font-medium border border-[#2C106A]/10">
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#2C106A] to-purple-600">Community prompts and shared prompt ideas</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-3 md:mb-4 bg-clip-text text-transparent bg-gradient-to-r from-[#2C106A] to-purple-600 leading-tight">Discover Shared AI Prompts</h1>
+          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-3 md:mb-4 bg-clip-text text-transparent bg-gradient-to-r from-[#2C106A] to-purple-600 leading-tight">
+            Discover Shared AI Prompts
+          </h1>
           <p className="text-base sm:text-lg md:text-xl text-gray-700 mb-4 md:mb-8 px-1">
             Browse community prompts, learn from shared prompt examples, and save the best ideas into your own prompt library for repeatable AI workflows.
           </p>
@@ -51,7 +53,10 @@ export function DiscoverHeader() {
             >
               Browse All Prompts
             </Button>
-            <Button onClick={() => navigate("/dashboard")} className="bg-[#2C106A] hover:bg-[#1F0B4C] text-white px-4 md:px-6 py-1.5 md:py-2 text-sm md:text-base">
+            <Button
+              onClick={() => navigate("/dashboard")}
+              className="bg-[#2C106A] hover:bg-[#1F0B4C] text-white px-4 md:px-6 py-1.5 md:py-2 text-sm md:text-base"
+            >
               Share a Prompt
             </Button>
           </div>

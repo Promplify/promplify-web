@@ -1,36 +1,41 @@
 import { sentryVitePlugin } from "@sentry/vite-plugin";
-import react from "@vitejs/plugin-react-swc";
-import { componentTagger } from "lovable-tagger";
+import react from "@vitejs/plugin-react";
 import path from "path";
 import { defineConfig } from "vite";
+
+const shouldUploadSourceMaps = Boolean(process.env.SENTRY_AUTH_TOKEN);
+
 // https://vitejs.dev/config/
-export default defineConfig(({ mode }) => ({
+export default defineConfig(() => ({
   server: {
     host: "::",
     port: 8080,
     middlewareMode: false,
   },
   build: {
-    sourcemap: true,
+    sourcemap: shouldUploadSourceMaps ? "hidden" : false,
     outDir: "dist",
     emptyOutDir: true,
   },
   plugins: [
     react(),
-    mode === "development" && componentTagger(),
-    // Put the Sentry vite plugin after all other plugins
-    sentryVitePlugin({
-      authToken: process.env.SENTRY_AUTH_TOKEN,
-      org: "gugudata",
-      project: "promplify",
-    }),
-  ].filter(Boolean),
+    ...(shouldUploadSourceMaps
+      ? [
+          sentryVitePlugin({
+            authToken: process.env.SENTRY_AUTH_TOKEN,
+            org: "gugudata",
+            project: "promplify",
+            telemetry: false,
+            sourcemaps: {
+              filesToDeleteAfterUpload: "./dist/**/*.map",
+            },
+          }),
+        ]
+      : []),
+  ],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
     },
-  },
-  optimizeDeps: {
-    include: ["react-syntax-highlighter"],
   },
 }));

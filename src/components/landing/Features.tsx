@@ -51,14 +51,21 @@ export const Features = () => {
     <div className="py-16 bg-gradient-to-b from-white via-white to-gray-50/50" id="features">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
-          <span className="inline-block px-4 py-1.5 mb-4 text-sm font-semibold rounded-full bg-gradient-to-r from-[#2C106A]/10 to-purple-500/10 text-[#2C106A]">Features</span>
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-[#2C106A] to-purple-600">Everything You Need for Better Prompts</h2>
+          <span className="inline-block px-4 py-1.5 mb-4 text-sm font-semibold rounded-full bg-gradient-to-r from-[#2C106A]/10 to-purple-500/10 text-[#2C106A]">
+            Features
+          </span>
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-[#2C106A] to-purple-600">
+            Everything You Need for Better Prompts
+          </h2>
           <p className="text-sm sm:text-base text-gray-600 max-w-2xl mx-auto">Organize, improve, and reuse prompts across your AI workflow.</p>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 sm:gap-6">
           {features.map((feature, index) => (
-            <div key={index} className="group relative p-6 bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 overflow-hidden">
+            <div
+              key={index}
+              className="group relative p-6 bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 overflow-hidden"
+            >
               <div className="absolute inset-0 bg-gradient-to-r from-[#2C106A]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
               <div className="relative z-10 h-full flex flex-col">
@@ -83,7 +90,9 @@ export const Features = () => {
             {stats.map((stat, index) => (
               <div key={index} className="text-center group">
                 <div className="mb-1">
-                  <span className="text-3xl sm:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#2C106A] to-purple-600">{stat.value}</span>
+                  <span className="text-3xl sm:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#2C106A] to-purple-600">
+                    {stat.value}
+                  </span>
                 </div>
                 <div className="text-gray-800 font-medium mb-1">{stat.label}</div>
                 <p className="text-sm text-gray-600 opacity-80 group-hover:opacity-100 transition-opacity">{stat.description}</p>

@@ -19,7 +19,11 @@ export default function Dashboard() {
   const [showMobilePromptList, setShowMobilePromptList] = useState(false);
 
   useEffect(() => {
-    updateMeta("Dashboard", "Create, organize, version, and reuse your AI prompts in Promplify.", "AI prompt management, prompt organization, prompt optimization, AI workflow");
+    updateMeta(
+      "Dashboard",
+      "Create, organize, version, and reuse your AI prompts in Promplify.",
+      "AI prompt management, prompt organization, prompt optimization, AI workflow"
+    );
   }, []);
 
   useEffect(() => {
@@ -116,12 +120,7 @@ export default function Dashboard() {
         </button>
 
         {/* Mobile Overlay */}
-        {showMobilePromptList && (
-          <div
-            className="fixed inset-x-0 bottom-0 top-14 z-30 bg-black/40 md:hidden"
-            onClick={() => setShowMobilePromptList(false)}
-          />
-        )}
+        {showMobilePromptList && <div className="fixed inset-x-0 bottom-0 top-14 z-30 bg-black/40 md:hidden" onClick={() => setShowMobilePromptList(false)} />}
 
         {/* Prompt List - Desktop: sidebar, Mobile: drawer */}
         <div

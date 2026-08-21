@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { supabase } from "@/lib/supabase";
+import { getErrorMessage } from "@/lib/errors";
 import { updateMeta } from "@/utils/meta";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -43,7 +44,10 @@ export default function Profile() {
         }
 
         // Load user data and profile data in parallel
-        const [userResponse, profileResponse] = await Promise.all([supabase.auth.getUser(), supabase.from("profiles").select("*").eq("id", session.user.id).single()]);
+        const [userResponse, profileResponse] = await Promise.all([
+          supabase.auth.getUser(),
+          supabase.from("profiles").select("*").eq("id", session.user.id).single(),
+        ]);
 
         if (userResponse.error) throw userResponse.error;
         const { user } = userResponse.data;
@@ -53,10 +57,10 @@ export default function Profile() {
           profileResponse.error && profileResponse.error.code === "PGRST116"
             ? {}
             : profileResponse.error
-            ? (() => {
-                throw profileResponse.error;
-              })()
-            : profileResponse.data;
+              ? (() => {
+                  throw profileResponse.error;
+                })()
+              : profileResponse.data;
 
         const initialProfile = {
           full_name: profileData?.full_name || user?.user_metadata?.full_name || "",
@@ -99,12 +103,12 @@ export default function Profile() {
       const initialProfile = JSON.parse(window.localStorage.getItem("initialProfile") || "{}");
 
       // Only include changed fields in the update
-      const updates = Object.entries(profile).reduce((acc, [key, value]) => {
+      const updates = Object.entries(profile).reduce<Partial<typeof profile>>((acc, [key, value]) => {
         if (value !== initialProfile[key]) {
-          acc[key] = value;
+          acc[key as keyof typeof profile] = value;
         }
         return acc;
-      }, {} as any);
+      }, {});
 
       // If nothing has changed, just return
       if (Object.keys(updates).length === 0) {
@@ -146,9 +150,9 @@ export default function Profile() {
       // Update the stored initial profile data
       window.localStorage.setItem("initialProfile", JSON.stringify(profile));
       toast.success("Profile updated successfully");
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error updating profile:", error);
-      toast.error(error.message || "Failed to update profile");
+      toast.error(getErrorMessage(error, "Failed to update profile"));
     } finally {
       setIsSaving(false);
     }
@@ -195,27 +199,57 @@ export default function Profile() {
             <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
               <div className="space-y-2">
                 <Label htmlFor="full_name">Full Name</Label>
-                <Input id="full_name" value={profile.full_name} onChange={(e) => setProfile({ ...profile, full_name: e.target.value })} className="w-full max-w-md" placeholder="Your full name" />
+                <Input
+                  id="full_name"
+                  value={profile.full_name}
+                  onChange={(e) => setProfile({ ...profile, full_name: e.target.value })}
+                  className="w-full max-w-md"
+                  placeholder="Your full name"
+                />
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="username">Username</Label>
-                <Input id="username" value={profile.username} onChange={(e) => setProfile({ ...profile, username: e.target.value })} className="w-full max-w-md" placeholder="Your username" />
+                <Input
+                  id="username"
+                  value={profile.username}
+                  onChange={(e) => setProfile({ ...profile, username: e.target.value })}
+                  className="w-full max-w-md"
+                  placeholder="Your username"
+                />
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="bio">Bio</Label>
-                <Input id="bio" value={profile.bio} onChange={(e) => setProfile({ ...profile, bio: e.target.value })} className="w-full max-w-md" placeholder="A short bio about yourself" />
+                <Input
+                  id="bio"
+                  value={profile.bio}
+                  onChange={(e) => setProfile({ ...profile, bio: e.target.value })}
+                  className="w-full max-w-md"
+                  placeholder="A short bio about yourself"
+                />
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="company">Company</Label>
-                <Input id="company" value={profile.company} onChange={(e) => setProfile({ ...profile, company: e.target.value })} className="w-full max-w-md" placeholder="Your company name" />
+                <Input
+                  id="company"
+                  value={profile.company}
+                  onChange={(e) => setProfile({ ...profile, company: e.target.value })}
+                  className="w-full max-w-md"
+                  placeholder="Your company name"
+                />
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="location">Location</Label>
-                <Input id="location" value={profile.location} onChange={(e) => setProfile({ ...profile, location: e.target.value })} className="w-full max-w-md" placeholder="Your location" />
+                <Input
+                  id="location"
+                  value={profile.location}
+                  onChange={(e) => setProfile({ ...profile, location: e.target.value })}
+                  className="w-full max-w-md"
+                  placeholder="Your location"
+                />
               </div>
 
               <div className="space-y-2">

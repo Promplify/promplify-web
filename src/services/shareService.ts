@@ -10,6 +10,24 @@ export interface ShareRecord {
   created_by: string;
 }
 
+export interface SharedPromptContent {
+  id: string;
+  title: string;
+  description: string;
+  system_prompt: string;
+  user_prompt: string;
+  version: string;
+  token_count: number;
+  category_id: string | null;
+  prompt_tags: Array<{ tag_id: string; tags: { id: string; name: string } | null }>;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface SharedPromptRecord extends ShareRecord {
+  prompts: SharedPromptContent;
+}
+
 // Base62 character set (0-9, A-Z, a-z)
 const CHARSET = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
 
@@ -108,7 +126,7 @@ export const createShareLink = async (promptId: string, userId: string) => {
   }
 };
 
-export const getSharedPrompt = async (shareToken: string) => {
+export const getSharedPrompt = async (shareToken: string): Promise<SharedPromptRecord> => {
   try {
     const { data, error } = await supabase.rpc("get_shared_prompt_by_token", { p_share_token: shareToken });
 
@@ -155,13 +173,13 @@ export const getSharedPrompt = async (shareToken: string) => {
       prompts: {
         id: sharedPrompt.prompt_id,
         title: sharedPrompt.prompt_title,
-        description: sharedPrompt.prompt_description,
-        system_prompt: sharedPrompt.prompt_system_prompt,
-        user_prompt: sharedPrompt.prompt_user_prompt,
-        version: sharedPrompt.prompt_version,
+        description: sharedPrompt.prompt_description ?? "",
+        system_prompt: sharedPrompt.prompt_system_prompt ?? "",
+        user_prompt: sharedPrompt.prompt_user_prompt ?? "",
+        version: sharedPrompt.prompt_version ?? "1.0.0",
         token_count: sharedPrompt.prompt_token_count ?? 0,
         category_id: sharedPrompt.prompt_category_id,
-        prompt_tags: tagData || [],
+        prompt_tags: (tagData || []) as SharedPromptContent["prompt_tags"],
       },
     };
   } catch (error) {
@@ -170,7 +188,7 @@ export const getSharedPrompt = async (shareToken: string) => {
   }
 };
 
-export const saveSharedPrompt = async (promptData: any, userId: string) => {
+export const saveSharedPrompt = async (promptData: SharedPromptContent, userId: string) => {
   try {
     const { id, created_at, updated_at, ...promptToSave } = promptData;
 

@@ -72,7 +72,7 @@ const Discover = () => {
         <section className="container mx-auto px-3 sm:px-4 md:px-6 max-w-7xl mt-8 sm:mt-10">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 sm:gap-0 mb-4 sm:mb-6">
             <h2 className="text-xl sm:text-2xl font-bold">Shared Prompt Library</h2>
-            <Tabs defaultValue={sortBy} onValueChange={(value) => handleSortChange(value as any)}>
+            <Tabs defaultValue={sortBy} onValueChange={(value) => handleSortChange(value as "likes_count" | "created_at")}>
               <TabsList>
                 <TabsTrigger value="likes_count">Most Popular</TabsTrigger>
                 <TabsTrigger value="created_at">Recently Added</TabsTrigger>
@@ -80,7 +80,14 @@ const Discover = () => {
             </Tabs>
           </div>
 
-          <DiscoverGrid prompts={discoverPrompts} isLoading={isLoading} currentPage={currentPage} totalItems={totalCount} itemsPerPage={itemsPerPage} onPageChange={handlePageChange} />
+          <DiscoverGrid
+            prompts={discoverPrompts}
+            isLoading={isLoading}
+            currentPage={currentPage}
+            totalItems={totalCount}
+            itemsPerPage={itemsPerPage}
+            onPageChange={handlePageChange}
+          />
         </section>
       </main>
       <Footer />

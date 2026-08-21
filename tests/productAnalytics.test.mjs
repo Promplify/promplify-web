@@ -21,10 +21,10 @@ test("rejects API requests before calling Supabase when authorization is missing
   };
 
   try {
-    const response = await handleRequest(
-      new Request("https://api.promplify.com/prompts/e72bd69e-a116-497f-94c4-7de6606a77be"),
-      { SUPABASE_URL: "https://example.supabase.co", SUPABASE_ANON_KEY: "public-placeholder" }
-    );
+    const response = await handleRequest(new Request("https://api.promplify.com/prompts/e72bd69e-a116-497f-94c4-7de6606a77be"), {
+      SUPABASE_URL: "https://example.supabase.co",
+      SUPABASE_ANON_KEY: "public-placeholder",
+    });
 
     assert.equal(response.status, 401);
     assert.equal(upstreamCalled, false);

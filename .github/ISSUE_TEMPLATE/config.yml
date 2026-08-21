@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Security vulnerability
+    url: mailto:support@promplify.com
+    about: Report security issues privately instead of opening a public issue.
+  - name: Promplify support
+    url: mailto:support@promplify.com
+    about: Get help with the hosted product or account-specific questions.

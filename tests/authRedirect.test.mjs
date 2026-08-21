@@ -14,8 +14,5 @@ test("rejects external and protocol-relative auth redirects", () => {
 });
 
 test("builds an allowlist-compatible callback URL with the continuation path", () => {
-  assert.equal(
-    buildAuthCallbackUrl("https://promplify.com", "/template/42?use=1"),
-    "https://promplify.com/auth/callback?next=%2Ftemplate%2F42%3Fuse%3D1",
-  );
+  assert.equal(buildAuthCallbackUrl("https://promplify.com", "/template/42?use=1"), "https://promplify.com/auth/callback?next=%2Ftemplate%2F42%3Fuse%3D1");
 });

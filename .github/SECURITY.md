@@ -4,10 +4,10 @@
 
 We release patches for security vulnerabilities. Which versions are eligible for receiving such patches depends on the CVSS v3.0 Rating:
 
-| Version | Supported          |
-| ------- | ------------------ |
-| 1.x.x   | :white_check_mark: |
-| < 1.0   | :x:                |
+| Version | Supported |
+| ------- | --------- |
+| 1.x.x   | Yes       |
+| < 1.0   | No        |
 
 ## Reporting a Vulnerability
 
@@ -45,11 +45,7 @@ Please include the following information in your report:
 
 ### Bug Bounty
 
-We don't currently offer a paid bug bounty program, but we deeply appreciate security research and will:
-
-- Acknowledge your contribution in our security advisories (if desired)
-- Include you in our Hall of Fame
-- Provide Promplify swag/merchandise
+Promplify does not currently operate a paid bug bounty program. We can acknowledge coordinated disclosures in security advisories when requested.
 
 ### Safe Harbor
 

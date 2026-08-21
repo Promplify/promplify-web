@@ -1,4 +1,4 @@
--- Remove existing global unique constraint
+-- Scope tag names to each user instead of globally.
 ALTER TABLE tags DROP CONSTRAINT IF EXISTS tags_name_key;
 
 -- Add composite unique constraint to ensure tag names are unique within each user's scope
