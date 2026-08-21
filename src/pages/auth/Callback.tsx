@@ -1,11 +1,14 @@
 import { supabase } from "@/lib/supabase";
+import { getSafeAuthRedirect } from "@/lib/authRedirect";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 
 export default function Callback() {
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const redirectPath = getSafeAuthRedirect(searchParams.get("next"));
 
   useEffect(() => {
     const handleEmailConfirmation = async () => {
@@ -25,8 +28,8 @@ export default function Callback() {
             data: { email_confirmed: true },
           });
 
-          toast.success("Email verified successfully! Redirecting to dashboard...");
-          navigate("/dashboard");
+          toast.success("Email verified successfully! Continuing where you left off...");
+          navigate(redirectPath);
         } else {
           toast.error("Invalid or expired verification link. Please try registering again.");
           navigate("/auth");
@@ -41,7 +44,7 @@ export default function Callback() {
     };
 
     handleEmailConfirmation();
-  }, [navigate]);
+  }, [navigate, redirectPath]);
 
   if (isLoading) {
     return (

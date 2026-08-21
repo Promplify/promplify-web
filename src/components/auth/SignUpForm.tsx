@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { trackAuthStarted, trackLogin, trackSignUp } from "@/lib/analytics";
+import { buildAuthCallbackUrl } from "@/lib/authRedirect";
 import { supabase } from "@/lib/supabase";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -19,7 +20,11 @@ const signUpSchema = z
     path: ["confirmPassword"],
   });
 
-export function SignUpForm() {
+type SignUpFormProps = {
+  redirectPath?: string;
+};
+
+export function SignUpForm({ redirectPath = "/dashboard" }: SignUpFormProps) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -69,7 +74,7 @@ export function SignUpForm() {
         email,
         password,
         options: {
-          emailRedirectTo: `${window.location.origin}/auth/callback`,
+          emailRedirectTo: buildAuthCallbackUrl(window.location.origin, redirectPath),
           data: {
             email_confirmed: false,
           },
@@ -94,7 +99,7 @@ export function SignUpForm() {
                       type: "signup",
                       email,
                       options: {
-                        emailRedirectTo: `${window.location.origin}/auth/callback`,
+                        emailRedirectTo: buildAuthCallbackUrl(window.location.origin, redirectPath),
                       },
                     });
                     if (resendError) {
@@ -112,8 +117,8 @@ export function SignUpForm() {
             if (signInData.user) {
               trackLogin("email");
             }
-            toast.success("Signed in. Opening your dashboard...");
-            navigate("/dashboard");
+            toast.success("Signed in. Continuing where you left off...");
+            navigate(redirectPath);
           }
         } else {
           toast.error("Registration failed: " + error.message);

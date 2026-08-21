@@ -13,7 +13,11 @@ const loginSchema = z.object({
   password: z.string().min(6, "Password must be at least 6 characters"),
 });
 
-export function LoginForm() {
+type LoginFormProps = {
+  redirectPath?: string;
+};
+
+export function LoginForm({ redirectPath = "/dashboard" }: LoginFormProps) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -85,8 +89,8 @@ export function LoginForm() {
         }
       } else if (data.user) {
         trackLogin("email");
-        toast.success("Signed in. Opening your dashboard...");
-        navigate("/dashboard");
+        toast.success("Signed in. Continuing where you left off...");
+        navigate(redirectPath);
       }
     } catch (error) {
       console.error("Login error:", error);

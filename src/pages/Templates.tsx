@@ -4,6 +4,7 @@ import { SEO } from "@/components/SEO";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { trackPromptCreated, trackTemplateCtaClicked, trackTemplateOpened, trackTemplateSearch, trackTemplateUsed } from "@/lib/analytics";
+import { buildAuthPath } from "@/lib/authRedirect";
 import { supabase } from "@/lib/supabase";
 import { createPrompt } from "@/services/promptService";
 import { countTokens } from "gpt-tokenizer/model/gpt-4";
@@ -238,7 +239,7 @@ export default function Templates() {
       if (!session.data.session?.user.id) {
         trackTemplateCtaClicked("create_library");
         toast.info("Create an account to save templates to your prompt workspace");
-        navigate("/auth?mode=register");
+        navigate(buildAuthPath(`/template/${template.id}?use=1`));
         return;
       }
 
@@ -297,7 +298,7 @@ export default function Templates() {
       <SEO
         canonicalPath="/templates/"
         title="AI Prompt Templates & Workflow Tool - Promplify"
-        description="Browse AI prompt templates, find a prompt template tool for repeatable work, and build prompt workflow templates for ChatGPT, Claude, coding, research, and marketing."
+        description="Browse reusable AI prompt templates for ChatGPT, Claude, coding, research, and marketing. Save prompt workflow templates to your own library."
         keywords="AI prompt templates, prompt library, prompt template tool, ChatGPT prompt templates, Claude prompt templates, prompt workflow templates, prompt optimization, AI workflow tools"
       />
       <div className="flex flex-col min-h-screen bg-gradient-to-b from-white to-gray-50">

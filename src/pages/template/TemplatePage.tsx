@@ -7,18 +7,21 @@ import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbP
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { trackPromptCopied, trackPromptCreated, trackTemplateCtaClicked, trackTemplateUsed } from "@/lib/analytics";
+import { buildAuthPath } from "@/lib/authRedirect";
 import { supabase } from "@/lib/supabase";
 import { recordTemplateSaved } from "@/services/productAnalyticsService";
 import { updateMeta } from "@/utils/meta";
 import { countTokens } from "gpt-tokenizer/model/gpt-4";
 import { ChevronRight, Copy, Eye } from "lucide-react";
-import { useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 
 export default function TemplatePage() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const autoSaveAttemptedRef = useRef(false);
   const [isSaving, setIsSaving] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -92,7 +95,7 @@ export default function TemplatePage() {
     }
   }, [templateData]);
 
-  const handleSavePrompt = async () => {
+  const handleSavePrompt = useCallback(async () => {
     if (!templateData) {
       toast.error("No template data available to save");
       return;
@@ -107,7 +110,7 @@ export default function TemplatePage() {
       if (!session) {
         trackTemplateCtaClicked("create_library");
         toast.info("Create an account to save templates to your prompt workspace");
-        navigate("/auth?mode=register");
+        navigate(buildAuthPath(`/template/${id}?use=1`));
         return;
       }
 
@@ -154,13 +157,29 @@ export default function TemplatePage() {
         category: templateData.category || "uncategorized",
       });
       toast.success("Template saved successfully");
+      navigate("/dashboard", {
+        state: {
+          selectedPromptId: savedPrompt.id,
+          source: "template",
+        },
+      });
     } catch (err: any) {
       console.error("Error saving template:", err);
       toast.error(err.message || "Failed to save template");
     } finally {
       setIsSaving(false);
     }
-  };
+  }, [id, navigate, templateData]);
+
+  useEffect(() => {
+    if (searchParams.get("use") !== "1" || !templateData || autoSaveAttemptedRef.current) {
+      return;
+    }
+
+    autoSaveAttemptedRef.current = true;
+    navigate(`/template/${id}`, { replace: true });
+    void handleSavePrompt();
+  }, [handleSavePrompt, id, navigate, searchParams, templateData]);
 
   const handleCopyPrompt = async (text: string) => {
     try {

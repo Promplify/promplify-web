@@ -11,7 +11,7 @@ const routes = [
     outputPath: "templates",
     urlPath: "/templates/",
     title: "AI Prompt Templates & Workflow Tool - Promplify",
-    description: "Browse AI prompt templates, find a prompt template tool for repeatable work, and build prompt workflow templates for ChatGPT, Claude, coding, research, and marketing.",
+    description: "Browse reusable AI prompt templates for ChatGPT, Claude, coding, research, and marketing. Save prompt workflow templates to your own library.",
     keywords: "AI prompt templates, prompt library, prompt template tool, ChatGPT prompt templates, Claude prompt templates, prompt workflow templates, prompt optimization, AI workflow tools",
   },
   {

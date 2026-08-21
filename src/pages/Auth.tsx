@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { trackAuthStarted } from "@/lib/analytics";
+import { buildAuthCallbackUrl, getSafeAuthRedirect } from "@/lib/authRedirect";
 import { supabase } from "@/lib/supabase";
 import { updateMeta } from "@/utils/meta";
 import { ArrowLeft, Github } from "lucide-react";
@@ -17,6 +18,7 @@ import { toast } from "sonner";
 export default function Auth() {
   const [searchParams] = useSearchParams();
   const requestedMode = searchParams.get("mode") === "register" ? "register" : "login";
+  const redirectPath = getSafeAuthRedirect(searchParams.get("next"));
   const [authMode, setAuthMode] = useState<"login" | "register">(requestedMode);
   const isRegistering = authMode === "register";
 
@@ -34,7 +36,7 @@ export default function Auth() {
       const { error } = await supabase.auth.signInWithOAuth({
         provider,
         options: {
-          redirectTo: `${window.location.origin}/dashboard`,
+          redirectTo: buildAuthCallbackUrl(window.location.origin, redirectPath),
         },
       });
 
@@ -177,10 +179,10 @@ export default function Auth() {
                     </TabsTrigger>
                   </TabsList>
                   <TabsContent value="login">
-                    <LoginForm />
+                    <LoginForm redirectPath={redirectPath} />
                   </TabsContent>
                   <TabsContent value="register">
-                    <SignUpForm />
+                    <SignUpForm redirectPath={redirectPath} />
                   </TabsContent>
                 </Tabs>
               </CardContent>
