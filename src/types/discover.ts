@@ -12,6 +12,19 @@ export interface DiscoverPrompt {
   user_has_liked?: boolean;
 }
 
+export type DiscoverSort = "likes_count" | "created_at";
+
+export interface DiscoverPromptRow extends Omit<DiscoverPrompt, "user_has_liked"> {
+  user_has_liked?: Array<{ user_id: string }>;
+}
+
+export interface DiscoverProfile {
+  id: string;
+  username: string | null;
+  full_name: string | null;
+  avatar_url: string | null;
+}
+
 export interface DiscoverLike {
   id: string;
   discover_prompt_id: string;

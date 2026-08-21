@@ -71,7 +71,8 @@ export default function ApiDocs() {
                   <div className="space-y-4 sm:space-y-6">
                     <div className="p-3 sm:p-4 bg-white/5 rounded-lg border border-white/10 overflow-x-auto">
                       <pre className="m-0 rounded-lg font-mono text-xs sm:text-sm text-gray-300 whitespace-pre-wrap break-all sm:whitespace-pre sm:break-normal">
-                        <span className="text-green-400">GET</span> https://api.promplify.com/prompts/<span className="text-yellow-400">{`{promptId}`}</span>?version=
+                        <span className="text-green-400">GET</span> https://api.promplify.com/prompts/<span className="text-yellow-400">{`{promptId}`}</span>
+                        ?version=
                         <span className="text-yellow-400">{`{version}`}</span>
                       </pre>
                     </div>
@@ -80,7 +81,10 @@ export default function ApiDocs() {
                       <h4 className="text-base sm:text-lg font-medium mb-2 text-gray-300">Parameters:</h4>
                       <ul className="list-disc list-inside text-gray-300 space-y-1 text-sm sm:text-base leading-relaxed">
                         <li>promptId (path parameter) - The UUID of the prompt you want to retrieve</li>
-                        <li>version (query parameter, optional) - The specific version of the prompt to retrieve (e.g., "1.0.0"). If not provided, returns the latest version.</li>
+                        <li>
+                          version (query parameter, optional) - The specific version of the prompt to retrieve (e.g., "1.0.0"). If not provided, returns the
+                          latest version.
+                        </li>
                       </ul>
                     </div>
 
@@ -123,7 +127,8 @@ export default function ApiDocs() {
                         <div className="p-3 sm:p-4 bg-white/5 rounded-lg border border-white/10 overflow-x-auto">
                           <p className="text-gray-300 mb-2 text-xs sm:text-sm">Get latest version:</p>
                           <pre className="m-0 rounded-lg font-mono text-xs sm:text-sm text-gray-300">
-                            <span className="text-green-400">curl</span> --location <span className="text-yellow-400">'https://api.promplify.com/prompts/E72BD69E-A116-497F-94C4-7DE6606A77BE'</span> \
+                            <span className="text-green-400">curl</span> --location{" "}
+                            <span className="text-yellow-400">'https://api.promplify.com/prompts/E72BD69E-A116-497F-94C4-7DE6606A77BE'</span> \
                             <br />
                             --header <span className="text-yellow-400">'Authorization: Bearer your-api-token'</span>
                           </pre>

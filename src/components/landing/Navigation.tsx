@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { supabase } from "@/lib/supabase";
+import { getErrorMessage } from "@/lib/errors";
 import { exportUserData, importUserData } from "@/services/promptService";
 import { Download, ExternalLink, LogOut, Upload, X } from "lucide-react";
 import { useEffect, useRef, useState, type ChangeEvent } from "react";
@@ -80,9 +81,9 @@ export const Navigation = () => {
       toast.success(`Imported ${result.prompts_created} prompts, ${result.categories_created} categories, ${result.tags_created} tags`, { id: loadingId });
       // Refresh to reload data across views
       setTimeout(() => window.location.reload(), 500);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error importing data:", error);
-      toast.error(`Failed to import: ${error.message || "Unknown error"}`, { id: loadingId });
+      toast.error(`Failed to import: ${getErrorMessage(error, "Unknown error")}`, { id: loadingId });
     } finally {
       if (fileInputRef.current) fileInputRef.current.value = "";
     }
@@ -116,7 +117,10 @@ export const Navigation = () => {
                   }`}
                 />
               </Link>
-              <Link to="/discover/" className={`transition-colors text-sm relative group ${isActive("/discover/") ? "text-white" : "text-gray-400 hover:text-white"}`}>
+              <Link
+                to="/discover/"
+                className={`transition-colors text-sm relative group ${isActive("/discover/") ? "text-white" : "text-gray-400 hover:text-white"}`}
+              >
                 Discover
                 <span
                   className={`absolute -bottom-1 left-0 w-full h-0.5 bg-white transform origin-left transition-transform duration-200 ${
@@ -124,7 +128,10 @@ export const Navigation = () => {
                   }`}
                 />
               </Link>
-              <Link to="/templates/" className={`transition-colors text-sm relative group ${isActive("/templates/") ? "text-white" : "text-gray-400 hover:text-white"}`}>
+              <Link
+                to="/templates/"
+                className={`transition-colors text-sm relative group ${isActive("/templates/") ? "text-white" : "text-gray-400 hover:text-white"}`}
+              >
                 Templates
                 <span
                   className={`absolute -bottom-1 left-0 w-full h-0.5 bg-white transform origin-left transition-transform duration-200 ${
@@ -132,7 +139,10 @@ export const Navigation = () => {
                   }`}
                 />
               </Link>
-              <Link to="/api-docs/" className={`transition-colors text-sm relative group ${isActive("/api-docs/") ? "text-white" : "text-gray-400 hover:text-white"}`}>
+              <Link
+                to="/api-docs/"
+                className={`transition-colors text-sm relative group ${isActive("/api-docs/") ? "text-white" : "text-gray-400 hover:text-white"}`}
+              >
                 API
                 <span
                   className={`absolute -bottom-1 left-0 w-full h-0.5 bg-white transform origin-left transition-transform duration-200 ${
@@ -161,7 +171,10 @@ export const Navigation = () => {
                 <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-white to-transparent transform origin-left transition-transform duration-300 scale-x-0 group-hover:scale-x-100" />
               </a>
               {session && (
-                <Link to="/dashboard" className={`transition-colors text-sm relative group ${isActive("/dashboard") ? "text-white" : "text-gray-400 hover:text-white"}`}>
+                <Link
+                  to="/dashboard"
+                  className={`transition-colors text-sm relative group ${isActive("/dashboard") ? "text-white" : "text-gray-400 hover:text-white"}`}
+                >
                   Dashboard
                   <span
                     className={`absolute -bottom-1 left-0 w-full h-0.5 bg-white transform origin-left transition-transform duration-200 ${
@@ -191,7 +204,9 @@ export const Navigation = () => {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent className="w-56 mt-2" align="end">
                       <div className="flex flex-col space-y-1 p-2">
-                        <p className="text-sm font-medium leading-none">{session.user.user_metadata?.full_name || session.user.user_metadata?.name || session.user.email}</p>
+                        <p className="text-sm font-medium leading-none">
+                          {session.user.user_metadata?.full_name || session.user.user_metadata?.name || session.user.email}
+                        </p>
                         <p className="text-xs leading-none text-muted-foreground">{session.user.email}</p>
                       </div>
                       <DropdownMenuSeparator />
@@ -263,9 +278,15 @@ export const Navigation = () => {
               <SheetTrigger asChild>
                 <button className="md:hidden text-white p-2 rounded-lg hover:bg-white/10 transition-colors" aria-label="Toggle Menu">
                   <div className="relative w-6 h-6">
-                    <span className={`absolute left-0 block w-full h-0.5 bg-current transform transition-all duration-300 ease-in-out ${isMenuOpen ? "rotate-45 top-3" : "top-1"}`} />
-                    <span className={`absolute left-0 block w-full h-0.5 bg-current transform transition-all duration-300 ease-in-out top-3 ${isMenuOpen ? "opacity-0" : "opacity-100"}`} />
-                    <span className={`absolute left-0 block w-full h-0.5 bg-current transform transition-all duration-300 ease-in-out ${isMenuOpen ? "-rotate-45 top-3" : "top-5"}`} />
+                    <span
+                      className={`absolute left-0 block w-full h-0.5 bg-current transform transition-all duration-300 ease-in-out ${isMenuOpen ? "rotate-45 top-3" : "top-1"}`}
+                    />
+                    <span
+                      className={`absolute left-0 block w-full h-0.5 bg-current transform transition-all duration-300 ease-in-out top-3 ${isMenuOpen ? "opacity-0" : "opacity-100"}`}
+                    />
+                    <span
+                      className={`absolute left-0 block w-full h-0.5 bg-current transform transition-all duration-300 ease-in-out ${isMenuOpen ? "-rotate-45 top-3" : "top-5"}`}
+                    />
                   </div>
                 </button>
               </SheetTrigger>
@@ -275,7 +296,11 @@ export const Navigation = () => {
                   <Link to="/" onClick={() => setIsMenuOpen(false)} className="flex items-center space-x-2 hover:opacity-80 transition-opacity">
                     <Logo />
                   </Link>
-                  <button onClick={() => setIsMenuOpen(false)} className="text-white/70 hover:text-white transition-colors p-2 hover:bg-white/5 rounded-lg" aria-label="Close menu">
+                  <button
+                    onClick={() => setIsMenuOpen(false)}
+                    className="text-white/70 hover:text-white transition-colors p-2 hover:bg-white/5 rounded-lg"
+                    aria-label="Close menu"
+                  >
                     <X className="w-5 h-5" />
                   </button>
                 </div>

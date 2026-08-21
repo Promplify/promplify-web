@@ -2,8 +2,7 @@ const CANONICAL_HOST = "promplify.com";
 const APP_SHELL_PATHS = new Set(["/reset-password", "/dashboard", "/profile"]);
 const APP_SHELL_PREFIXES = ["/template/", "/share/", "/discover/prompt/"];
 
-export const isAppShellPath = (pathname: string) =>
-  APP_SHELL_PATHS.has(pathname) || APP_SHELL_PREFIXES.some((prefix) => pathname.startsWith(prefix));
+export const isAppShellPath = (pathname: string) => APP_SHELL_PATHS.has(pathname) || APP_SHELL_PREFIXES.some((prefix) => pathname.startsWith(prefix));
 
 export const onRequest: PagesFunction = async (context) => {
   const url = new URL(context.request.url);

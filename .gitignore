@@ -31,6 +31,7 @@ out/
 .nuxt
 .vuepress/dist
 .temp
+supabase/.branches
 .cache
 
 # Editor directories and files

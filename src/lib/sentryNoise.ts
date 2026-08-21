@@ -24,11 +24,7 @@ type SentryHintLike = {
 };
 
 function isNotFoundDomException(value: unknown): boolean {
-  return (
-    typeof DOMException !== "undefined" &&
-    value instanceof DOMException &&
-    value.name === "NotFoundError"
-  );
+  return typeof DOMException !== "undefined" && value instanceof DOMException && value.name === "NotFoundError";
 }
 
 function isReactDomFrame(frame: SentryStackFrame): boolean {
@@ -40,10 +36,7 @@ export function shouldDropReactRemoveChildNoise(event: SentryEventLike, hint?: S
   const exception = event.exception?.values?.[0];
   const message = exception?.value || "";
   const frames = exception?.stacktrace?.frames || [];
-  const isRemoveChildNotFound =
-    exception?.type === "NotFoundError" &&
-    message.includes("removeChild") &&
-    message.includes("not a child of this node");
+  const isRemoveChildNotFound = exception?.type === "NotFoundError" && message.includes("removeChild") && message.includes("not a child of this node");
 
   if (!isRemoveChildNotFound && !isNotFoundDomException(hint?.originalException)) {
     return false;

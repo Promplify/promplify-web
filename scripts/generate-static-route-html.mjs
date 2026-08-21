@@ -27,21 +27,25 @@ const routes = [
     outputPath: "templates",
     urlPath: "/templates/",
     title: "AI Prompt Templates & Workflow Tool - Promplify",
-    description: "Browse reusable AI prompt templates for ChatGPT, Claude, coding, research, and marketing. Save prompt workflow templates to your own library.",
-    keywords: "AI prompt templates, prompt library, prompt template tool, ChatGPT prompt templates, Claude prompt templates, prompt workflow templates, prompt optimization, AI workflow tools",
+    description:
+      "Browse reusable AI prompt templates for ChatGPT, Claude, coding, research, and marketing. Save prompt workflow templates to your own library.",
+    keywords:
+      "AI prompt templates, prompt library, prompt template tool, ChatGPT prompt templates, Claude prompt templates, prompt workflow templates, prompt optimization, AI workflow tools",
   },
   {
     outputPath: "discover",
     urlPath: "/discover/",
     title: "Community Prompts, Shared AI Prompts & Prompt Library - Promplify",
-    description: "Discover community prompts, browse shared AI prompt examples, and save useful prompts into your own prompt library for repeatable AI workflows.",
+    description:
+      "Discover community prompts, browse shared AI prompt examples, and save useful prompts into your own prompt library for repeatable AI workflows.",
     keywords: "community prompts, shared prompts, AI prompt library, shared AI prompts, ChatGPT prompts, Claude prompts, prompt discovery",
   },
   {
     outputPath: "api-docs",
     urlPath: "/api-docs/",
     title: "Prompt API Documentation - Promplify",
-    description: "Integrate Promplify prompts into your applications with API token authentication, version-aware prompt retrieval, and secure prompt workflows.",
+    description:
+      "Integrate Promplify prompts into your applications with API token authentication, version-aware prompt retrieval, and secure prompt workflows.",
     keywords: "Promplify API, prompt API, prompt management API, prompt versioning, AI prompt integration",
   },
   {
@@ -68,12 +72,7 @@ const routes = [
   },
 ];
 
-const escapeAttribute = (value) =>
-  value
-    .replaceAll("&", "&amp;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;");
+const escapeAttribute = (value) => value.replaceAll("&", "&amp;").replaceAll('"', "&quot;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
 
 const buildMetaTag = (attribute, name, content) => `<meta ${attribute}="${name}" content="${escapeAttribute(content)}" />`;
 

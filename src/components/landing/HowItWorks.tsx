@@ -38,8 +38,12 @@ export const HowItWorks = () => {
     <div className="py-16 bg-gradient-to-b from-gray-50/50 to-white" id="how-it-works">
       <div className="container mx-auto px-4 max-w-7xl">
         <div className="text-center mb-8 sm:mb-12">
-          <span className="inline-block px-4 py-1.5 mb-4 text-sm font-semibold rounded-full bg-gradient-to-r from-[#2C106A]/10 to-purple-500/10 text-[#2C106A]">How It Works</span>
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-[#2C106A] to-purple-600">Build a Repeatable Prompt Workflow</h2>
+          <span className="inline-block px-4 py-1.5 mb-4 text-sm font-semibold rounded-full bg-gradient-to-r from-[#2C106A]/10 to-purple-500/10 text-[#2C106A]">
+            How It Works
+          </span>
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-[#2C106A] to-purple-600">
+            Build a Repeatable Prompt Workflow
+          </h2>
           <p className="text-sm sm:text-base text-gray-600 max-w-2xl mx-auto px-4">Create, improve, share, and review prompts in one consistent workflow.</p>
         </div>
 
@@ -47,7 +51,9 @@ export const HowItWorks = () => {
           {steps.map((step, index) => (
             <div key={index} className="relative group hover:-translate-y-1 transition-transform duration-300">
               <div className="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow duration-300 h-full">
-                <div className="absolute -top-3 -right-3 bg-[#2C106A] text-white w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold">{step.number}</div>
+                <div className="absolute -top-3 -right-3 bg-[#2C106A] text-white w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold">
+                  {step.number}
+                </div>
 
                 <div className="relative h-full flex flex-col">
                   <div className="w-14 h-14 rounded-2xl bg-[#2C106A]/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">

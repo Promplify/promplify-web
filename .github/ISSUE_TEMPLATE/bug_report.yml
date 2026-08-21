@@ -1,0 +1,54 @@
+name: Bug report
+description: Report a reproducible problem in Promplify.
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: Thanks for helping improve Promplify. Do not include secrets or production data.
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      description: Explain the actual and expected behavior.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Go to ...
+        2. Click ...
+        3. See ...
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Version or commit
+      description: Provide a commit SHA, deployment date, or browser version when known.
+  - type: dropdown
+    id: backend
+    attributes:
+      label: Supabase environment
+      options:
+        - Local Supabase
+        - Self-hosted project
+        - promplify.com
+        - Not applicable
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Logs or screenshots
+      description: Redact tokens, cookies, URLs containing credentials, and personal data.
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checks
+      options:
+        - label: I searched existing issues and removed sensitive information.
+          required: true

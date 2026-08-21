@@ -30,7 +30,12 @@ export function PlazaGrid({ prompts, isLoading, currentPage, totalItems, itemsPe
 
     for (let i = startPage; i <= endPage; i++) {
       pages.push(
-        <Button key={i} variant={currentPage === i ? "default" : "outline"} className={`h-10 w-10 ${currentPage === i ? "bg-[#2C106A]" : "border-gray-200"}`} onClick={() => onPageChange(i)}>
+        <Button
+          key={i}
+          variant={currentPage === i ? "default" : "outline"}
+          className={`h-10 w-10 ${currentPage === i ? "bg-[#2C106A]" : "border-gray-200"}`}
+          onClick={() => onPageChange(i)}
+        >
           {i}
         </Button>
       );
@@ -63,7 +68,12 @@ export function PlazaGrid({ prompts, isLoading, currentPage, totalItems, itemsPe
           </>
         )}
 
-        <Button variant="outline" className="h-10 px-4 border-gray-200" onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))} disabled={currentPage === totalPages}>
+        <Button
+          variant="outline"
+          className="h-10 px-4 border-gray-200"
+          onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
+          disabled={currentPage === totalPages}
+        >
           <ChevronRight className="h-4 w-4" />
           <span className="sr-only">Next</span>
         </Button>

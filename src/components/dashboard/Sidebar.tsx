@@ -1,4 +1,13 @@
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -89,7 +98,11 @@ export function Sidebar({ onCategorySelect, selectedCategoryId }: SidebarProps) 
       // If this is the last category, we need to handle prompts differently
       if (isLastCategory) {
         // Set category_id to null for all prompts in this category
-        const { data: promptsToMove, error: selectError } = await supabase.from("prompts").select("id").eq("user_id", userId).eq("category_id", categoryToDelete);
+        const { data: promptsToMove, error: selectError } = await supabase
+          .from("prompts")
+          .select("id")
+          .eq("user_id", userId)
+          .eq("category_id", categoryToDelete);
 
         if (selectError) throw selectError;
 
@@ -99,7 +112,11 @@ export function Sidebar({ onCategorySelect, selectedCategoryId }: SidebarProps) 
         }
       } else if (targetCategory) {
         // Move prompts to another category
-        const { data: promptsToMove, error: selectError } = await supabase.from("prompts").select("id").eq("user_id", userId).eq("category_id", categoryToDelete);
+        const { data: promptsToMove, error: selectError } = await supabase
+          .from("prompts")
+          .select("id")
+          .eq("user_id", userId)
+          .eq("category_id", categoryToDelete);
 
         if (selectError) throw selectError;
 
@@ -182,7 +199,9 @@ export function Sidebar({ onCategorySelect, selectedCategoryId }: SidebarProps) 
   }
 
   return (
-    <div className={`h-full bg-white/50 backdrop-blur-sm border-r border-gray-200/60 transition-all duration-300 ease-in-out ${isCollapsed ? "w-[60px]" : "w-[280px]"}`}>
+    <div
+      className={`h-full bg-white/50 backdrop-blur-sm border-r border-gray-200/60 transition-all duration-300 ease-in-out ${isCollapsed ? "w-[60px]" : "w-[280px]"}`}
+    >
       <div className="p-2">
         <div className="flex items-center justify-between mb-6">
           {!isCollapsed && (
@@ -226,7 +245,12 @@ export function Sidebar({ onCategorySelect, selectedCategoryId }: SidebarProps) 
                 </DialogContent>
               </Dialog>
             )}
-            <Button variant="ghost" size="sm" onClick={toggleCollapse} className={`h-8 w-8 p-0 hover:bg-gray-100 transition-all duration-200 rounded-lg ${isCollapsed ? "ml-auto" : ""}`}>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={toggleCollapse}
+              className={`h-8 w-8 p-0 hover:bg-gray-100 transition-all duration-200 rounded-lg ${isCollapsed ? "ml-auto" : ""}`}
+            >
               {isCollapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
             </Button>
           </div>

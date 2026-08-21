@@ -2,6 +2,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { supabase } from "@/lib/supabase";
+import { getErrorMessage } from "@/lib/errors";
 import { exportUserData, importUserData } from "@/services/promptService";
 import { Download, LogOut, Settings, Upload, User } from "lucide-react";
 import { useEffect, useRef, useState, type ChangeEvent } from "react";
@@ -78,9 +79,9 @@ export function DashboardUserNav() {
       toast.success(`Imported ${result.prompts_created} prompts, ${result.categories_created} categories, ${result.tags_created} tags`, { id: loadingId });
       // Refresh to reload dashboard data
       setTimeout(() => window.location.reload(), 500);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Import error:", error);
-      toast.error(`Failed to import data: ${error.message || "Unknown error"}`, { id: loadingId });
+      toast.error(`Failed to import data: ${getErrorMessage(error, "Unknown error")}`, { id: loadingId });
     } finally {
       if (fileInputRef.current) fileInputRef.current.value = "";
     }
@@ -90,58 +91,60 @@ export function DashboardUserNav() {
 
   return (
     <>
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="relative h-10 w-10 rounded-full cursor-pointer">
-          <Avatar className="h-10 w-10">
-            <AvatarImage
-              src={session.user.user_metadata?.avatar_url || session.user.user_metadata?.picture}
-              alt={session.user.user_metadata?.full_name || session.user.email}
-              onError={(e) => {
-                e.currentTarget.style.display = "none";
-                e.currentTarget.nextElementSibling?.classList.remove("hidden");
-              }}
-            />
-            <AvatarFallback className="bg-primary/20 text-white text-lg">
-              {(session.user.user_metadata?.full_name || session.user.user_metadata?.name || session.user.email)?.charAt(0).toUpperCase()}
-            </AvatarFallback>
-          </Avatar>
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-56" align="end" forceMount>
-        <div className="flex flex-col space-y-1 p-2">
-          <p className="text-sm font-medium leading-none">{session.user.user_metadata?.full_name || session.user.user_metadata?.name || session.user.email}</p>
-          <p className="text-xs leading-none text-muted-foreground">{session.user.email}</p>
-        </div>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem asChild className="cursor-pointer">
-          <Link to="/profile" className="flex items-center">
-            <User className="mr-2 h-4 w-4" />
-            <span>Profile</span>
-          </Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem asChild className="cursor-pointer">
-          <Link to="/settings" className="flex items-center">
-            <Settings className="mr-2 h-4 w-4" />
-            <span>Settings</span>
-          </Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem onSelect={handleExport} className="cursor-pointer">
-          <Download className="mr-2 h-4 w-4" />
-          <span>Export Data</span>
-        </DropdownMenuItem>
-        <DropdownMenuItem onSelect={handleImportClick} className="cursor-pointer">
-          <Upload className="mr-2 h-4 w-4" />
-          <span>Import Data</span>
-        </DropdownMenuItem>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem onSelect={handleLogout} className="text-red-600 cursor-pointer">
-          <LogOut className="mr-2 h-4 w-4" />
-          <span>Log out</span>
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
-    <input ref={fileInputRef} onChange={handleImportChange} type="file" accept="application/json,.json" className="hidden" />
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" className="relative h-10 w-10 rounded-full cursor-pointer">
+            <Avatar className="h-10 w-10">
+              <AvatarImage
+                src={session.user.user_metadata?.avatar_url || session.user.user_metadata?.picture}
+                alt={session.user.user_metadata?.full_name || session.user.email}
+                onError={(e) => {
+                  e.currentTarget.style.display = "none";
+                  e.currentTarget.nextElementSibling?.classList.remove("hidden");
+                }}
+              />
+              <AvatarFallback className="bg-primary/20 text-white text-lg">
+                {(session.user.user_metadata?.full_name || session.user.user_metadata?.name || session.user.email)?.charAt(0).toUpperCase()}
+              </AvatarFallback>
+            </Avatar>
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent className="w-56" align="end" forceMount>
+          <div className="flex flex-col space-y-1 p-2">
+            <p className="text-sm font-medium leading-none">
+              {session.user.user_metadata?.full_name || session.user.user_metadata?.name || session.user.email}
+            </p>
+            <p className="text-xs leading-none text-muted-foreground">{session.user.email}</p>
+          </div>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem asChild className="cursor-pointer">
+            <Link to="/profile" className="flex items-center">
+              <User className="mr-2 h-4 w-4" />
+              <span>Profile</span>
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild className="cursor-pointer">
+            <Link to="/settings" className="flex items-center">
+              <Settings className="mr-2 h-4 w-4" />
+              <span>Settings</span>
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem onSelect={handleExport} className="cursor-pointer">
+            <Download className="mr-2 h-4 w-4" />
+            <span>Export Data</span>
+          </DropdownMenuItem>
+          <DropdownMenuItem onSelect={handleImportClick} className="cursor-pointer">
+            <Upload className="mr-2 h-4 w-4" />
+            <span>Import Data</span>
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem onSelect={handleLogout} className="text-red-600 cursor-pointer">
+            <LogOut className="mr-2 h-4 w-4" />
+            <span>Log out</span>
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+      <input ref={fileInputRef} onChange={handleImportChange} type="file" accept="application/json,.json" className="hidden" />
     </>
   );
 }

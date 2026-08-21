@@ -75,19 +75,34 @@ export function SocialShare({ title, url, description = "", className = "" }: So
   return (
     <div className={`flex items-center gap-2 ${className}`}>
       <span className="text-sm text-gray-400 mr-1">Share:</span>
-      <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white" onClick={() => handleShare("twitter")}>
+      <Button
+        variant="ghost"
+        size="icon"
+        className="h-8 w-8 rounded-full bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white"
+        onClick={() => handleShare("twitter")}
+      >
         <svg viewBox="0 0 24 24" className="h-4 w-4 fill-current">
           <path d="M16.99 0h3.308l-7.227 8.26 8.502 11.24h-6.657l-5.214-6.817L3.736 19.5H.426l7.73-8.835L0 0h6.826l4.713 6.231L16.99 0Zm-1.161 17.52h1.833L5.83 1.876H3.863L15.829 17.52Z" />
         </svg>
         <span className="sr-only">Share on X</span>
       </Button>
 
-      <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white" onClick={() => handleShare("facebook")}>
+      <Button
+        variant="ghost"
+        size="icon"
+        className="h-8 w-8 rounded-full bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white"
+        onClick={() => handleShare("facebook")}
+      >
         <Facebook className="h-4 w-4" />
         <span className="sr-only">Share on Facebook</span>
       </Button>
 
-      <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white" onClick={() => handleShare("linkedin")}>
+      <Button
+        variant="ghost"
+        size="icon"
+        className="h-8 w-8 rounded-full bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white"
+        onClick={() => handleShare("linkedin")}
+      >
         <Linkedin className="h-4 w-4" />
         <span className="sr-only">Share on LinkedIn</span>
       </Button>

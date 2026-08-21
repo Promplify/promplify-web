@@ -1,4 +1,13 @@
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
@@ -8,14 +17,27 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Skeleton } from "@/components/ui/skeleton";
 import { Textarea } from "@/components/ui/textarea";
 import { trackPromptCopied, trackPromptCreated, trackPromptOptimized, trackPromptShared, trackPromptUpdated, trackShareLinkCopied } from "@/lib/analytics";
+import { getErrorMessage } from "@/lib/errors";
 import { supabase } from "@/lib/supabase";
 import { sharePromptToDiscover } from "@/services/plazaService";
-import { addTagToPrompt, createPrompt, createTag, deletePrompt, getCategories, getPromptById, getTags, optimizeSystemPrompt, updatePrompt } from "@/services/promptService";
+import {
+  addTagToPrompt,
+  createPrompt,
+  createTag,
+  deletePrompt,
+  getCategories,
+  getPromptById,
+  getTags,
+  optimizeSystemPrompt,
+  updatePrompt,
+} from "@/services/promptService";
 import { createShareLink } from "@/services/shareService";
 import { Category, Prompt, Tag } from "@/types/prompt";
 import { countTokens } from "gpt-tokenizer/model/gpt-4";
-import { AlertCircle, Copy, ExternalLink, Save, Share2, Trash2, X } from "lucide-react";
-import { useEffect, useState } from "react";
+import { AlertCircle, Bot, Copy, ExternalLink, Save, Share2, Trash2, X } from "lucide-react";
+import { SiClaude } from "react-icons/si";
+import { useCallback, useEffect, useState } from "react";
+import type { Session } from "@supabase/supabase-js";
 import { toast } from "sonner";
 import { v4 as uuidv4 } from "uuid";
 
@@ -76,7 +98,7 @@ export function PromptEditor({ promptId, onSave, onDelete }: PromptEditorProps) 
     system_prompt: "",
     user_prompt: "",
   } as Prompt);
-  const [session, setSession] = useState<any>(null);
+  const [session, setSession] = useState<Session | null>(null);
   const [showVersionHistory, setShowVersionHistory] = useState(false);
   const [versionHistory, setVersionHistory] = useState<PromptVersion[]>([]);
   const [isLoadingVersions, setIsLoadingVersions] = useState(false);
@@ -249,6 +271,7 @@ export function PromptEditor({ promptId, onSave, onDelete }: PromptEditorProps) 
       const systemTokens = countTokens(prompt.system_prompt || "");
       const userTokens = countTokens(prompt.user_prompt || "");
       const totalTokens = systemTokens + userTokens;
+      let nextVersion = prompt.version;
 
       if (promptId && promptId !== "new") {
         const { data: currentPrompt } = await supabase.from("prompts").select("system_prompt, user_prompt, version").eq("id", promptId).single();
@@ -257,31 +280,28 @@ export function PromptEditor({ promptId, onSave, onDelete }: PromptEditorProps) 
 
         if (contentChanged && currentPrompt?.version === prompt.version) {
           const [major, minor, patch] = prompt.version.split(".").map(Number);
-          prompt.version = `${major}.${minor}.${patch + 1}`;
-          setPrompt((prev) => ({ ...prev, version: prompt.version }));
-          toast.info(`Content changed, version automatically incremented to ${prompt.version}`);
+          nextVersion = `${major}.${minor}.${patch + 1}`;
+          toast.info(`Content changed, version automatically incremented to ${nextVersion}`);
         }
 
-        if (currentPrompt?.version !== prompt.version) {
+        if (currentPrompt?.version !== nextVersion) {
           const { data: existingVersions } = await supabase.from("prompt_versions").select("version").eq("prompt_id", promptId);
 
           const versions = existingVersions?.map((v) => v.version) || [];
-          if (versions.includes(prompt.version)) {
-            const [major, minor, patch] = prompt.version.split(".").map(Number);
+          if (versions.includes(nextVersion)) {
+            const requestedVersion = nextVersion;
+            const [major, minor, patch] = nextVersion.split(".").map(Number);
             let newPatch = patch;
-            let newVersion;
             do {
               newPatch++;
-              newVersion = `${major}.${minor}.${newPatch}`;
-            } while (versions.includes(newVersion));
+              nextVersion = `${major}.${minor}.${newPatch}`;
+            } while (versions.includes(nextVersion));
 
-            setPrompt((prev) => ({ ...prev, version: newVersion }));
-            toast.info(`Version ${prompt.version} already exists, automatically incremented to ${newVersion}`);
-            prompt.version = newVersion;
+            toast.info(`Version ${requestedVersion} already exists, automatically incremented to ${nextVersion}`);
           }
         }
 
-        if (currentPrompt?.version !== prompt.version) {
+        if (currentPrompt?.version !== nextVersion) {
           const { error: versionError } = await supabase.from("prompt_versions").insert({
             prompt_id: promptId,
             version: currentPrompt?.version,
@@ -294,10 +314,15 @@ export function PromptEditor({ promptId, onSave, onDelete }: PromptEditorProps) 
 
           if (versionError) throw versionError;
         }
+
+        if (nextVersion !== prompt.version) {
+          setPrompt((prev) => ({ ...prev, version: nextVersion }));
+        }
       }
 
       const promptData = {
         ...prompt,
+        version: nextVersion,
         id: promptId === "new" ? uuidv4() : promptId,
         user_id: currentSession.user.id,
         token_count: totalTokens,
@@ -369,7 +394,7 @@ export function PromptEditor({ promptId, onSave, onDelete }: PromptEditorProps) 
     }
   };
 
-  const calculateTokens = () => {
+  const calculateTokens = useCallback(() => {
     const systemTokens = countTokens(prompt.system_prompt || "");
     const userTokens = countTokens(prompt.user_prompt || "");
     const totalTokens = systemTokens + userTokens;
@@ -380,11 +405,11 @@ export function PromptEditor({ promptId, onSave, onDelete }: PromptEditorProps) 
       system_tokens: systemTokens,
       user_tokens: userTokens,
     }));
-  };
+  }, [prompt.system_prompt, prompt.user_prompt]);
 
   useEffect(() => {
     calculateTokens();
-  }, [prompt.system_prompt, prompt.user_prompt]);
+  }, [calculateTokens]);
 
   const renderCategorySelect = () => (
     <Select
@@ -523,7 +548,11 @@ export function PromptEditor({ promptId, onSave, onDelete }: PromptEditorProps) 
               <>
                 <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-purple-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  ></path>
                 </svg>
                 <span className="text-purple-700">Optimizing...</span>
               </>
@@ -589,9 +618,9 @@ export function PromptEditor({ promptId, onSave, onDelete }: PromptEditorProps) 
       await sharePromptToDiscover(promptId);
       trackPromptShared("discover");
       toast.success("Successfully shared to Discover!");
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error sharing to discover:", error);
-      if (error.message === "Prompt already shared to discover") {
+      if (getErrorMessage(error, "") === "Prompt already shared to discover") {
         toast.error("This prompt is already shared to Discover");
       } else {
         toast.error("Sharing failed, please try again");
@@ -660,7 +689,9 @@ export function PromptEditor({ promptId, onSave, onDelete }: PromptEditorProps) 
                   disabled={!promptId || promptId === "new"}
                 >
                   <div className="flex items-center gap-1">
-                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium border border-purple-200 text-purple-700">Version {prompt.version}</span>
+                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium border border-purple-200 text-purple-700">
+                      Version {prompt.version}
+                    </span>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="16"
@@ -701,15 +732,24 @@ export function PromptEditor({ promptId, onSave, onDelete }: PromptEditorProps) 
                         <div key={index} className="border rounded-lg p-4 hover:border-gray-300 transition-colors">
                           <div className="flex items-center justify-between mb-4">
                             <div className="flex items-center gap-3">
-                              <span className="inline-flex items-center px-2.5 py-1 rounded-md text-sm font-medium bg-purple-100 text-purple-800">v{version.version}</span>
+                              <span className="inline-flex items-center px-2.5 py-1 rounded-md text-sm font-medium bg-purple-100 text-purple-800">
+                                v{version.version}
+                              </span>
                               <div className="flex items-center gap-2">
-                                <span className="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-blue-100 text-blue-800">{version.token_count} tokens</span>
+                                <span className="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-blue-100 text-blue-800">
+                                  {version.token_count} tokens
+                                </span>
                                 <time className="text-sm text-gray-500" dateTime={version.created_at}>
                                   {new Date(version.created_at).toLocaleString()}
                                 </time>
                               </div>
                             </div>
-                            <Button variant="secondary" size="sm" onClick={() => restoreVersion(version)} className="gap-1.5 text-gray-600 hover:text-gray-900 h-8 flex items-center">
+                            <Button
+                              variant="secondary"
+                              size="sm"
+                              onClick={() => restoreVersion(version)}
+                              className="gap-1.5 text-gray-600 hover:text-gray-900 h-8 flex items-center"
+                            >
                               <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 width="14"
@@ -734,7 +774,9 @@ export function PromptEditor({ promptId, onSave, onDelete }: PromptEditorProps) 
                               <div className="space-y-1.5">
                                 <div className="flex items-center gap-2">
                                   <Label className="text-xs font-medium text-gray-700">System Prompt</Label>
-                                  <span className="inline-flex items-center px-1.5 py-0.5 rounded-sm text-xs font-medium bg-gray-100 text-gray-600">System</span>
+                                  <span className="inline-flex items-center px-1.5 py-0.5 rounded-sm text-xs font-medium bg-gray-100 text-gray-600">
+                                    System
+                                  </span>
                                 </div>
                                 <div className="bg-gray-50 p-3 rounded-md text-sm font-mono border border-gray-100">{version.system_prompt}</div>
                               </div>
@@ -778,22 +820,32 @@ export function PromptEditor({ promptId, onSave, onDelete }: PromptEditorProps) 
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuItem onClick={handleOpenInChatGPT} className="gap-2 cursor-pointer">
-                <img src="/logo-model-chatgpt.png" alt="ChatGPT" className="w-4" />
+                <Bot aria-hidden="true" className="h-4 w-4" />
                 ChatGPT
               </DropdownMenuItem>
               <DropdownMenuItem onClick={handleOpenInClaude} className="gap-2 cursor-pointer">
-                <img src="/logo-model-claude.png" alt="Claude" className="w-4" />
+                <SiClaude aria-hidden="true" className="h-4 w-4" />
                 Claude
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-          <Button variant="outline" size="sm" onClick={handleCopyContent} className="group focus-visible:ring-0 focus-visible:ring-offset-0 text-xs sm:text-sm h-8 sm:h-9 px-2 sm:px-3">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleCopyContent}
+            className="group focus-visible:ring-0 focus-visible:ring-offset-0 text-xs sm:text-sm h-8 sm:h-9 px-2 sm:px-3"
+          >
             <Copy size={14} className="sm:mr-1" />
             <span className="hidden sm:inline">Copy</span>
           </Button>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm" disabled={!promptId || promptId === "new" || isSharing || isSharingToDiscover} className="group focus-visible:ring-0 focus-visible:ring-offset-0 text-xs sm:text-sm h-8 sm:h-9 px-2 sm:px-3">
+              <Button
+                variant="outline"
+                size="sm"
+                disabled={!promptId || promptId === "new" || isSharing || isSharingToDiscover}
+                className="group focus-visible:ring-0 focus-visible:ring-offset-0 text-xs sm:text-sm h-8 sm:h-9 px-2 sm:px-3"
+              >
                 <Share2 size={14} className="sm:mr-1" />
                 <span className="hidden sm:inline">{isSharing || isSharingToDiscover ? "Sharing..." : "Share"}</span>
               </Button>
@@ -803,8 +855,22 @@ export function PromptEditor({ promptId, onSave, onDelete }: PromptEditorProps) 
                 <Share2 size={16} />
                 Share
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={handleShareToDiscover} disabled={!promptId || promptId === "new" || isSharingToDiscover} className="gap-2 cursor-pointer">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <DropdownMenuItem
+                onClick={handleShareToDiscover}
+                disabled={!promptId || promptId === "new" || isSharingToDiscover}
+                className="gap-2 cursor-pointer"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
                   <path d="M7 10v12"></path>
                   <path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2h0a3.13 3.13 0 0 1 3 3.88Z"></path>
                 </svg>
@@ -812,7 +878,13 @@ export function PromptEditor({ promptId, onSave, onDelete }: PromptEditorProps) 
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-          <Button variant="default" size="sm" onClick={handleSave} disabled={isSaving} className="min-w-[70px] sm:min-w-[100px] text-xs sm:text-sm h-8 sm:h-9 px-2 sm:px-3">
+          <Button
+            variant="default"
+            size="sm"
+            onClick={handleSave}
+            disabled={isSaving}
+            className="min-w-[70px] sm:min-w-[100px] text-xs sm:text-sm h-8 sm:h-9 px-2 sm:px-3"
+          >
             <Save size={14} className="sm:mr-1" />
             {isSaving ? "Saving..." : "Save"}
           </Button>
@@ -1016,7 +1088,9 @@ export function PromptEditor({ promptId, onSave, onDelete }: PromptEditorProps) 
                         {newTag && (
                           <div className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-md shadow-lg max-h-48 overflow-auto">
                             {availableTags
-                              .filter((tag) => tag.name.toLowerCase().includes(newTag.toLowerCase()) && !prompt.prompt_tags?.some((pt) => pt.tags.id === tag.id))
+                              .filter(
+                                (tag) => tag.name.toLowerCase().includes(newTag.toLowerCase()) && !prompt.prompt_tags?.some((pt) => pt.tags.id === tag.id)
+                              )
                               .map((tag) => (
                                 <button
                                   key={tag.id}
@@ -1062,7 +1136,10 @@ export function PromptEditor({ promptId, onSave, onDelete }: PromptEditorProps) 
                       </div>
                       <div className="flex flex-wrap gap-1.5">
                         {prompt.prompt_tags?.map(({ tags }) => (
-                          <div key={tags.id} className="inline-flex items-center px-2.5 py-1 border border-green-200 text-green-700 text-xs font-medium rounded-full relative group/tag">
+                          <div
+                            key={tags.id}
+                            className="inline-flex items-center px-2.5 py-1 border border-green-200 text-green-700 text-xs font-medium rounded-full relative group/tag"
+                          >
                             <span>{tags.name}</span>
                             <button
                               onClick={() => {

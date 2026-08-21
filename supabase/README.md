@@ -1,153 +1,95 @@
-# Supabase Configuration
+# Supabase development
 
-This directory contains all Supabase-related configuration files and database migrations for the Promplify project.
+This directory is the reproducible backend definition for Promplify. It contains CLI configuration, ordered migrations, local seed data, and Edge Functions.
 
-## Directory Structure
+## Requirements
 
-```
-supabase/
-├── README.md                          # This file
-├── config.toml                       # Supabase CLI configuration
-├── migrations/                       # Database migration files
-│   ├── 20240417_create_api_tokens.sql
-│   ├── 20240417_update_api_tokens.sql
-│   ├── 20250403143728_add_views_to_prompt_template.sql
-│   ├── 20250605_create_plaza_tables.sql
-│   └── 20741203_modify_tags_constraint.sql
-└── functions/                        # Edge Functions
-    └── optimize-system-prompt/       # AI prompt optimization function
-        └── index.ts
-```
+- Supabase CLI
+- Docker for the local stack
+- A new Supabase project if you want to test against a hosted backend
 
-## Setup Instructions
+## Local workflow
 
-### 1. Install Supabase CLI
+Start the stack and apply every migration plus `seed.sql`:
 
 ```bash
-npm install -g supabase
+npx supabase start
 ```
 
-### 2. Login to Supabase
+Recreate the database after migration changes:
 
 ```bash
-supabase login
+npx supabase db reset
 ```
 
-### 3. Link to Your Project
+Useful local endpoints are printed by `npx supabase status`. By default, Studio is available at <http://127.0.0.1:54323> and the test email inbox at <http://127.0.0.1:54324>.
+
+Stop the stack when it is no longer needed with `npx supabase stop`.
+
+## Hosted project workflow
+
+Use a new, empty project. Review the migration plan before applying it:
 
 ```bash
-supabase link --project-ref YOUR_PROJECT_ID
+npx supabase login
+npx supabase link --project-ref YOUR_PROJECT_REF
+npx supabase db push --dry-run
+npx supabase db push --include-seed
 ```
 
-### 4. Apply Database Migrations
+The seed is optional and contains only development prompt templates. Omit `--include-seed` when you want an empty template library.
+
+Installations created before the tracked baseline may have different migration history. Maintainers must compare `supabase migration list` with the target environment and reconcile history before applying newer migrations; never run the baseline against an existing production database without that review.
+
+Set the frontend project URL and publishable key in `.env.local`. Never put a Supabase secret key or legacy service-role key in a `VITE_` variable.
+
+## Authentication
+
+The local config allows these development callbacks:
+
+```text
+http://localhost:8080/auth/callback
+http://localhost:8080/reset-password
+```
+
+Add the same URLs in the hosted project's Auth URL Configuration. OAuth providers are optional and require their own provider credentials and callback configuration.
+
+## Edge Function
+
+Prompt optimization is optional and requires a DeepSeek API key:
 
 ```bash
-supabase db push
+npx supabase secrets set DEEPSEEK_API_KEY=your-key
+npx supabase functions deploy optimize-system-prompt
 ```
 
-### 5. Deploy Edge Functions
+For local development, store the function secret in an ignored file outside the frontend environment and run `npx supabase functions serve --env-file <path-to-local-function-env>`.
 
-```bash
-# Deploy all functions
-supabase functions deploy
+## Schema overview
 
-# Or deploy specific function
-supabase functions deploy optimize-system-prompt
-```
+- `prompts`, `prompt_versions`, `categories`, `tags`, and `prompt_tags`: private prompt library
+- `prompt_template`: reusable starter templates
+- `prompt_shares`: private share links
+- `plaza_prompts` and `plaza_likes`: public discovery content
+- `profiles`: public profile fields linked to Supabase Auth users
+- `api_tokens`: API access managed by each user
+- `product_events`: privacy-limited activation and retention milestones
 
-## Environment Variables Required
+All browser-facing tables use Row Level Security. Public reads and RPCs are intentionally narrow. Product events cannot be inserted directly by browser clients.
 
-### For Edge Functions
+## Migration rules
 
-The following environment variables need to be set in your Supabase project:
-
-1. **DEEPSEEK_API_KEY** - API key for DeepSeek AI service (for prompt optimization)
-
-Set them using:
-
-```bash
-supabase secrets set DEEPSEEK_API_KEY=your_deepseek_api_key
-```
-
-### For Local Development
-
-Create a `.env` file in the project root with:
-
-```env
-VITE_SUPABASE_URL=https://your-project-id.supabase.co
-VITE_SUPABASE_ANON_KEY=your-anon-key
-```
-
-## Database Schema
-
-The database includes the following main tables:
-
-- **prompts** - User prompts and templates
-- **categories** - Prompt categories
-- **tags** - Prompt tags
-- **prompt_tags** - Many-to-many relationship between prompts and tags
-- **api_tokens** - API access tokens for external integrations
-- **plaza_prompts** - Shared prompts in the community plaza
-- **plaza_likes** - Likes for plaza prompts
-- **product_events** - Privacy-safe activation, retention, sharing, and API usage milestones
-
-## Product Analytics Contract
-
-The `product_events` table is the durable business source for these milestones:
-
-- `first_prompt_created`
-- `template_saved`
-- `second_session_started`
-- `prompt_shared`
-- `plaza_prompt_published`
-- `api_first_used`
-- `api_used`
-
-Prompt, share, and plaza milestones are recorded from database writes. Web sessions and template saves use authenticated RPCs. Clients cannot insert product events directly. API usage is recorded by `get_prompt_by_api_token`, which also validates prompt ownership and updates `api_tokens.last_used_at`.
-
-Apply the database migration before releasing the frontend or API Worker so analytics failures never block a successful product action.
-
-## Edge Functions
-
-### optimize-system-prompt
-
-Optimizes user prompts using AI to improve clarity and effectiveness.
-
-- **Endpoint**: `/functions/v1/optimize-system-prompt`
-- **Method**: POST
-- **Requires**: User authentication
-- **Dependencies**: DEEPSEEK_API_KEY environment variable
-
-## Row Level Security (RLS)
-
-All tables have Row Level Security enabled to ensure users can only access their own data, except for:
-
-- Plaza prompts (public read access)
-- Shared prompts (controlled sharing)
-
-## Contributing
-
-When making database changes:
-
-1. Create a new migration file with timestamp prefix
-2. Test locally with `supabase db reset`
-3. Apply to staging with `supabase db push`
-4. Update this README if schema changes significantly
+1. Create files with `npx supabase migration new <name>` so every version is unique.
+2. Do not modify a migration already applied to a shared environment.
+3. Run `npx supabase db reset` to verify the entire chain from an empty database.
+4. Add indexes for foreign keys and high-frequency filters.
+5. Preserve least-privilege grants and explicitly test RLS behavior.
+6. Update this document when setup or operational requirements change.
 
 ## Troubleshooting
 
-### Common Issues
-
-1. **Migration fails**: Check for conflicting constraints or foreign key issues
-2. **Function deploy fails**: Ensure all required environment variables are set
-3. **RLS blocks queries**: Verify authentication and row-level security policies
-
-### Local Development
-
-To work with a local Supabase instance:
-
-```bash
-supabase start
-supabase db reset
-supabase functions serve
-```
+- If Docker is unavailable, use a hosted project that you own.
+- If `db push` reports migration history conflicts, do not use an existing production project; create an empty development project.
+- If authentication redirects are rejected, verify the exact callback and reset URLs in Supabase Auth settings.
+- If a query is blocked, inspect the active session and RLS policy instead of bypassing RLS with a secret key.
+- If prompt optimization fails while other features work, verify only the Edge Function and its server-side DeepSeek secret.

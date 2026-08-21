@@ -25,7 +25,11 @@ export function Footer() {
               <div className="hidden sm:block h-4 w-px bg-white/20" />
 
               {/* Social icons with adequate touch targets */}
-              <a href="mailto:support@promplify.com" className="text-white/60 hover:text-white text-sm transition-colors inline-flex items-center gap-1.5 p-2 -m-2" aria-label="Email support">
+              <a
+                href="mailto:support@promplify.com"
+                className="text-white/60 hover:text-white text-sm transition-colors inline-flex items-center gap-1.5 p-2 -m-2"
+                aria-label="Email support"
+              >
                 <Mail className="w-4 h-4" />
               </a>
               <a

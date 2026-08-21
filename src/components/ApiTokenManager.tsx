@@ -135,10 +135,20 @@ export function ApiTokenManager() {
         <div className="flex gap-4">
           <div className="flex-1">
             <Label htmlFor="tokenName">Token Name</Label>
-            <Input id="tokenName" value={newTokenName} onChange={(e) => setNewTokenName(e.target.value)} placeholder="Enter a name for your token" disabled={isLoading} />
+            <Input
+              id="tokenName"
+              value={newTokenName}
+              onChange={(e) => setNewTokenName(e.target.value)}
+              placeholder="Enter a name for your token"
+              disabled={isLoading}
+            />
           </div>
           <div className="flex items-end">
-            <Button onClick={handleCreateToken} disabled={isLoading} className="bg-primary hover:bg-primary/90 text-white transition-colors shadow-md hover:shadow-lg">
+            <Button
+              onClick={handleCreateToken}
+              disabled={isLoading}
+              className="bg-primary hover:bg-primary/90 text-white transition-colors shadow-md hover:shadow-lg"
+            >
               {isLoading ? "Creating..." : "Create Token"}
             </Button>
           </div>
@@ -184,7 +194,10 @@ export function ApiTokenManager() {
           <div className="space-y-4">
             <div className="p-4 bg-muted rounded-lg break-all font-mono text-sm">{newTokenValue}</div>
             <div className="flex justify-end">
-              <Button onClick={handleCopyToken} className="flex items-center gap-2 bg-primary hover:bg-primary/90 text-white transition-colors shadow-md hover:shadow-lg">
+              <Button
+                onClick={handleCopyToken}
+                className="flex items-center gap-2 bg-primary hover:bg-primary/90 text-white transition-colors shadow-md hover:shadow-lg"
+              >
                 <Copy className="h-4 w-4" />
                 Copy Token
               </Button>

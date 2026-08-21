@@ -1,4 +1,13 @@
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
@@ -7,6 +16,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { supabase } from "@/lib/supabase";
+import { getErrorMessage } from "@/lib/errors";
 import { createCategory, deleteCategory, getCategories, getPrompts, toggleFavorite } from "@/services/promptService";
 import { Category, Prompt } from "@/types/prompt";
 import { ArrowDownUp, Heart, LayoutGrid, Plus, Search, Settings, Trash2 } from "lucide-react";
@@ -130,7 +140,11 @@ export function PromptList({ categoryId, onCategorySelect, onPromptSelect, selec
       // If this is the last category, we need to handle prompts differently
       if (isLastCategory) {
         // Set category_id to null for all prompts in this category
-        const { data: promptsToMove, error: selectError } = await supabase.from("prompts").select("id").eq("user_id", userId).eq("category_id", categoryToDelete);
+        const { data: promptsToMove, error: selectError } = await supabase
+          .from("prompts")
+          .select("id")
+          .eq("user_id", userId)
+          .eq("category_id", categoryToDelete);
 
         if (selectError) throw selectError;
 
@@ -140,7 +154,11 @@ export function PromptList({ categoryId, onCategorySelect, onPromptSelect, selec
         }
       } else if (targetCategory) {
         // Move prompts to another category
-        const { data: promptsToMove, error: selectError } = await supabase.from("prompts").select("id").eq("user_id", userId).eq("category_id", categoryToDelete);
+        const { data: promptsToMove, error: selectError } = await supabase
+          .from("prompts")
+          .select("id")
+          .eq("user_id", userId)
+          .eq("category_id", categoryToDelete);
 
         if (selectError) throw selectError;
 
@@ -171,9 +189,9 @@ export function PromptList({ categoryId, onCategorySelect, onPromptSelect, selec
 
       const successMessage = isLastCategory ? "Category deleted. Prompts moved to uncategorized." : "Category deleted and prompts moved.";
       toast.success(successMessage);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error deleting category:", error);
-      toast.error(`Failed to delete category: ${error.message}`);
+      toast.error(`Failed to delete category: ${getErrorMessage(error, "Unknown error")}`);
     } finally {
       setIsDeleting(false);
       setShowDeleteDialog(false);
@@ -247,7 +265,7 @@ export function PromptList({ categoryId, onCategorySelect, onPromptSelect, selec
     } finally {
       setIsLoading(false);
     }
-  }, [categoryId, selectedPromptId, onTotalPromptsChange, onPromptSelect, sortByDate]);
+  }, [categoryId, selectedPromptId, onTotalPromptsChange, onPromptSelect]);
 
   useEffect(() => {
     fetchPrompts();
@@ -502,7 +520,13 @@ export function PromptList({ categoryId, onCategorySelect, onPromptSelect, selec
         </div>
         <div className="relative mb-4 group">
           <Search className="absolute left-3 top-2.5 text-gray-400 group-focus-within:text-[#2C106A] transition-colors duration-200" size={18} />
-          <Input type="text" placeholder="Search prompts..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="pl-9 transition-all duration-200 focus:border-[#2C106A]" />
+          <Input
+            type="text"
+            placeholder="Search prompts..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="pl-9 transition-all duration-200 focus:border-[#2C106A]"
+          />
         </div>
         <div className="flex items-center justify-between text-xs text-gray-500">
           <span className="rounded-md bg-gray-100 px-2 py-1">{sortedPrompts.filter((p) => p.id !== "new").length} prompts</span>

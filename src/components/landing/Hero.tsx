@@ -40,7 +40,10 @@ export const Hero = () => {
           </span>
         </div>
         <h1 className="text-4xl md:text-6xl font-bold mb-3 leading-tight">
-          <span className="block bg-clip-text text-transparent bg-gradient-to-r from-[#2C106A] to-purple-600 md:text-7xl animate-gradient-x" style={{ lineHeight: "1.1" }}>
+          <span
+            className="block bg-clip-text text-transparent bg-gradient-to-r from-[#2C106A] to-purple-600 md:text-7xl animate-gradient-x"
+            style={{ lineHeight: "1.1" }}
+          >
             Promplify
           </span>
           <span className="block bg-clip-text text-transparent bg-gradient-to-r from-[#2C106A] to-purple-600">Manage Better Prompts</span>

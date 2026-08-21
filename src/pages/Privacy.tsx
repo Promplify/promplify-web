@@ -31,8 +31,8 @@ export default function Privacy() {
               {/* Introduction */}
               <div className="mb-16">
                 <p className="text-xl text-gray-700 leading-relaxed font-light">
-                  At Promplify, we are committed to protecting your privacy and being transparent about how we collect, use, and protect your personal information. This privacy policy explains how we
-                  handle your data when you use our AI prompt management platform.
+                  At Promplify, we are committed to protecting your privacy and being transparent about how we collect, use, and protect your personal
+                  information. This privacy policy explains how we handle your data when you use our AI prompt management platform.
                 </p>
               </div>
 
@@ -40,8 +40,8 @@ export default function Privacy() {
               <section className="mb-16">
                 <h2 className="text-3xl font-bold mb-8 text-gray-900">Information We Collect</h2>
                 <p className="text-gray-600 leading-relaxed mb-8 font-light">
-                  We collect information that you voluntarily provide to us and that is necessary to deliver our AI prompt management services. All data collection is done with your explicit consent
-                  and in accordance with applicable privacy laws.
+                  We collect information that you voluntarily provide to us and that is necessary to deliver our AI prompt management services. All data
+                  collection is done with your explicit consent and in accordance with applicable privacy laws.
                 </p>
 
                 <div className="space-y-8">
@@ -107,8 +107,8 @@ export default function Privacy() {
               <section className="mb-16">
                 <h2 className="text-3xl font-bold mb-8 text-gray-900">Data Security & Storage</h2>
                 <p className="text-gray-600 leading-relaxed mb-8 font-light">
-                  We implement industry-standard security measures to protect your data. Your prompts and personal information are encrypted both in transit and at rest using advanced encryption
-                  protocols.
+                  We implement industry-standard security measures to protect your data. Your prompts and personal information are encrypted both in transit and
+                  at rest using advanced encryption protocols.
                 </p>
 
                 <div className="space-y-8">
@@ -139,13 +139,16 @@ export default function Privacy() {
                 <h2 className="text-3xl font-bold mb-8 text-gray-900">Data Sharing & Third Parties</h2>
                 <p className="text-gray-700 font-semibold mb-4">We never sell your data.</p>
                 <p className="text-gray-600 leading-relaxed mb-8 font-light">
-                  Promplify does not sell, rent, or trade your personal information to third parties for marketing purposes. We only share your information in the following limited circumstances:
+                  Promplify does not sell, rent, or trade your personal information to third parties for marketing purposes. We only share your information in
+                  the following limited circumstances:
                 </p>
 
                 <div className="space-y-6">
                   <div>
                     <h3 className="text-lg font-semibold mb-2 text-gray-800">Service Providers</h3>
-                    <p className="text-gray-600 font-light">Trusted third-party services that help us operate our platform (hosting, analytics, customer support)</p>
+                    <p className="text-gray-600 font-light">
+                      Trusted third-party services that help us operate our platform (hosting, analytics, customer support)
+                    </p>
                   </div>
 
                   <div>
@@ -163,7 +166,9 @@ export default function Privacy() {
               {/* Your Rights */}
               <section className="mb-16">
                 <h2 className="text-3xl font-bold mb-8 text-gray-900">Your Rights & Control</h2>
-                <p className="text-gray-600 leading-relaxed mb-8 font-light">You have full control over your personal data. Here are your rights and how to exercise them:</p>
+                <p className="text-gray-600 leading-relaxed mb-8 font-light">
+                  You have full control over your personal data. Here are your rights and how to exercise them:
+                </p>
 
                 <div className="space-y-6">
                   <div>
@@ -193,9 +198,9 @@ export default function Privacy() {
                 <h2 className="text-3xl font-bold mb-8 text-gray-900">Children's Privacy</h2>
                 <p className="text-gray-700 font-semibold mb-4">Age Requirement: 13+</p>
                 <p className="text-gray-600 leading-relaxed font-light">
-                  Promplify is not intended for children under 13 years of age. We do not knowingly collect personal information from children under 13. If you are a parent or guardian and believe
-                  your child has provided us with personal information, please contact us immediately at <span className="font-medium text-gray-800">privacy@promplify.com</span> so we can delete such
-                  information.
+                  Promplify is not intended for children under 13 years of age. We do not knowingly collect personal information from children under 13. If you
+                  are a parent or guardian and believe your child has provided us with personal information, please contact us immediately at{" "}
+                  <span className="font-medium text-gray-800">privacy@promplify.com</span> so we can delete such information.
                 </p>
               </section>
 
@@ -203,7 +208,8 @@ export default function Privacy() {
               <section className="mb-16">
                 <h2 className="text-3xl font-bold mb-8 text-gray-900">Changes to This Policy</h2>
                 <p className="text-gray-600 leading-relaxed mb-8 font-light">
-                  We may update this privacy policy from time to time to reflect changes in our practices or applicable laws. When we make significant changes, we will:
+                  We may update this privacy policy from time to time to reflect changes in our practices or applicable laws. When we make significant changes,
+                  we will:
                 </p>
 
                 <ul className="space-y-4 text-gray-600 font-light">
@@ -217,7 +223,8 @@ export default function Privacy() {
               <section className="mb-16">
                 <h2 className="text-3xl font-bold mb-8 text-gray-900">Questions About This Policy?</h2>
                 <p className="text-gray-600 mb-8 leading-relaxed font-light">
-                  We're here to help! If you have any questions about this privacy policy or how we handle your data, please don't hesitate to reach out to our privacy team.
+                  We're here to help! If you have any questions about this privacy policy or how we handle your data, please don't hesitate to reach out to our
+                  privacy team.
                 </p>
 
                 <div className="space-y-4">

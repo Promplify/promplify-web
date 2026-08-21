@@ -1,4 +1,4 @@
--- Drop existing table
+-- Replace the initial hashed-token schema with the application token schema.
 DROP TABLE IF EXISTS api_tokens;
 
 -- Create api_tokens table with new structure
@@ -33,4 +33,4 @@ CREATE POLICY "Users can insert own tokens"
 -- Users can only delete their own tokens
 CREATE POLICY "Users can delete own tokens"
     ON api_tokens FOR DELETE
-    USING (auth.uid() = user_id); 
+    USING (auth.uid() = user_id);

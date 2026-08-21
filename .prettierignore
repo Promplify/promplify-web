@@ -1,0 +1,10 @@
+dist
+coverage
+node_modules
+package-lock.json
+public/sitemap.xml
+AGENTS.md
+cloudflare-worker/worker-configuration.d.ts
+src/components/ui
+supabase/advisor_baseline
+supabase/migrations

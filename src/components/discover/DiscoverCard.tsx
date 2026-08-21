@@ -114,7 +114,9 @@ export function DiscoverCard({ discoverPrompt, featured = false }: DiscoverCardP
       onClick={navigateToDetail}
     >
       {/* Cover image or gradient */}
-      <div className={`h-40 ${!discoverPrompt.cover_image_url ? `bg-gradient-to-br ${gradientColors[cardGradient]}` : "bg-white"} flex items-center justify-center relative`}>
+      <div
+        className={`h-40 ${!discoverPrompt.cover_image_url ? `bg-gradient-to-br ${gradientColors[cardGradient]}` : "bg-white"} flex items-center justify-center relative`}
+      >
         {!discoverPrompt.cover_image_url ? (
           <span className="text-white text-2xl font-bold px-6 text-center drop-shadow-md">
             {title.slice(0, 20)}

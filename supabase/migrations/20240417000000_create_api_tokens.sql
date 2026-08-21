@@ -1,4 +1,4 @@
--- Create api_tokens table
+-- Create api_tokens table.
 CREATE TABLE IF NOT EXISTS api_tokens (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
@@ -30,4 +30,4 @@ CREATE POLICY "Users can insert own tokens"
 -- Users can only delete their own tokens
 CREATE POLICY "Users can delete own tokens"
     ON api_tokens FOR DELETE
-    USING (auth.uid() = user_id); 
+    USING (auth.uid() = user_id);
