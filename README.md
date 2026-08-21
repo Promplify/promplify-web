@@ -9,7 +9,7 @@
 
 [![CI](https://github.com/Promplify/promplify-web/actions/workflows/ci.yml/badge.svg)](https://github.com/Promplify/promplify-web/actions/workflows/ci.yml)
 [![Secret Scan](https://github.com/Promplify/promplify-web/actions/workflows/secret-scan.yml/badge.svg)](https://github.com/Promplify/promplify-web/actions/workflows/secret-scan.yml)
-[![Apache 2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
+[![MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Node.js 22+](https://img.shields.io/badge/node-%3E%3D22.16-339933?logo=nodedotjs&logoColor=white)](.node-version)
 
 [Live app](https://promplify.com) · [Documentation](https://promplify.com/api-docs/) · [Report a bug](https://github.com/Promplify/promplify-web/issues/new?template=bug_report.yml) · [Request a feature](https://github.com/Promplify/promplify-web/issues/new?template=feature_request.yml)
@@ -169,4 +169,4 @@ Community participation follows the [`CODE_OF_CONDUCT.md`](.github/CODE_OF_CONDU
 
 ## License
 
-Promplify is licensed under the [Apache License 2.0](LICENSE).
+Promplify is licensed under the [MIT License](LICENSE).
