@@ -22,7 +22,7 @@
   "bugs": {
     "url": "https://github.com/Promplify/promplify-web/issues"
   },
-  "license": "Apache-2.0",
+  "license": "MIT",
   "engines": {
     "node": ">=22.16.0"
   },
