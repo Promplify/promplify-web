@@ -3,6 +3,9 @@ import App from "./App.tsx";
 import "./index.css";
 import { resolveSentryDsn } from "./lib/sentryConfig";
 import { shouldDropReactRemoveChildNoise } from "./lib/sentryNoise";
+import { installChunkLoadRecovery } from "./lib/chunkLoadRecovery";
+
+installChunkLoadRecovery();
 
 const sentryDsn = resolveSentryDsn(window.location.hostname, import.meta.env.VITE_SENTRY_DSN);
 
