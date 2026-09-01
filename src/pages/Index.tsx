@@ -11,7 +11,7 @@ const Index = () => {
       <SEO
         canonicalPath="/"
         title="Promplify - AI Prompt Management & Optimization Platform"
-        description="Create, organize, and optimize your AI prompts. Enhance your interactions with ChatGPT, Claude, and other AI models. Boost productivity and get better results with Promplify."
+        description="Create, organize, and optimize reusable AI prompts for ChatGPT, Claude, and other models. Build better workflows and get more consistent results with Promplify."
         keywords="AI prompt management, prompt optimization, ChatGPT prompts, Claude prompts, AI workflow, prompt templates, AI assistant, prompt library, prompt engineering, LLM prompts"
       />
       <Navigation />

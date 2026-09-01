@@ -5,6 +5,7 @@ import { test } from "node:test";
 const generator = await readFile(new URL("../scripts/generate-static-route-html.mjs", import.meta.url), "utf8");
 const redirects = await readFile(new URL("../public/_redirects", import.meta.url), "utf8");
 const sitemap = await readFile(new URL("../public/sitemap.xml", import.meta.url), "utf8");
+const indexHtml = await readFile(new URL("../index.html", import.meta.url), "utf8");
 const privacyPage = await readFile(new URL("../src/pages/Privacy.tsx", import.meta.url), "utf8");
 const termsPage = await readFile(new URL("../src/pages/Terms.tsx", import.meta.url), "utf8");
 
@@ -27,4 +28,17 @@ test("serves settings without an internal redirect target", () => {
 test("serves direct auth and callback routes through the app shell", () => {
   assert.match(generator, /outputPath: "auth"[\s\S]*?urlPath: "\/auth\/"[\s\S]*?robots: "noindex, nofollow"/);
   assert.match(generator, /outputPath: "auth\/callback"[\s\S]*?urlPath: "\/auth\/callback\/"[\s\S]*?robots: "noindex, nofollow"/);
+});
+
+test("replaces multiline metadata instead of appending duplicate tags", () => {
+  assert.match(generator, /const metaTagPattern/);
+  assert.match(generator, /metaTagPattern\("name", "description"\)/);
+  assert.ok(generator.includes("new RegExp(`<meta\\\\s+${attribute}="));
+});
+
+test("uses accurate website structured data without unverifiable reviews", () => {
+  assert.match(indexHtml, /"@type": "WebSite"/);
+  assert.match(indexHtml, /"@type": "Organization"/);
+  assert.doesNotMatch(indexHtml, /"@type": "SoftwareApplication"/);
+  assert.doesNotMatch(indexHtml, /aggregateRating|"review"/);
 });

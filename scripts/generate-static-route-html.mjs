@@ -51,15 +51,16 @@ const routes = [
   {
     outputPath: "privacy",
     urlPath: "/privacy/",
-    title: "Privacy Policy - Promplify",
-    description: "Read Promplify's Privacy Policy to learn how we collect, use, and protect your data.",
+    title: "Privacy Policy and Data Protection - Promplify",
+    description: "Learn how Promplify collects, uses, stores, and protects your data when you use our AI prompt management platform and related services.",
     keywords: "Promplify privacy policy, data protection, user privacy",
   },
   {
     outputPath: "terms",
     urlPath: "/terms/",
     title: "Terms of Service - Promplify",
-    description: "Read Promplify's Terms of Service to understand your rights and responsibilities when using the platform.",
+    description:
+      "Read Promplify's Terms of Service to understand account responsibilities, acceptable use, service limitations, and your rights when using the platform.",
     keywords: "Promplify terms of service, user agreement, legal terms",
   },
   {
@@ -76,6 +77,10 @@ const escapeAttribute = (value) => value.replaceAll("&", "&amp;").replaceAll('"'
 
 const buildMetaTag = (attribute, name, content) => `<meta ${attribute}="${name}" content="${escapeAttribute(content)}" />`;
 
+const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+const metaTagPattern = (attribute, name) => new RegExp(`<meta\\s+${attribute}="${escapeRegExp(name)}"\\s+content="[^"]*"\\s*\\/?>`, "s");
+
 const upsertTag = (html, pattern, tag) => {
   if (pattern.test(html)) {
     return html.replace(pattern, tag);
@@ -88,21 +93,21 @@ const applyRouteMetadata = (html, route) => {
   const url = `https://promplify.com${route.urlPath}`;
   let output = html;
 
-  output = upsertTag(output, /<link rel="canonical" href="[^"]*" \/>/, `<link rel="canonical" href="${url}" />`);
+  output = upsertTag(output, /<link\s+rel="canonical"\s+href="[^"]*"\s*\/?>/s, `<link rel="canonical" href="${url}" />`);
   output = upsertTag(output, /<title>.*?<\/title>/s, `<title>${escapeAttribute(route.title)}</title>`);
-  output = upsertTag(output, /<meta name="description" content="[^"]*" \/>/, buildMetaTag("name", "description", route.description));
-  output = upsertTag(output, /<meta name="keywords" content="[^"]*" \/>/, buildMetaTag("name", "keywords", route.keywords));
-  output = upsertTag(output, /<meta property="og:url" content="[^"]*" \/>/, buildMetaTag("property", "og:url", url));
-  output = upsertTag(output, /<meta property="og:title" content="[^"]*" \/>/, buildMetaTag("property", "og:title", route.title));
-  output = upsertTag(output, /<meta property="og:description" content="[^"]*" \/>/, buildMetaTag("property", "og:description", route.description));
-  output = upsertTag(output, /<meta property="og:image" content="[^"]*" \/>/, buildMetaTag("property", "og:image", defaultImage));
-  output = upsertTag(output, /<meta name="twitter:card" content="[^"]*" \/>/, buildMetaTag("name", "twitter:card", "summary_large_image"));
-  output = upsertTag(output, /<meta name="twitter:title" content="[^"]*" \/>/, buildMetaTag("name", "twitter:title", route.title));
-  output = upsertTag(output, /<meta name="twitter:description" content="[^"]*" \/>/, buildMetaTag("name", "twitter:description", route.description));
-  output = upsertTag(output, /<meta name="twitter:image" content="[^"]*" \/>/, buildMetaTag("name", "twitter:image", defaultImage));
+  output = upsertTag(output, metaTagPattern("name", "description"), buildMetaTag("name", "description", route.description));
+  output = upsertTag(output, metaTagPattern("name", "keywords"), buildMetaTag("name", "keywords", route.keywords));
+  output = upsertTag(output, metaTagPattern("property", "og:url"), buildMetaTag("property", "og:url", url));
+  output = upsertTag(output, metaTagPattern("property", "og:title"), buildMetaTag("property", "og:title", route.title));
+  output = upsertTag(output, metaTagPattern("property", "og:description"), buildMetaTag("property", "og:description", route.description));
+  output = upsertTag(output, metaTagPattern("property", "og:image"), buildMetaTag("property", "og:image", defaultImage));
+  output = upsertTag(output, metaTagPattern("name", "twitter:card"), buildMetaTag("name", "twitter:card", "summary_large_image"));
+  output = upsertTag(output, metaTagPattern("name", "twitter:title"), buildMetaTag("name", "twitter:title", route.title));
+  output = upsertTag(output, metaTagPattern("name", "twitter:description"), buildMetaTag("name", "twitter:description", route.description));
+  output = upsertTag(output, metaTagPattern("name", "twitter:image"), buildMetaTag("name", "twitter:image", defaultImage));
 
   if (route.robots) {
-    output = upsertTag(output, /<meta name="robots" content="[^"]*" \/>/, buildMetaTag("name", "robots", route.robots));
+    output = upsertTag(output, metaTagPattern("name", "robots"), buildMetaTag("name", "robots", route.robots));
   }
 
   return output;

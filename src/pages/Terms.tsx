@@ -1,20 +1,14 @@
 import { Footer } from "@/components/landing/Footer";
 import { Navigation } from "@/components/landing/Navigation";
 import { SEO } from "@/components/SEO";
-import { updateMeta } from "@/utils/meta";
-import { useEffect } from "react";
 
 export default function Terms() {
-  useEffect(() => {
-    updateMeta("Terms of Service", "Promplify's Terms of Service - Understand our service agreement.", "terms of service, user agreement, legal terms");
-  }, []);
-
   return (
     <div className="min-h-screen bg-gray-50">
       <SEO
         canonicalPath="/terms/"
         title="Terms of Service - Promplify"
-        description="Read Promplify's Terms of Service to understand your rights and responsibilities when using our AI prompt management platform."
+        description="Read Promplify's Terms of Service to understand account responsibilities, acceptable use, service limitations, and your rights when using the platform."
         keywords="terms of service, legal terms, user agreement"
       />
       <Navigation />

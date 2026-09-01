@@ -1,20 +1,14 @@
 import { Footer } from "@/components/landing/Footer";
 import { Navigation } from "@/components/landing/Navigation";
 import { SEO } from "@/components/SEO";
-import { updateMeta } from "@/utils/meta";
-import { useEffect } from "react";
 
 export default function Privacy() {
-  useEffect(() => {
-    updateMeta("Privacy Policy", "Promplify's Privacy Policy - Learn how we protect your data and privacy.", "privacy policy, data protection, user privacy");
-  }, []);
-
   return (
     <div className="min-h-screen bg-white">
       <SEO
         canonicalPath="/privacy/"
-        title="Privacy Policy - Promplify"
-        description="Learn how Promplify protects your privacy and handles your data when you use our AI prompt management platform."
+        title="Privacy Policy and Data Protection - Promplify"
+        description="Learn how Promplify collects, uses, stores, and protects your data when you use our AI prompt management platform and related services."
         keywords="privacy policy, data protection, user privacy"
       />
       <Navigation />
