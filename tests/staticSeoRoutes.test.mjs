@@ -42,3 +42,15 @@ test("uses accurate website structured data without unverifiable reviews", () =>
   assert.doesNotMatch(indexHtml, /"@type": "SoftwareApplication"/);
   assert.doesNotMatch(indexHtml, /aggregateRating|"review"/);
 });
+
+test("provides a static home page heading without JavaScript", () => {
+  assert.match(indexHtml, /<noscript>[\s\S]*?<h1>Promplify AI Prompt Management and Optimization<\/h1>/);
+});
+
+test("generates a route-specific static heading for every public shell", () => {
+  assert.match(generator, /heading: "Reusable AI prompt templates"/);
+  assert.match(generator, /heading: "Discover shared AI prompts"/);
+  assert.match(generator, /heading: "Promplify API documentation"/);
+  assert.ok(generator.includes("/<noscript>[\\s\\S]*?<\\/noscript>/"));
+  assert.ok(generator.includes("<h1>${escapeAttribute(route.heading)}</h1>"));
+});

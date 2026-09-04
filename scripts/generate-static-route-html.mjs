@@ -11,6 +11,7 @@ const routes = [
     outputPath: "auth",
     urlPath: "/auth/",
     title: "Sign In - Promplify",
+    heading: "Sign in to Promplify",
     description: "Sign in or create an account to continue managing your AI prompts with Promplify.",
     keywords: "Promplify sign in, prompt management account",
     robots: "noindex, nofollow",
@@ -19,6 +20,7 @@ const routes = [
     outputPath: "auth/callback",
     urlPath: "/auth/callback/",
     title: "Complete Sign In - Promplify",
+    heading: "Complete your Promplify sign-in",
     description: "Complete your Promplify sign-in and continue to your prompt workspace.",
     keywords: "Promplify authentication callback",
     robots: "noindex, nofollow",
@@ -27,6 +29,7 @@ const routes = [
     outputPath: "templates",
     urlPath: "/templates/",
     title: "AI Prompt Templates & Workflow Tool - Promplify",
+    heading: "Reusable AI prompt templates",
     description:
       "Browse reusable AI prompt templates for ChatGPT, Claude, coding, research, and marketing. Save prompt workflow templates to your own library.",
     keywords:
@@ -36,6 +39,7 @@ const routes = [
     outputPath: "discover",
     urlPath: "/discover/",
     title: "Community Prompts, Shared AI Prompts & Prompt Library - Promplify",
+    heading: "Discover shared AI prompts",
     description:
       "Discover community prompts, browse shared AI prompt examples, and save useful prompts into your own prompt library for repeatable AI workflows.",
     keywords: "community prompts, shared prompts, AI prompt library, shared AI prompts, ChatGPT prompts, Claude prompts, prompt discovery",
@@ -44,6 +48,7 @@ const routes = [
     outputPath: "api-docs",
     urlPath: "/api-docs/",
     title: "Prompt API Documentation - Promplify",
+    heading: "Promplify API documentation",
     description:
       "Integrate Promplify prompts into your applications with API token authentication, version-aware prompt retrieval, and secure prompt workflows.",
     keywords: "Promplify API, prompt API, prompt management API, prompt versioning, AI prompt integration",
@@ -52,6 +57,7 @@ const routes = [
     outputPath: "privacy",
     urlPath: "/privacy/",
     title: "Privacy Policy and Data Protection - Promplify",
+    heading: "Privacy policy and data protection",
     description: "Learn how Promplify collects, uses, stores, and protects your data when you use our AI prompt management platform and related services.",
     keywords: "Promplify privacy policy, data protection, user privacy",
   },
@@ -59,6 +65,7 @@ const routes = [
     outputPath: "terms",
     urlPath: "/terms/",
     title: "Terms of Service - Promplify",
+    heading: "Promplify terms of service",
     description:
       "Read Promplify's Terms of Service to understand account responsibilities, acceptable use, service limitations, and your rights when using the platform.",
     keywords: "Promplify terms of service, user agreement, legal terms",
@@ -67,6 +74,7 @@ const routes = [
     outputPath: "settings",
     urlPath: "/settings/",
     title: "Account Settings - Promplify",
+    heading: "Promplify account settings",
     description: "Manage your Promplify account, preferences, and API access.",
     keywords: "Promplify account settings, API access",
     robots: "noindex, follow",
@@ -109,6 +117,11 @@ const applyRouteMetadata = (html, route) => {
   if (route.robots) {
     output = upsertTag(output, metaTagPattern("name", "robots"), buildMetaTag("name", "robots", route.robots));
   }
+
+  output = output.replace(
+    /<noscript>[\s\S]*?<\/noscript>/,
+    `<noscript><main><h1>${escapeAttribute(route.heading)}</h1><p>${escapeAttribute(route.description)}</p></main></noscript>`
+  );
 
   return output;
 };
