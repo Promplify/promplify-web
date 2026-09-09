@@ -36,9 +36,10 @@ Worker commands:
 - Use ESLint as the source of truth for style and quality rules.
 
 ## Testing Guidelines
-Automated tests are not fully established yet (`npm test` is currently a placeholder). For every change:
-- Run `npm run type-check` and `npm run lint`.
-- Perform manual smoke checks for impacted pages/routes.
+Inspect current package scripts before selecting validation; older notes described `npm test` as a placeholder.
+- For TypeScript or application behavior changes, run `npm run type-check` and `npm run lint`.
+- Smoke-check affected pages for visible or interaction changes; documentation-only edits need relevant content checks.
+- Expand regression checks for shared behavior, dependencies, or build configuration changes.
 - If adding tests, prefer `*.test.ts` / `*.test.tsx` near the related module.
 
 ## Commit & Pull Request Guidelines
