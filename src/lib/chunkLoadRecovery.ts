@@ -20,7 +20,7 @@ function readMarker(storage: StorageLike): RecoveryMarker | null {
       return value;
     }
   } catch {
-    storage.removeItem(CHUNK_RECOVERY_KEY);
+    // Invalid or inaccessible storage is handled by the guarded marker write.
   }
   return null;
 }
@@ -35,13 +35,22 @@ export function recoverChunkLoad(error: unknown, href: string, storage: StorageL
     return false;
   }
 
-  storage.setItem(CHUNK_RECOVERY_KEY, JSON.stringify({ href, timestamp: now }));
+  try {
+    storage.setItem(CHUNK_RECOVERY_KEY, JSON.stringify({ href, timestamp: now }));
+  } catch {
+    // Without a persistent marker, automatic navigation could loop indefinitely.
+    return false;
+  }
   reload();
   return true;
 }
 
 export function clearChunkRecovery(storage: StorageLike): void {
-  storage.removeItem(CHUNK_RECOVERY_KEY);
+  try {
+    storage.removeItem(CHUNK_RECOVERY_KEY);
+  } catch {
+    // Manual navigation should still work when browser storage is unavailable.
+  }
 }
 
 export function installChunkLoadRecovery(): void {
@@ -51,7 +60,7 @@ export function installChunkLoadRecovery(): void {
       return;
     }
 
-    event.preventDefault();
+    // Let Vite reject the import so React receives the original error, not undefined.
     recoverChunkLoad(preloadEvent.payload, window.location.href, window.sessionStorage, () => window.location.reload());
   });
 }
