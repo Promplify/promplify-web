@@ -20,8 +20,8 @@ export const Hero = () => {
   return (
     <div className="relative min-h-[50vh] flex flex-col items-center justify-center text-center px-4 overflow-hidden pt-6">
       {/* Background Effects */}
-      <div className="absolute inset-0 bg-gradient-to-b from-[#2C106A]/5 to-transparent pointer-events-none" />
-      <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]" />
+      <div className="absolute inset-0 bg-linear-to-b from-[#2C106A]/5 to-transparent pointer-events-none" />
+      <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center mask-[linear-gradient(180deg,white,rgba(255,255,255,0))]" />
 
       {/* Floating Elements */}
       <div className="absolute inset-0 overflow-hidden">
@@ -33,20 +33,20 @@ export const Hero = () => {
 
       <div className="relative animate-fade-up z-10 max-w-4xl mx-auto will-change-transform">
         <div className="mb-4 animate-bounce-slow flex flex-col items-center gap-3">
-          <span className="inline-block px-4 py-1.5 text-sm font-semibold rounded-full bg-gradient-to-r from-[#2C106A]/10 to-purple-500/10 border border-[#2C106A]/20">
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#2C106A] via-purple-600 via-pink-500 via-rose-400 to-indigo-500 animate-gradient-x bg-[length:200%_auto]">
+          <span className="inline-block px-4 py-1.5 text-sm font-semibold rounded-full bg-linear-to-r from-[#2C106A]/10 to-purple-500/10 border border-primary/20">
+            <span className="bg-clip-text text-transparent bg-linear-to-r from-[#2C106A] via-purple-600 via-pink-500 via-rose-400 to-indigo-500 animate-gradient-x bg-size-[200%_auto]">
               Open-source prompt management
             </span>
           </span>
         </div>
         <h1 className="text-4xl md:text-6xl font-bold mb-3 leading-tight">
           <span
-            className="block bg-clip-text text-transparent bg-gradient-to-r from-[#2C106A] to-purple-600 md:text-7xl animate-gradient-x"
+            className="block bg-clip-text text-transparent bg-linear-to-r from-[#2C106A] to-purple-600 md:text-7xl animate-gradient-x"
             style={{ lineHeight: "1.1" }}
           >
             Promplify
           </span>
-          <span className="block bg-clip-text text-transparent bg-gradient-to-r from-[#2C106A] to-purple-600">Manage Better Prompts</span>
+          <span className="block bg-clip-text text-transparent bg-linear-to-r from-[#2C106A] to-purple-600">Manage Better Prompts</span>
         </h1>
 
         <p className="text-xl md:text-2xl font-semibold text-gray-700 mb-3 max-w-2xl mx-auto">An Open-source Prompt Workspace</p>
@@ -58,10 +58,10 @@ export const Hero = () => {
           <Button
             asChild
             size="lg"
-            className="group bg-gradient-to-r from-[#2C106A] to-purple-600 hover:from-[#2C106A]/90 hover:to-purple-600/90 text-white px-8 py-3 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 hover:scale-105 relative overflow-hidden"
+            className="group bg-linear-to-r from-[#2C106A] to-purple-600 hover:from-[#2C106A]/90 hover:to-purple-600/90 text-white px-8 py-3 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 hover:scale-105 relative overflow-hidden"
           >
             <Link to="/dashboard" className="relative z-10">
-              <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+              <div className="absolute inset-0 bg-linear-to-r from-white/0 via-white/20 to-white/0 -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
               Open Dashboard <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform duration-300" />
             </Link>
           </Button>
@@ -72,7 +72,7 @@ export const Hero = () => {
             className="border-2 border-gray-300 text-gray-700 hover:border-gray-400 hover:bg-gray-50 shadow-md hover:shadow-lg transition-all duration-300 group relative px-6 py-3 overflow-hidden hover:scale-105"
           >
             <a href="https://github.com/Promplify/promplify-web" target="_blank" rel="noopener noreferrer" className="inline-flex items-center relative z-10">
-              <div className="absolute inset-0 bg-gradient-to-r from-gray-50/0 via-gray-100/50 to-gray-50/0 -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
+              <div className="absolute inset-0 bg-linear-to-r from-gray-50/0 via-gray-100/50 to-gray-50/0 -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
               <div className="flex items-center justify-center w-5 h-5 rounded-full bg-gray-100 group-hover:bg-gray-200 transition-all duration-300 mr-2">
                 <Github className="h-3 w-3 text-gray-600 group-hover:text-gray-700 transition-colors duration-300" />
               </div>
@@ -100,7 +100,7 @@ export const Hero = () => {
                 rel="noopener noreferrer"
                 className={cn("transform hover:scale-[1.02] transition-all duration-300 relative block", !productHuntLoaded && "opacity-0")}
               >
-                <div className="absolute -inset-2.5 rounded-lg blur-sm group-hover:blur transition-all duration-300"></div>
+                <div className="absolute -inset-2.5 rounded-lg blur-xs group-hover:blur-sm transition-all duration-300"></div>
                 <div className="relative">
                   <img
                     src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=785256&theme=light&t=1737199216475"
@@ -137,8 +137,8 @@ export const Hero = () => {
       </div>
 
       {/* Wave transition */}
-      <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-b from-transparent to-white/80" />
-      <div className="absolute -bottom-[4.25rem] left-0 right-0 animate-wave">
+      <div className="absolute bottom-0 left-0 right-0 h-20 bg-linear-to-b from-transparent to-white/80" />
+      <div className="absolute -bottom-17 left-0 right-0 animate-wave">
         <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path
             d="M0 30L60 25C120 20 240 10 360 15C480 20 600 40 720 45C840 50 960 40 1080 35C1200 30 1320 30 1380 30L1440 30V120H1380C1320 120 1200 120 1080 120C960 120 840 120 720 120C600 120 480 120 360 120C240 120 120 120 60 120H0V30Z"

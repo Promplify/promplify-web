@@ -13,7 +13,7 @@ export default function Terms() {
       />
       <Navigation />
       <main className="container max-w-4xl mx-auto p-6 pt-32">
-        <div className="bg-white shadow-sm rounded-lg p-8 md:p-12">
+        <div className="bg-white shadow-xs rounded-lg p-8 md:p-12">
           <div className="max-w-3xl mx-auto">
             <h1 className="text-4xl font-bold mb-8 text-center">Terms of Service</h1>
             <p className="text-gray-600 mb-12 text-center">Last updated: June 15, 2025</p>

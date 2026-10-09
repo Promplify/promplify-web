@@ -176,7 +176,7 @@ export function ApiTokenManager() {
                     {token.expires_at && <p>Expires: {new Date(token.expires_at).toLocaleString()}</p>}
                   </div>
                 </div>
-                <Button variant="destructive" onClick={() => handleDeleteToken(token.id)} className="shadow-sm hover:shadow-md transition-all">
+                <Button variant="destructive" onClick={() => handleDeleteToken(token.id)} className="shadow-xs hover:shadow-md transition-all">
                   Delete
                 </Button>
               </div>

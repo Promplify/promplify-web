@@ -194,7 +194,7 @@ export default function Profile() {
       <Navigation />
       <div className="flex-1">
         <main className="container max-w-2xl mx-auto p-4 sm:p-6 pt-20 sm:pt-24 md:pt-32">
-          <div className="bg-white shadow-sm rounded-lg p-4 sm:p-6 md:p-8">
+          <div className="bg-white shadow-xs rounded-lg p-4 sm:p-6 md:p-8">
             <h1 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">Profile Settings</h1>
             <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
               <div className="space-y-2">
@@ -264,7 +264,7 @@ export default function Profile() {
                 />
               </div>
 
-              <Button type="submit" disabled={isSaving} className="w-full md:w-auto bg-[#2C106A] hover:bg-[#1F0B4C]">
+              <Button type="submit" disabled={isSaving} className="w-full md:w-auto bg-primary hover:bg-[#1F0B4C]">
                 {isSaving ? "Saving..." : "Save Changes"}
               </Button>
             </form>

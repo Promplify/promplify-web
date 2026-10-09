@@ -456,7 +456,7 @@ export default function DiscoverPromptPage() {
           <div className="px-4 sm:px-6 lg:px-8 py-4 sm:py-6 border-b border-gray-200">
             <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
               <div className="flex-1">
-                <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2 break-words">{discoverPrompt.prompt.title}</h1>
+                <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2 wrap-break-word">{discoverPrompt.prompt.title}</h1>
                 {discoverPrompt.prompt.description && <p className="text-gray-500 mb-4 text-sm sm:text-base">{discoverPrompt.prompt.description}</p>}
               </div>
 
@@ -476,7 +476,7 @@ export default function DiscoverPromptPage() {
                   <Button
                     variant="default"
                     size="sm"
-                    className="gap-1 sm:gap-1.5 bg-[#2C106A] hover:bg-[#1F0B4C] text-xs sm:text-sm"
+                    className="gap-1 sm:gap-1.5 bg-primary hover:bg-[#1F0B4C] text-xs sm:text-sm"
                     onClick={handleSave}
                     disabled={isSaving}
                   >
@@ -594,7 +594,7 @@ export default function DiscoverPromptPage() {
                   {discoverPrompt.prompt.token_count || 0} tokens
                 </Badge>
               </div>
-              <div className="p-3 sm:p-4 bg-gray-50 rounded-lg border border-gray-200 font-mono text-xs sm:text-sm whitespace-pre-wrap break-words overflow-auto">
+              <div className="p-3 sm:p-4 bg-gray-50 rounded-lg border border-gray-200 font-mono text-xs sm:text-sm whitespace-pre-wrap wrap-break-word overflow-auto">
                 {discoverPrompt.prompt.system_prompt}
               </div>
             </div>
@@ -602,7 +602,7 @@ export default function DiscoverPromptPage() {
             {discoverPrompt.prompt.user_prompt && (
               <div>
                 <h2 className="text-base sm:text-lg font-medium text-gray-900 mb-2 sm:mb-3">User Prompt</h2>
-                <div className="p-3 sm:p-4 bg-gray-50 rounded-lg border border-gray-200 font-mono text-xs sm:text-sm whitespace-pre-wrap break-words overflow-auto">
+                <div className="p-3 sm:p-4 bg-gray-50 rounded-lg border border-gray-200 font-mono text-xs sm:text-sm whitespace-pre-wrap wrap-break-word overflow-auto">
                   {discoverPrompt.prompt.user_prompt}
                 </div>
               </div>

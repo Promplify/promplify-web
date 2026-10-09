@@ -182,7 +182,7 @@ export function Sidebar({ onCategorySelect, selectedCategoryId }: SidebarProps) 
   if (isLoading) {
     return (
       <div className={`transition-all duration-300 ease-in-out ${isCollapsed ? "w-[60px]" : "w-[280px]"}`}>
-        <div className="w-full h-full bg-white/50 backdrop-blur-sm border-r border-gray-200/60 p-4 animate-pulse">
+        <div className="w-full h-full bg-white/50 backdrop-blur-xs border-r border-gray-200/60 p-4 animate-pulse">
           <div className="flex items-center justify-between mb-6">
             <div className="h-6 bg-gray-200 rounded w-20"></div>
             <div className="h-8 w-8 bg-gray-200 rounded"></div>
@@ -200,7 +200,7 @@ export function Sidebar({ onCategorySelect, selectedCategoryId }: SidebarProps) 
 
   return (
     <div
-      className={`h-full bg-white/50 backdrop-blur-sm border-r border-gray-200/60 transition-all duration-300 ease-in-out ${isCollapsed ? "w-[60px]" : "w-[280px]"}`}
+      className={`h-full bg-white/50 backdrop-blur-xs border-r border-gray-200/60 transition-all duration-300 ease-in-out ${isCollapsed ? "w-[60px]" : "w-[280px]"}`}
     >
       <div className="p-2">
         <div className="flex items-center justify-between mb-6">
@@ -260,9 +260,9 @@ export function Sidebar({ onCategorySelect, selectedCategoryId }: SidebarProps) 
           <button
             className={cn(
               "w-full text-left rounded-lg text-sm flex items-center group transition-all duration-200 relative",
-              "hover:bg-gray-50 hover:shadow-sm",
+              "hover:bg-gray-50 hover:shadow-xs",
               isCollapsed ? "px-3 py-2.5 justify-center" : "px-3 py-2.5",
-              selectedCategoryId === null && "bg-primary/10 text-primary shadow-sm border border-primary/20"
+              selectedCategoryId === null && "bg-primary/10 text-primary shadow-xs border border-primary/20"
             )}
             onClick={() => handleCategoryClick(null)}
             title={isCollapsed ? "All Prompts" : undefined}
@@ -271,7 +271,7 @@ export function Sidebar({ onCategorySelect, selectedCategoryId }: SidebarProps) 
             <div className={cn("flex items-center flex-1 min-w-0", isCollapsed ? "justify-center" : "gap-3")}>
               <div
                 className={cn(
-                  "flex-shrink-0 w-5 h-5 rounded-md flex items-center justify-center text-xs font-bold transition-colors",
+                  "shrink-0 w-5 h-5 rounded-md flex items-center justify-center text-xs font-bold transition-colors",
                   selectedCategoryId === null ? "bg-primary text-white" : "bg-gray-200 text-gray-600 group-hover:bg-gray-300"
                 )}
               >
@@ -299,9 +299,9 @@ export function Sidebar({ onCategorySelect, selectedCategoryId }: SidebarProps) 
                 onClick={() => handleCategoryClick(category.id)}
                 className={cn(
                   "w-full text-left rounded-lg text-sm flex items-center group transition-all duration-200 cursor-pointer relative",
-                  "hover:bg-gray-50 hover:shadow-sm",
+                  "hover:bg-gray-50 hover:shadow-xs",
                   isCollapsed ? "px-3 py-2.5 justify-center" : "px-3 py-2.5",
-                  selectedCategoryId === category.id && "bg-primary/10 text-primary shadow-sm border border-primary/20"
+                  selectedCategoryId === category.id && "bg-primary/10 text-primary shadow-xs border border-primary/20"
                 )}
                 title={isCollapsed ? category.name : undefined}
               >
@@ -309,7 +309,7 @@ export function Sidebar({ onCategorySelect, selectedCategoryId }: SidebarProps) 
                 <div className={cn("flex items-center flex-1 min-w-0", isCollapsed ? "justify-center" : "gap-3")}>
                   <div
                     className={cn(
-                      "flex-shrink-0 w-5 h-5 rounded-md flex items-center justify-center text-xs font-bold transition-colors",
+                      "shrink-0 w-5 h-5 rounded-md flex items-center justify-center text-xs font-bold transition-colors",
                       selectedCategoryId === category.id ? "bg-primary text-white" : "bg-gray-200 text-gray-600 group-hover:bg-gray-300"
                     )}
                   >

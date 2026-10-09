@@ -24,13 +24,13 @@ export function DiscoverHeader() {
   const navigate = useNavigate();
 
   return (
-    <div className="bg-gradient-to-r from-[#2C106A]/10 to-purple-500/10 py-8 sm:py-10 md:py-12 px-3 sm:px-4">
+    <div className="bg-linear-to-r from-[#2C106A]/10 to-purple-500/10 py-8 sm:py-10 md:py-12 px-3 sm:px-4">
       <div className="container mx-auto max-w-7xl">
         <div className="max-w-3xl mx-auto text-center">
-          <div className="inline-block mb-4 sm:mb-6 px-3 sm:px-4 py-1.5 rounded-full bg-[#2C106A]/5 text-[#2C106A] text-xs sm:text-sm font-medium border border-[#2C106A]/10">
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#2C106A] to-purple-600">Community prompts and shared prompt ideas</span>
+          <div className="inline-block mb-4 sm:mb-6 px-3 sm:px-4 py-1.5 rounded-full bg-primary/5 text-primary text-xs sm:text-sm font-medium border border-primary/10">
+            <span className="bg-clip-text text-transparent bg-linear-to-r from-[#2C106A] to-purple-600">Community prompts and shared prompt ideas</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-3 md:mb-4 bg-clip-text text-transparent bg-gradient-to-r from-[#2C106A] to-purple-600 leading-tight">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-3 md:mb-4 bg-clip-text text-transparent bg-linear-to-r from-[#2C106A] to-purple-600 leading-tight">
             Discover Shared AI Prompts
           </h1>
           <p className="text-base sm:text-lg md:text-xl text-gray-700 mb-4 md:mb-8 px-1">
@@ -38,8 +38,8 @@ export function DiscoverHeader() {
           </p>
           <div className="grid gap-3 sm:grid-cols-3 mb-5 md:mb-7 text-left">
             {discoverBenefits.map(({ title, description, Icon }) => (
-              <div key={title} className="rounded-lg border border-[#2C106A]/10 bg-white/65 p-4 shadow-sm">
-                <Icon className="w-5 h-5 text-[#2C106A] mb-2" />
+              <div key={title} className="rounded-lg border border-primary/10 bg-white/65 p-4 shadow-xs">
+                <Icon className="w-5 h-5 text-primary mb-2" />
                 <h2 className="text-sm font-semibold text-gray-950 mb-1">{title}</h2>
                 <p className="text-xs leading-5 text-gray-600">{description}</p>
               </div>
@@ -49,13 +49,13 @@ export function DiscoverHeader() {
             <Button
               variant="outline"
               onClick={() => document.getElementById("all-prompts")?.scrollIntoView({ behavior: "smooth" })}
-              className="border-[#2C106A] text-[#2C106A] hover:bg-[#2C106A]/10 text-sm md:text-base"
+              className="border-primary text-primary hover:bg-primary/10 text-sm md:text-base"
             >
               Browse All Prompts
             </Button>
             <Button
               onClick={() => navigate("/dashboard")}
-              className="bg-[#2C106A] hover:bg-[#1F0B4C] text-white px-4 md:px-6 py-1.5 md:py-2 text-sm md:text-base"
+              className="bg-primary hover:bg-[#1F0B4C] text-white px-4 md:px-6 py-1.5 md:py-2 text-sm md:text-base"
             >
               Share a Prompt
             </Button>
