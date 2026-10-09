@@ -107,7 +107,7 @@ export default function ResetPassword() {
                 />
               </div>
 
-              <Button type="submit" disabled={isLoading} className="w-full bg-[#2C106A] hover:bg-[#1F0B4C] h-10">
+              <Button type="submit" disabled={isLoading} className="w-full bg-primary hover:bg-[#1F0B4C] h-10">
                 {isLoading ? "Sending..." : "Send Reset Link"}
               </Button>
             </form>
@@ -151,7 +151,7 @@ export default function ResetPassword() {
               />
             </div>
 
-            <Button type="submit" disabled={isLoading} className="w-full bg-[#2C106A] hover:bg-[#1F0B4C] h-10">
+            <Button type="submit" disabled={isLoading} className="w-full bg-primary hover:bg-[#1F0B4C] h-10">
               {isLoading ? "Resetting..." : "Reset Password"}
             </Button>
           </form>
@@ -171,7 +171,7 @@ export default function ResetPassword() {
       />
       <div className="relative hidden h-full flex-col bg-muted p-8 text-white lg:flex dark:border-r">
         <div className="absolute inset-0 bg-black" />
-        <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]" />
+        <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center mask-[linear-gradient(180deg,white,rgba(255,255,255,0))]" />
         <div className="relative z-20 flex items-center text-lg font-medium">
           <Link to="/">
             <Logo />

@@ -168,7 +168,7 @@ export const Navigation = () => {
                 </div>
                 <span className="font-medium">GitHub</span>
                 <ExternalLink className="w-3 h-3 opacity-50 group-hover:opacity-100 transition-opacity duration-300" />
-                <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-white to-transparent transform origin-left transition-transform duration-300 scale-x-0 group-hover:scale-x-100" />
+                <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-linear-to-r from-transparent via-white to-transparent transform origin-left transition-transform duration-300 scale-x-0 group-hover:scale-x-100" />
               </a>
               {session && (
                 <Link
@@ -187,7 +187,7 @@ export const Navigation = () => {
                 <div className="flex items-center gap-4 ml-4">
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <button className="focus:outline-none cursor-pointer">
+                      <button className="focus:outline-hidden cursor-pointer">
                         <Avatar className="w-10 h-10 border-2 border-white/20 hover:border-white/40 transition-colors">
                           <AvatarImage
                             src={session.user.user_metadata?.avatar_url || session.user.user_metadata?.picture}

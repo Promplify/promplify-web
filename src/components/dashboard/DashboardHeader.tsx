@@ -10,9 +10,9 @@ export function DashboardHeader() {
   const isActive = (path: string) => normalizePath(location.pathname) === normalizePath(path);
 
   return (
-    <header className="sticky top-0 w-full bg-black/95 backdrop-blur-sm border-b border-white/10 z-40">
+    <header className="sticky top-0 w-full bg-black/95 backdrop-blur-xs border-b border-white/10 z-40">
       <div className="h-14 sm:h-16 px-3 sm:px-6 lg:px-8 flex items-center justify-between w-full">
-        <Link to="/" className="flex items-center space-x-2 hover:opacity-80 transition-opacity flex-shrink-0">
+        <Link to="/" className="flex items-center space-x-2 hover:opacity-80 transition-opacity shrink-0">
           <Logo />
         </Link>
         <div className="flex items-center space-x-2 sm:space-x-4 lg:space-x-6">

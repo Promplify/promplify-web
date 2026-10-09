@@ -32,8 +32,8 @@ export function DiscoverGrid({ prompts, isLoading, currentPage, totalItems, item
       pages.push(
         <Button
           key={i}
-          variant={currentPage === i ? "default" : "outline"}
-          className={`h-8 sm:h-10 w-8 sm:w-10 ${currentPage === i ? "bg-[#2C106A]" : "border-gray-200"}`}
+          variant={currentPage === i ? "default" : "outline-solid"}
+          className={`h-8 sm:h-10 w-8 sm:w-10 ${currentPage === i ? "bg-primary" : "border-gray-200"}`}
           onClick={() => onPageChange(i)}
         >
           {i}
@@ -119,7 +119,7 @@ export function DiscoverGrid({ prompts, isLoading, currentPage, totalItems, item
         <h3 className="mt-2 text-lg font-medium text-gray-900">No prompts found</h3>
         <p className="mt-1 text-gray-500">Be the first to share an amazing prompt!</p>
         <div className="mt-6">
-          <Button onClick={() => (window.location.href = "/dashboard")} className="bg-[#2C106A] hover:bg-[#1F0B4C] text-white">
+          <Button onClick={() => (window.location.href = "/dashboard")} className="bg-primary hover:bg-[#1F0B4C] text-white">
             Share a Prompt
           </Button>
         </div>

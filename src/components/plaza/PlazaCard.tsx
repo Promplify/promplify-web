@@ -98,7 +98,7 @@ export function PlazaCard({ plazaPrompt, featured = false }: PlazaCardProps) {
       >
         {/* Cover image or gradient */}
         <div
-          className={`h-40 bg-gradient-to-br ${gradientColors[cardGradient]} flex items-center justify-center`}
+          className={`h-40 bg-linear-to-br ${gradientColors[cardGradient]} flex items-center justify-center`}
           onClick={() => setShowDetails(true)}
           style={
             plazaPrompt.cover_image_url ? { backgroundImage: `url(${plazaPrompt.cover_image_url})`, backgroundSize: "cover", backgroundPosition: "center" } : {}
@@ -114,13 +114,13 @@ export function PlazaCard({ plazaPrompt, featured = false }: PlazaCardProps) {
 
         {/* Card content */}
         <div className="p-4 flex-1 flex flex-col">
-          <h3 className="font-semibold text-lg mb-2 cursor-pointer hover:text-[#2C106A] transition-colors line-clamp-2" onClick={() => setShowDetails(true)}>
+          <h3 className="font-semibold text-lg mb-2 cursor-pointer hover:text-primary transition-colors line-clamp-2" onClick={() => setShowDetails(true)}>
             {title}
           </h3>
 
           <p className="text-gray-600 text-sm mb-4 line-clamp-2">{description}</p>
 
-          {featured && <Badge className="bg-[#2C106A] mb-3 self-start">Featured</Badge>}
+          {featured && <Badge className="bg-primary mb-3 self-start">Featured</Badge>}
 
           <div className="mt-auto flex justify-between items-center">
             <TooltipProvider>
@@ -143,7 +143,7 @@ export function PlazaCard({ plazaPrompt, featured = false }: PlazaCardProps) {
                   <Button
                     variant="outline"
                     size="sm"
-                    className="gap-1.5 border-[#2C106A] text-[#2C106A] hover:bg-[#2C106A]/10"
+                    className="gap-1.5 border-primary text-primary hover:bg-primary/10"
                     onClick={handleSave}
                     disabled={isLoading}
                   >
@@ -197,7 +197,7 @@ export function PlazaCard({ plazaPrompt, featured = false }: PlazaCardProps) {
                   <span>{likesCount}</span>
                 </Button>
 
-                <Button size="sm" className="gap-1.5 bg-[#2C106A] hover:bg-[#1F0B4C]" onClick={handleSave} disabled={isLoading}>
+                <Button size="sm" className="gap-1.5 bg-primary hover:bg-[#1F0B4C]" onClick={handleSave} disabled={isLoading}>
                   <Save className="h-4 w-4" />
                   <span>Save to My Prompts</span>
                 </Button>

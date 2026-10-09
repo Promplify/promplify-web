@@ -29,7 +29,7 @@ export default function Settings() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[#2C106A] mx-auto mb-3"></div>
+          <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary mx-auto mb-3"></div>
           <p className="text-sm text-gray-600">Loading settings...</p>
         </div>
       </div>
@@ -49,7 +49,7 @@ export default function Settings() {
         />
         <div className="max-w-4xl mx-auto">
           <h1 className="text-2xl font-bold mb-6">Settings</h1>
-          <div className="bg-white rounded-lg shadow p-6">
+          <div className="bg-white rounded-lg shadow-sm p-6">
             <ApiTokenManager />
           </div>
         </div>

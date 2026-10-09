@@ -224,13 +224,13 @@ export default function Privacy() {
                 <div className="space-y-4">
                   <p className="text-gray-700">
                     <span className="font-semibold">Privacy inquiries:</span>
-                    <a href="mailto:privacy@promplify.com" className="text-[#2C106A] hover:underline ml-2">
+                    <a href="mailto:privacy@promplify.com" className="text-primary hover:underline ml-2">
                       privacy@promplify.com
                     </a>
                   </p>
                   <p className="text-gray-700">
                     <span className="font-semibold">General support:</span>
-                    <a href="mailto:support@promplify.com" className="text-[#2C106A] hover:underline ml-2">
+                    <a href="mailto:support@promplify.com" className="text-primary hover:underline ml-2">
                       support@promplify.com
                     </a>
                   </p>

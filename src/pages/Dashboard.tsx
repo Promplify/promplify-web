@@ -84,7 +84,7 @@ export default function Dashboard() {
     return (
       <div className="h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[#2C106A] mx-auto mb-3"></div>
+          <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary mx-auto mb-3"></div>
           <p className="text-sm text-gray-600">Loading dashboard...</p>
         </div>
       </div>
@@ -110,7 +110,7 @@ export default function Dashboard() {
         {/* Mobile Hamburger Button */}
         <button
           onClick={() => setShowMobilePromptList(!showMobilePromptList)}
-          className="fixed right-3 top-[4.25rem] z-50 inline-flex h-10 items-center gap-2 rounded-md bg-[#2C106A] px-3 text-sm font-medium text-white shadow-sm transition-colors hover:bg-[#1F0B4C] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2C106A] focus-visible:ring-offset-2 md:hidden"
+          className="fixed right-3 top-17 z-50 inline-flex h-10 items-center gap-2 rounded-md bg-primary px-3 text-sm font-medium text-white shadow-xs transition-colors hover:bg-[#1F0B4C] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#2C106A] focus-visible:ring-offset-2 md:hidden"
           aria-label="Toggle prompt list"
           aria-controls="mobile-prompt-list"
           aria-expanded={showMobilePromptList}

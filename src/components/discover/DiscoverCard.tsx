@@ -108,14 +108,14 @@ export function DiscoverCard({ discoverPrompt, featured = false }: DiscoverCardP
 
   return (
     <div
-      className={`bg-white rounded-xl shadow-sm overflow-hidden flex flex-col h-full transition-all duration-300 hover:shadow-lg hover:shadow-gray-200/50 hover:scale-[1.02] cursor-pointer border border-gray-100 hover:border-gray-200 ${
+      className={`bg-white rounded-xl shadow-xs overflow-hidden flex flex-col h-full transition-all duration-300 hover:shadow-lg hover:shadow-gray-200/50 hover:scale-[1.02] cursor-pointer border border-gray-100 hover:border-gray-200 ${
         featured ? "transform hover:-translate-y-2 hover:shadow-xl" : ""
       }`}
       onClick={navigateToDetail}
     >
       {/* Cover image or gradient */}
       <div
-        className={`h-40 ${!discoverPrompt.cover_image_url ? `bg-gradient-to-br ${gradientColors[cardGradient]}` : "bg-white"} flex items-center justify-center relative`}
+        className={`h-40 ${!discoverPrompt.cover_image_url ? `bg-linear-to-br ${gradientColors[cardGradient]}` : "bg-white"} flex items-center justify-center relative`}
       >
         {!discoverPrompt.cover_image_url ? (
           <span className="text-white text-2xl font-bold px-6 text-center drop-shadow-md">
@@ -127,7 +127,7 @@ export function DiscoverCard({ discoverPrompt, featured = false }: DiscoverCardP
         )}
         {featured && (
           <div className="absolute top-3 right-3">
-            <Badge className="bg-white/80 backdrop-blur-sm text-black font-medium px-2 py-0.5">Featured</Badge>
+            <Badge className="bg-white/80 backdrop-blur-xs text-black font-medium px-2 py-0.5">Featured</Badge>
           </div>
         )}
       </div>
@@ -183,7 +183,7 @@ export function DiscoverCard({ discoverPrompt, featured = false }: DiscoverCardP
                 <Button
                   variant="ghost"
                   size="sm"
-                  className={`px-3 py-1.5 h-8 min-w-[60px] rounded-full flex-shrink-0 gap-1 ${
+                  className={`px-3 py-1.5 h-8 min-w-[60px] rounded-full shrink-0 gap-1 ${
                     liked ? "bg-blue-50 text-blue-600 hover:bg-blue-100 border border-blue-200" : "text-gray-600 hover:bg-gray-100 border border-gray-200"
                   } transition-all duration-200`}
                   onClick={handleLike}

@@ -123,13 +123,13 @@ export function LoginForm({ redirectPath = "/dashboard" }: LoginFormProps) {
           <Label htmlFor="password" className="text-sm sm:text-base">
             Password
           </Label>
-          <Link to="/reset-password" className="text-xs sm:text-sm text-[#2C106A] hover:underline">
+          <Link to="/reset-password" className="text-xs sm:text-sm text-primary hover:underline">
             Forgot password?
           </Link>
         </div>
         <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="h-10 sm:h-11 text-sm sm:text-base" />
       </div>
-      <Button type="submit" className="w-full bg-[#2C106A] hover:bg-[#1F0B4C] h-10 sm:h-11 text-sm sm:text-base" disabled={isLoading}>
+      <Button type="submit" className="w-full bg-primary hover:bg-[#1F0B4C] h-10 sm:h-11 text-sm sm:text-base" disabled={isLoading}>
         {isLoading ? "Signing in..." : "Sign in"}
       </Button>
     </form>

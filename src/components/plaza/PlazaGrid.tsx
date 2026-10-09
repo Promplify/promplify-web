@@ -32,8 +32,8 @@ export function PlazaGrid({ prompts, isLoading, currentPage, totalItems, itemsPe
       pages.push(
         <Button
           key={i}
-          variant={currentPage === i ? "default" : "outline"}
-          className={`h-10 w-10 ${currentPage === i ? "bg-[#2C106A]" : "border-gray-200"}`}
+          variant={currentPage === i ? "default" : "outline-solid"}
+          className={`h-10 w-10 ${currentPage === i ? "bg-primary" : "border-gray-200"}`}
           onClick={() => onPageChange(i)}
         >
           {i}

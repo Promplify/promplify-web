@@ -195,13 +195,13 @@ export default function Templates() {
         description="Browse reusable AI prompt templates for ChatGPT, Claude, content creation, coding, research, and repeatable prompt engineering workflows."
         keywords="AI prompt templates, ChatGPT templates, Claude templates, prompt engineering templates, workflow prompts, reusable prompts"
       />
-      <div className="flex flex-col min-h-screen bg-gradient-to-b from-white to-gray-50">
+      <div className="flex flex-col min-h-screen bg-linear-to-b from-white to-gray-50">
         <Navigation />
 
         <main className="flex-1 pt-20 sm:pt-24 pb-12 sm:pb-16">
           <div className="container mx-auto px-3 sm:px-4 md:px-6">
             <div className="max-w-4xl mx-auto text-center mb-8">
-              <div className="inline-flex items-center gap-2 mb-6 px-4 py-1.5 rounded-full bg-[#2C106A]/5 text-[#2C106A] text-sm font-medium border border-[#2C106A]/10">
+              <div className="inline-flex items-center gap-2 mb-6 px-4 py-1.5 rounded-full bg-primary/5 text-primary text-sm font-medium border border-primary/10">
                 <Sparkles className="w-4 h-4" />
                 <span>AI Prompt Templates for ChatGPT and Claude</span>
               </div>
@@ -215,7 +215,7 @@ export default function Templates() {
                     trackTemplateCtaClicked("create_library");
                     navigate("/auth?mode=register");
                   }}
-                  className="w-full sm:w-auto bg-[#2C106A] hover:bg-[#1F0B4C] text-white"
+                  className="w-full sm:w-auto bg-primary hover:bg-[#1F0B4C] text-white"
                 >
                   Start building prompts
                   <ArrowRight className="w-4 h-4 ml-2" />
@@ -236,11 +236,11 @@ export default function Templates() {
             {/* Search Section */}
             <div className="max-w-2xl mx-auto mb-6">
               <div className="relative group">
-                <div className="absolute inset-0 bg-gradient-to-r from-[#2C106A] to-purple-600 rounded-full blur-md opacity-25 group-hover:opacity-30 transition-opacity" />
-                <div className="relative flex items-center bg-white rounded-full border border-gray-200 shadow-sm transition-shadow group-hover:shadow-md">
+                <div className="absolute inset-0 bg-linear-to-r from-[#2C106A] to-purple-600 rounded-full blur-md opacity-25 group-hover:opacity-30 transition-opacity" />
+                <div className="relative flex items-center bg-white rounded-full border border-gray-200 shadow-xs transition-shadow group-hover:shadow-md">
                   <div className="flex-none pl-5">
                     {searchQuery.trim() !== debouncedSearchQuery ? (
-                      <div className="w-5 h-5 border-2 border-[#2C106A] border-t-transparent rounded-full animate-spin" />
+                      <div className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin" />
                     ) : (
                       <Search className="w-5 h-5 text-gray-400" />
                     )}
@@ -250,7 +250,7 @@ export default function Templates() {
                     placeholder="Search templates by title, content, or category..."
                     value={searchQuery}
                     onChange={(e) => applyTemplateSearch(e.target.value, "search_input")}
-                    className="flex-1 h-12 sm:h-14 px-3 sm:px-4 py-3 sm:py-4 bg-transparent border-0 focus:ring-0 focus:outline-none text-sm sm:text-base placeholder:text-gray-400"
+                    className="flex-1 h-12 sm:h-14 px-3 sm:px-4 py-3 sm:py-4 bg-transparent border-0 focus:ring-0 focus:outline-hidden text-sm sm:text-base placeholder:text-gray-400"
                     style={{ boxShadow: "none" }}
                   />
                   {searchQuery && (
@@ -273,7 +273,7 @@ export default function Templates() {
                   key={filter}
                   type="button"
                   onClick={() => applyTemplateSearch(filter, "quick_filter")}
-                  className="px-3 py-1.5 rounded-full border border-gray-200 bg-white text-sm text-gray-600 hover:border-[#2C106A]/30 hover:text-[#2C106A] transition-colors"
+                  className="px-3 py-1.5 rounded-full border border-gray-200 bg-white text-sm text-gray-600 hover:border-primary/30 hover:text-primary transition-colors"
                 >
                   {filter}
                 </button>
@@ -285,7 +285,7 @@ export default function Templates() {
                 href="https://github.com/f/awesome-chatgpt-prompts"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1 text-[#2C106A] hover:text-[#2C106A]/80 font-medium transition-colors"
+                className="inline-flex items-center gap-1 text-primary hover:text-primary/80 font-medium transition-colors"
               >
                 awesome-chatgpt-prompts
                 <svg className="w-3.5 h-3.5 opacity-50" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -299,7 +299,7 @@ export default function Templates() {
               {templates.map((template) => (
                 <div
                   key={template.id}
-                  className="group relative bg-white border border-gray-200 hover:border-[#2C106A]/20 rounded-lg p-5 transition-all duration-300 hover:shadow-md cursor-pointer"
+                  className="group relative bg-white border border-gray-200 hover:border-primary/20 rounded-lg p-5 transition-all duration-300 hover:shadow-md cursor-pointer"
                   onClick={() => {
                     trackTemplateOpened({ templateId: template.id, category: template.category });
                     navigate(`/template/${template.id}`);
@@ -308,18 +308,18 @@ export default function Templates() {
                   {/* Header Section with Title and Actions */}
                   <div className="flex items-start justify-between gap-4 mb-4">
                     <div className="flex-1">
-                      <h3 className="text-xl font-semibold text-gray-900 leading-tight mb-3 line-clamp-1 group-hover:text-[#2C106A] transition-colors">
+                      <h3 className="text-xl font-semibold text-gray-900 leading-tight mb-3 line-clamp-1 group-hover:text-primary transition-colors">
                         {template.title}
                       </h3>
                       <div className="flex items-center flex-wrap gap-2.5 text-sm">
-                        <div className="inline-flex items-center px-2.5 py-1 rounded-md bg-gradient-to-r from-purple-50 to-purple-50/50 text-purple-700 border border-purple-100/80 shadow-sm shadow-purple-100/50">
+                        <div className="inline-flex items-center px-2.5 py-1 rounded-md bg-linear-to-r from-purple-50 to-purple-50/50 text-purple-700 border border-purple-100/80 shadow-xs shadow-purple-100/50">
                           <span className="font-semibold">{countTokens(template.system_prompt)}</span>
                           <span className="ml-1 text-purple-500 font-medium">tokens</span>
                         </div>
                         {template.category && (
                           <>
                             <span className="w-1 h-1 rounded-full bg-gray-200"></span>
-                            <div className="inline-flex items-center px-2.5 py-1 rounded-md bg-gradient-to-r from-[#2C106A]/5 to-purple-50/30 text-[#2C106A] border border-[#2C106A]/10 shadow-sm shadow-purple-100/30">
+                            <div className="inline-flex items-center px-2.5 py-1 rounded-md bg-linear-to-r from-[#2C106A]/5 to-purple-50/30 text-primary border border-primary/10 shadow-xs shadow-purple-100/30">
                               <Tag className="w-3.5 h-3.5 mr-1.5 stroke-[2.5] opacity-80" />
                               <span className="font-medium">{template.category}</span>
                             </div>
@@ -330,7 +330,7 @@ export default function Templates() {
                     <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
                       <Button
                         onClick={() => handleUseTemplate(template)}
-                        className="bg-[#2C106A] hover:bg-[#2C106A]/90 text-white font-medium shadow-sm hover:shadow transition-all duration-200 px-5 h-9 rounded-md whitespace-nowrap"
+                        className="bg-primary hover:bg-primary/90 text-white font-medium shadow-xs hover:shadow-sm transition-all duration-200 px-5 h-9 rounded-md whitespace-nowrap"
                       >
                         <span className="flex items-center gap-1.5">
                           Use Template
@@ -344,7 +344,7 @@ export default function Templates() {
                   <div className="relative">
                     <div className="font-mono text-xs sm:text-sm text-gray-600 bg-gray-50/70 px-3 sm:px-5 py-3 sm:py-4 rounded-md border border-gray-200/80 min-h-[100px] sm:h-32 overflow-hidden">
                       <div className="leading-relaxed whitespace-pre-wrap line-clamp-3 sm:line-clamp-4">{template.system_prompt}</div>
-                      <div className="absolute inset-x-0 bottom-0 h-12 sm:h-16 bg-gradient-to-t from-gray-50 via-gray-50/95 to-transparent pointer-events-none"></div>
+                      <div className="absolute inset-x-0 bottom-0 h-12 sm:h-16 bg-linear-to-t from-gray-50 via-gray-50/95 to-transparent pointer-events-none"></div>
                     </div>
                   </div>
                 </div>
@@ -356,7 +356,7 @@ export default function Templates() {
               // Initial loading
               <div className="flex justify-center my-12">
                 <div className="flex flex-col items-center gap-4 text-gray-500">
-                  <div className="w-8 h-8 border-3 border-[#2C106A] border-t-transparent rounded-full animate-spin" />
+                  <div className="w-8 h-8 border-3 border-primary border-t-transparent rounded-full animate-spin" />
                   <span className="text-sm font-medium">Loading templates...</span>
                 </div>
               </div>
@@ -366,9 +366,9 @@ export default function Templates() {
                 <div className="absolute inset-0 flex items-center">
                   <div className="w-full border-t border-gray-200" />
                 </div>
-                <div className="relative bg-white px-4 py-2 rounded-full border border-gray-100 shadow-sm">
+                <div className="relative bg-white px-4 py-2 rounded-full border border-gray-100 shadow-xs">
                   <div className="flex items-center gap-3 text-sm text-gray-500">
-                    <div className="w-4 h-4 border-2 border-[#2C106A] border-t-transparent rounded-full animate-spin" />
+                    <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />
                     <span>Loading more templates...</span>
                   </div>
                 </div>
