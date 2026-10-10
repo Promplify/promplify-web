@@ -86,3 +86,6 @@ temp/
 
 # Supabase baseline snapshots that may include sensitive auth config fields
 supabase/advisor_baseline/**/auth_config_*.json
+
+# Local source assets migrated from iCloud; keep out of Git.
+/local-assets/icloud-import/
