@@ -25,7 +25,7 @@ Read-only Supabase connector metadata on 2026-10-17 confirmed:
 
 These were catalog/configuration queries only; no profile or auth-user rows were queried. Function text searches are a focused check, not proof against arbitrary dynamic SQL or external services. Metadata should be rechecked immediately before an approved change.
 
-Frontend target declared in tracked configuration: Cloudflare Pages project `promplify-web-portal`, output `dist`, public domain `promplify.com`, repository `Promplify/promplify-web`. The Cloudflare account and current production deployment mapping were not independently queried; confirm them before approving/executing deployment. The separate API Worker is unchanged.
+Frontend target declared in tracked configuration: Cloudflare Pages project `promplify-web-portal`, output `dist`, public domain `promplify.com`, repository `Promplify/promplify-web`. Authenticated Cloudflare inventory confirmed account Parry (`a4f1aa61c6ffc6f0ef2fdfe4a3ed9bb4`), this project, domains promplify.com/www.promplify.com, production branch main and existing deployment 3356a715-c86a-4499-b497-a122f264a1c6 from 3df40a2. The separate API Worker is unchanged.
 
 ## Local verification
 
@@ -41,12 +41,12 @@ The standard full Supabase CLI reset/lint/advisor workflow remains unverified: l
 
 ## Approved-action boundary and rollout order
 
-No production SQL, grants/RLS/auth change, push, merge or deployment has been executed. Obtain explicit approval for:
+The user subsequently authorized this repair release. The prepare_public_authors migration was applied to production at version 20261017143358 and independently read back (owner/options/columns/grants). Frontend release and restrictive profile migration are dependent remaining stages. Release scope:
 
-1. The exact migration `20261017140455_restrict_profile_visibility.sql` on Supabase project `jnwfnaexsmxqtbotkcon`, executed as postgres. It removes profile SELECT/ALL policies, revokes client table grants, grants authenticated SELECT/INSERT/UPDATE, creates owner SELECT RLS and the four-column public view with anonymous/authenticated SELECT only. It changes no profile rows, auth settings or existing RPC bodies.
+1. The exact migration `20261017143450_restrict_profile_visibility.sql` on Supabase project `jnwfnaexsmxqtbotkcon`, executed as postgres. It removes profile SELECT/ALL policies, revokes client table grants, grants authenticated SELECT/INSERT/UPDATE and creates owner SELECT RLS. The separate preparation migration creates the four-column public view with anonymous/authenticated SELECT only. It changes no profile rows, auth settings or existing RPC bodies.
 2. Publishing the reviewed frontend revision to the confirmed Cloudflare Pages `promplify-web-portal` production project serving `promplify.com`, after verifying account/project/domain identity. If Git integration deploys on main, pushing/merging that revision is part of the approval, not an implied local-commit action.
 
-Recommended two-stage sequence: **database transaction first, frontend second**. The view and restrictions take effect together at COMMIT. During the interval old clients still query profiles and can show the existing Anonymous User fallback for other authors; public content and owner profile access continue. If frontend fails, keep the database privacy restriction. Deploying frontend first would leave exposure open until SQL succeeds and could prematurely display a privacy promise, so avoid it. Refresh PostgREST schema cache if the new view is not discovered.
+Compatibility rollout sequence after explicit release authorization: (1) apply `20261017143358_prepare_public_authors.sql` to add only the four-column public projection; (2) publish the reviewed frontend and verify it queries public_authors; (3) apply `20261017143450_restrict_profile_visibility.sql` to revoke broad profile grants and install owner-only SELECT. Existing profile access remains unchanged during the short preparation/deployment window, so old clients keep attribution while the new frontend is delivered. Minimize this pre-existing exposure window and apply the restriction immediately after frontend validation. Old cached frontend clients after restriction can still use the existing Anonymous User fallback. Refresh PostgREST schema cache if the new view is not discovered.
 
 Before execution, recheck policies/ACLs/column grants/dependencies/view ownership, postgres role, migration history, exposed schemas and the two dedicated owner write policies; an unknown custom ALL policy may carry legitimate writes and requires adaptation. Preserve metadata snapshots without user rows. After approved rollout, verify deployment identity and metadata; use only explicitly approved synthetic production accounts for business checks, never enumerate real profiles.
 
