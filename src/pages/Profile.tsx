@@ -196,6 +196,9 @@ export default function Profile() {
         <main className="container max-w-2xl mx-auto p-4 sm:p-6 pt-20 sm:pt-24 md:pt-32">
           <div className="bg-white shadow-xs rounded-lg p-4 sm:p-6 md:p-8">
             <h1 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">Profile Settings</h1>
+            <p className="text-sm text-gray-600 mb-6">
+              Your name, username, and avatar are public while you have a prompt published on Discover. Your website, bio, company, and location are private.
+            </p>
             <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
               <div className="space-y-2">
                 <Label htmlFor="full_name">Full Name</Label>

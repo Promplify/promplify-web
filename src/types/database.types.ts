@@ -309,7 +309,15 @@ export type Database = {
       };
     };
     Views: {
-      [_ in never]: never;
+      public_authors: {
+        Row: {
+          id: string;
+          username: string | null;
+          full_name: string | null;
+          avatar_url: string | null;
+        };
+        Relationships: [];
+      };
     };
     Functions: {
       get_prompt_versions: {
