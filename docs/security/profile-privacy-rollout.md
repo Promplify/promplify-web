@@ -1,4 +1,4 @@
-# Profile privacy repair candidate
+# Profile privacy repair and release
 
 Base: `3df40a2d608f1cfa1ff2164b755be4c30d5329ff`.
 
@@ -41,7 +41,7 @@ The standard full Supabase CLI reset/lint/advisor workflow remains unverified: l
 
 ## Approved-action boundary and rollout order
 
-The user subsequently authorized this repair release. The prepare_public_authors migration was applied to production at version 20261017143358 and independently read back (owner/options/columns/grants). Frontend release and restrictive profile migration are dependent remaining stages. Release scope:
+The user authorized this repair release. Both database migrations and the frontend release are complete; see the verification record below. Release scope:
 
 1. The exact migration `20261017143450_restrict_profile_visibility.sql` on Supabase project `jnwfnaexsmxqtbotkcon`, executed as postgres. It removes profile SELECT/ALL policies, revokes client table grants, grants authenticated SELECT/INSERT/UPDATE and creates owner SELECT RLS. The separate preparation migration creates the four-column public view with anonymous/authenticated SELECT only. It changes no profile rows, auth settings or existing RPC bodies.
 2. Publishing the reviewed frontend revision to the confirmed Cloudflare Pages `promplify-web-portal` production project serving `promplify.com`, after verifying account/project/domain identity. If Git integration deploys on main, pushing/merging that revision is part of the approval, not an implied local-commit action.
@@ -49,6 +49,16 @@ The user subsequently authorized this repair release. The prepare_public_authors
 Compatibility rollout sequence after explicit release authorization: (1) apply `20261017143358_prepare_public_authors.sql` to add only the four-column public projection; (2) publish the reviewed frontend and verify it queries public_authors; (3) apply `20261017143450_restrict_profile_visibility.sql` to revoke broad profile grants and install owner-only SELECT. Existing profile access remains unchanged during the short preparation/deployment window, so old clients keep attribution while the new frontend is delivered. Minimize this pre-existing exposure window and apply the restriction immediately after frontend validation. Old cached frontend clients after restriction can still use the existing Anonymous User fallback. Refresh PostgREST schema cache if the new view is not discovered.
 
 Before execution, recheck policies/ACLs/column grants/dependencies/view ownership, postgres role, migration history, exposed schemas and the two dedicated owner write policies; an unknown custom ALL policy may carry legitimate writes and requires adaptation. Preserve metadata snapshots without user rows. After approved rollout, verify deployment identity and metadata; use only explicitly approved synthetic production accounts for business checks, never enumerate real profiles.
+
+## Production completion: October 18, 2026 (Asia/Shanghai)
+
+- PR #91 merged as `1d3c0c71c82aff02f2ffee4785380e51cb4b776c`. GitHub checks for that revision passed, including Validate, Database migrations, Gitleaks and CodeQL. Cloudflare reported a successful production deployment (`bcc3fba6-224f-4d25-a36c-f596f98c99f7`). The live Discover detail asset independently contained the `public_authors` query.
+- Production inspection found the preparation migration present but the restrictive migration still missing. The exact tracked restriction SQL was then applied to `jnwfnaexsmxqtbotkcon`. Its migration-history version was reconciled to the repository version `20261017143450`; the preparation remains `20261017143358`.
+- Catalog readback confirmed owner-only SELECT, unchanged owner INSERT/UPDATE policies, no anonymous SELECT, and no anonymous/authenticated TRUNCATE privilege. There were no explicit profile column ACLs. The four-column public view remains owned by postgres with its security barrier and eligibility predicate intact.
+- Live Data API requests using the public client key returned `401` for anonymous full-profile and private-field reads, `200` for the four public attribution fields, and `400` when requesting `bio` through the public view. Every probe used `limit=0`, so no user rows were downloaded. A transaction-scoped synthetic authenticated identity saw zero profiles.
+- Both disposable PostgreSQL and real GoTrue/PostgREST suites passed again, including owner profile reads/edits, anonymous/cross-user denial, author eligibility, private sharing and unpublish lifecycle. `npm run check` passed, including all 37 existing tests. Test containers were removed. Production login/edit was not exercised with a new account; the local real-auth integration and production policy readback are the evidence for that behavior.
+- The October 30 Data API grant change does not revoke existing table grants. Current production table grants were checked, all public tables have RLS, and browser-access grants are already tracked in migrations. Future tables must explicitly declare required grants and RLS rather than rely on implicit defaults. `product_events` intentionally denies direct browser access. Reference: <https://supabase.com/changelog/45329-breaking-change-tables-not-exposed-to-data-and-graphql-api-automatically>.
+- The historical download claim remains unverified. Existing application TypeScript and full-stack local-tooling limitations above remain outside this release. The Security Advisor flags the intentional owner-privileged public author projection; its fixed four-column boundary must remain under review rather than be changed to invoker access, which would remove public attribution.
 
 ## Rollback without reopening exposure
 
