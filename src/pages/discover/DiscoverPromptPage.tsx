@@ -102,7 +102,11 @@ export default function DiscoverPromptPage() {
         // Fetch user data if available
         if (promptData.user_id) {
           try {
-            const { data: profileData } = await supabase.from("profiles").select("id, username, full_name, avatar_url").eq("id", promptData.user_id).single();
+            const { data: profileData } = await supabase
+              .from("public_authors")
+              .select("id, username, full_name, avatar_url")
+              .eq("id", promptData.user_id)
+              .single();
 
             if (profileData) {
               setUser(profileData);

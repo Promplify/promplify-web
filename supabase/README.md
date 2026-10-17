@@ -71,7 +71,8 @@ For local development, store the function secret in an ignored file outside the 
 - `prompt_template`: reusable starter templates
 - `prompt_shares`: private share links
 - `plaza_prompts` and `plaza_likes`: public discovery content
-- `profiles`: public profile fields linked to Supabase Auth users
+- `profiles`: private account profiles, readable and editable only by their owner
+- `public_authors`: read-only author ID, username, full name, and avatar for users with a current Discover publication of their own prompt; private shares do not qualify
 - `api_tokens`: API access managed by each user
 - `product_events`: privacy-limited activation and retention milestones
 
