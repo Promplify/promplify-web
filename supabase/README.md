@@ -78,6 +78,19 @@ For local development, store the function secret in an ignored file outside the 
 
 All browser-facing tables use Row Level Security. Public reads and RPCs are intentionally narrow. Product events cannot be inserted directly by browser clients.
 
+## Security regression checks
+
+CI runs the full migration reset and database lint, then two disposable integration suites:
+
+```bash
+node scripts/test-profile-privacy.mjs
+node scripts/test-profile-e2e.mjs
+```
+
+The runners require Docker and locally available official images (`postgres:17-alpine`, `public.ecr.aws/supabase/gotrue:v2.186.0`, `postgrest/postgrest:v13.0.7`). CI pulls these explicitly. All fixtures are synthetic, containers are cleaned up, and production credentials are never used. The SQL suite includes all migrations after the profile restriction and executes `tests/security_contracts.sql` as real database roles. The HTTP suite uses real GoTrue JWTs and PostgREST.
+
+The reviewed privileged entry points and hosted Auth limitations are recorded in [Security contracts](../docs/security/security-contracts.md). Do not remove authorization controls just to clear an Advisor warning.
+
 ## Migration rules
 
 1. Create files with `npx supabase migration new <name>` so every version is unique.

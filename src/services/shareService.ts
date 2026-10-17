@@ -1,3 +1,4 @@
+import { getRelatedTag } from "@/lib/promptTags";
 import { supabase } from "@/lib/supabase";
 import { v4 as uuidv4 } from "uuid";
 
@@ -179,7 +180,7 @@ export const getSharedPrompt = async (shareToken: string): Promise<SharedPromptR
         version: sharedPrompt.prompt_version ?? "1.0.0",
         token_count: sharedPrompt.prompt_token_count ?? 0,
         category_id: sharedPrompt.prompt_category_id,
-        prompt_tags: (tagData || []) as SharedPromptContent["prompt_tags"],
+        prompt_tags: (tagData || []).map(({ tag_id, tags }) => ({ tag_id, tags: getRelatedTag(tags) })),
       },
     };
   } catch (error) {

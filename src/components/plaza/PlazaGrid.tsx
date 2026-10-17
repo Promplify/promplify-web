@@ -1,11 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { PlazaPrompt } from "@/types/plaza";
+import type { DiscoverPrompt } from "@/types/discover";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { PlazaCard } from "./PlazaCard";
 
 interface PlazaGridProps {
-  prompts: PlazaPrompt[];
+  prompts: DiscoverPrompt[];
   isLoading: boolean;
   currentPage: number;
   totalItems: number;
@@ -32,7 +32,7 @@ export function PlazaGrid({ prompts, isLoading, currentPage, totalItems, itemsPe
       pages.push(
         <Button
           key={i}
-          variant={currentPage === i ? "default" : "outline-solid"}
+          variant={currentPage === i ? "default" : "outline"}
           className={`h-10 w-10 ${currentPage === i ? "bg-primary" : "border-gray-200"}`}
           onClick={() => onPageChange(i)}
         >

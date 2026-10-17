@@ -1,16 +1,16 @@
 import { Button } from "@/components/ui/button";
-import { PlazaPrompt } from "@/types/plaza";
+import type { DiscoverPrompt } from "@/types/discover";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useEffect, useState } from "react";
 import { PlazaCard } from "./PlazaCard";
 
 interface PlazaFeaturedProps {
-  featuredPrompts: PlazaPrompt[];
+  featuredPrompts: DiscoverPrompt[];
 }
 
 export function PlazaFeatured({ featuredPrompts }: PlazaFeaturedProps) {
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [visiblePrompts, setVisiblePrompts] = useState<PlazaPrompt[]>([]);
+  const [visiblePrompts, setVisiblePrompts] = useState<DiscoverPrompt[]>([]);
   const [slidesToShow, setSlidesToShow] = useState(4);
 
   // Adjust number of cards displayed per row based on screen size

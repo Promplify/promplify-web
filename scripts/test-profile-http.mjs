@@ -1,7 +1,7 @@
 // Run only against the disposable local GoTrue/PostgREST environment.
 // Credentials and tokens are generated for synthetic local accounts and never logged.
 import assert from "node:assert/strict";
-import { randomBytes } from "node:crypto";
+import { randomBytes, randomUUID } from "node:crypto";
 
 const auth = "http://127.0.0.1:59999";
 const rest = "http://127.0.0.1:53000";
@@ -78,6 +78,67 @@ async function createPrompt(actor, title) {
 }
 const ap = await createPrompt(a, "Synthetic API public prompt");
 const bp = await createPrompt(b, "Synthetic API private prompt");
+const apiToken = `synthetic-api-${suffix}`;
+const tokenCreated = await request(rest, "/api_tokens", {
+  method: "POST",
+  token: a.token,
+  body: { user_id: a.id, name: "Synthetic local token", token: apiToken },
+});
+assert.equal(tokenCreated.status, 201);
+for (const [value, prompt, expected] of [
+  ["invalid", ap, 401],
+  [apiToken, bp, 404],
+  [apiToken, ap, 200],
+]) {
+  const result = await request(rest, "/rpc/get_prompt_by_api_token", {
+    method: "POST",
+    body: { p_token: value, p_prompt_id: prompt, p_version: null },
+  });
+  assert.equal(result.status, 200);
+  assert.equal(result.data[0].status_code, expected);
+  if (expected !== 200) assert.equal(result.data[0].content, null);
+}
+const sessionId = randomUUID();
+assert.ok(
+  [401, 403].includes(
+    (
+      await request(rest, "/rpc/record_product_session", {
+        method: "POST",
+        body: { p_session_id: sessionId },
+      })
+    ).status
+  )
+);
+for (let attempt = 0; attempt < 2; attempt++) {
+  const result = await request(rest, "/rpc/record_product_session", {
+    method: "POST",
+    token: a.token,
+    body: { p_session_id: sessionId },
+  });
+  assert.equal(result.status, 200);
+  assert.equal(result.data, false);
+}
+const deniedTemplate = await request(rest, "/rpc/record_template_saved", {
+  method: "POST",
+  token: a.token,
+  body: { p_prompt_id: bp, p_template_id: 900001, p_source: "templates" },
+});
+assert.equal(deniedTemplate.status, 404);
+for (const actor of [null, a, b]) {
+  assert.ok([401, 403].includes((await request(rest, "/product_events?select=*", { token: actor?.token })).status));
+  assert.ok(
+    [401, 403].includes(
+      (
+        await request(rest, "/product_events", {
+          method: "POST",
+          token: actor?.token,
+          body: { user_id: a.id, event_name: "session_started", event_key: `direct-${suffix}`, source: "web" },
+        })
+      ).status
+    )
+  );
+}
+console.log("PASS: real API token ownership, invalid token denial, session replay, cross-user events and direct event access denial");
 const pub = await request(rest, "/plaza_prompts", { method: "POST", token: a.token, body: { user_id: a.id, prompt_id: ap } });
 assert.equal(pub.status, 201);
 const spoof = await request(rest, "/plaza_prompts", { method: "POST", token: c.token, body: { user_id: c.id, prompt_id: ap } });
