@@ -1,3 +1,4 @@
+import { getRelatedTag } from "@/lib/promptTags";
 import { supabase, supabaseUrl } from "@/lib/supabase";
 import { Category, Prompt } from "@/types/prompt";
 
@@ -145,7 +146,10 @@ export const getTagsByPromptId = async (promptId: string) => {
   const { data, error } = await supabase.from("prompt_tags").select("tags(id, name)").eq("prompt_id", promptId);
   if (error) throw error;
   // Return tag objects array
-  return data?.map((item) => item.tags) || [];
+  return (data || []).flatMap((item) => {
+    const tag = getRelatedTag(item.tags);
+    return tag ? [tag] : [];
+  });
 };
 
 export const createTag = async (name: string) => {

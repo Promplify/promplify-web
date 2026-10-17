@@ -318,7 +318,7 @@ export default function TemplatePage() {
                 <div className="flex items-center gap-3">
                   <h1 className="text-2xl font-semibold text-white">{templateData.title}</h1>
                   <Badge variant="secondary" className="bg-purple-500/20 text-purple-300 hover:bg-purple-500/30">
-                    v{templateData.version || "1.0.0"}
+                    v1.0.0
                   </Badge>
                 </div>
                 {templateData.description && <p className="text-gray-400">{templateData.description}</p>}

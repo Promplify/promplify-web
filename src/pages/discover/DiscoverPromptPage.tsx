@@ -29,7 +29,7 @@ export default function DiscoverPromptPage() {
   const [likesCount, setLikesCount] = useState(0);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
-  const [tags, setTags] = useState<Tag[]>([]);
+  const [tags, setTags] = useState<Pick<Tag, "id" | "name">[]>([]);
   const [showBackToTop, setShowBackToTop] = useState(false);
   const [metaData, setMetaData] = useState({
     title: "Prompt Details - Promplify Discover",

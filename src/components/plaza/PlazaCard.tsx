@@ -3,15 +3,15 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { supabase } from "@/lib/supabase";
-import { likePlazaPrompt, savePlazaPromptToMyList, unlikePlazaPrompt } from "@/services/plazaService";
-import { PlazaPrompt } from "@/types/plaza";
+import { likeDiscoverPrompt, saveDiscoverPromptToMyList, unlikeDiscoverPrompt } from "@/services/plazaService";
+import type { DiscoverPrompt } from "@/types/discover";
 import { Heart, Save } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
 interface PlazaCardProps {
-  plazaPrompt: PlazaPrompt;
+  plazaPrompt: DiscoverPrompt;
   featured?: boolean;
 }
 
@@ -36,12 +36,12 @@ export function PlazaCard({ plazaPrompt, featured = false }: PlazaCardProps) {
       }
 
       if (liked) {
-        await unlikePlazaPrompt(plazaPrompt.id);
+        await unlikeDiscoverPrompt(plazaPrompt.id);
         setLikesCount((prev) => prev - 1);
         setLiked(false);
         toast.success("Like removed");
       } else {
-        await likePlazaPrompt(plazaPrompt.id);
+        await likeDiscoverPrompt(plazaPrompt.id);
         setLikesCount((prev) => prev + 1);
         setLiked(true);
         toast.success("Prompt liked");
@@ -67,7 +67,7 @@ export function PlazaCard({ plazaPrompt, featured = false }: PlazaCardProps) {
         return;
       }
 
-      await savePlazaPromptToMyList(plazaPrompt.id);
+      await saveDiscoverPromptToMyList(plazaPrompt.id);
       toast.success("Prompt saved to your list");
     } catch (error) {
       console.error("Error saving prompt:", error);

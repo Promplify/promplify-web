@@ -32,7 +32,7 @@ export function DiscoverGrid({ prompts, isLoading, currentPage, totalItems, item
       pages.push(
         <Button
           key={i}
-          variant={currentPage === i ? "default" : "outline-solid"}
+          variant={currentPage === i ? "default" : "outline"}
           className={`h-8 sm:h-10 w-8 sm:w-10 ${currentPage === i ? "bg-primary" : "border-gray-200"}`}
           onClick={() => onPageChange(i)}
         >

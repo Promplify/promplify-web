@@ -69,7 +69,7 @@ export function LoginForm({ redirectPath = "/dashboard" }: LoginFormProps) {
                 try {
                   const { error: resendError } = await supabase.auth.resend({
                     type: "signup",
-                    email: data.email,
+                    email,
                   });
                   if (resendError) {
                     toast.error("Failed to send verification email: " + resendError.message);

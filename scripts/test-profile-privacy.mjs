@@ -55,7 +55,9 @@ GRANT ALL ON public.profiles TO anon, authenticated;
 CREATE POLICY "Public profiles are viewable by everyone." ON public.profiles FOR SELECT USING (true);`);
   console.log("PASS: baseline anonymous private-field read reproduced with synthetic data");
   sql(readFileSync(new URL(privacyMigration, directory), "utf8"));
+  for (const file of files.filter((file) => file > privacyMigration)) sql(readFileSync(new URL(file, directory), "utf8"));
   sql(readFileSync(new URL("../supabase/tests/profile_privacy.sql", import.meta.url), "utf8"));
+  sql(readFileSync(new URL("../supabase/tests/security_contracts.sql", import.meta.url), "utf8"));
   console.log("PASS: migration, legacy-policy removal, access matrix, author lifecycle, share/template RPC controls");
 } finally {
   docker(["rm", "--force", name]);
