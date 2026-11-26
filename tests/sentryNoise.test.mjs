@@ -27,6 +27,30 @@ test("drops React DOM removeChild noise without application frames", () => {
   assert.equal(shouldDropReactRemoveChildNoise(removeChildEvent), true);
 });
 
+test("drops Vite minified asset bundle removeChild noise before sourcemap resolution", () => {
+  const minifiedEvent = {
+    exception: {
+      values: [
+        {
+          type: "NotFoundError",
+          value: "Failed to execute 'removeChild' on 'Node': The node to be removed is not a child of this node.",
+          stacktrace: {
+            frames: [
+              {
+                filename: "https://promplify.com/assets/index-AbC123.js",
+                module: "index-AbC123",
+                function: "Zj",
+                in_app: true,
+              },
+            ],
+          },
+        },
+      ],
+    },
+  };
+  assert.equal(shouldDropReactRemoveChildNoise(minifiedEvent), true);
+});
+
 test("keeps removeChild errors when application frames are present", () => {
   const event = structuredClone(removeChildEvent);
   event.exception.values[0].stacktrace.frames.push({

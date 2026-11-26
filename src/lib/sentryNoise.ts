@@ -32,6 +32,17 @@ function isReactDomFrame(frame: SentryStackFrame): boolean {
   return source.includes("react-dom");
 }
 
+function isExplicitSourceFrame(frame: SentryStackFrame): boolean {
+  const filename = (frame.filename || "").toLowerCase();
+  const mod = (frame.module || "").toLowerCase();
+  return filename.includes("src/") || mod.startsWith("src.") || /\.(?:tsx?|jsx)$/.test(filename);
+}
+
+function isMinifiedAssetFrame(frame: SentryStackFrame): boolean {
+  const filename = (frame.filename || "").toLowerCase();
+  return /(?:^|\/)assets\/[^/]+\.m?js(?:\?.*)?$/.test(filename);
+}
+
 export function shouldDropReactRemoveChildNoise(event: SentryEventLike, hint?: SentryHintLike): boolean {
   const exception = event.exception?.values?.[0];
   const message = exception?.value || "";
@@ -42,10 +53,13 @@ export function shouldDropReactRemoveChildNoise(event: SentryEventLike, hint?: S
     return false;
   }
 
-  const hasApplicationFrame = frames.some((frame) => frame.in_app === true);
-  if (hasApplicationFrame) {
+  if (frames.some(isExplicitSourceFrame)) {
     return false;
   }
 
-  return frames.some(isReactDomFrame);
+  if (frames.some(isReactDomFrame)) {
+    return !frames.some((frame) => frame.in_app === true);
+  }
+
+  return frames.length > 0 && frames.every(isMinifiedAssetFrame);
 }
