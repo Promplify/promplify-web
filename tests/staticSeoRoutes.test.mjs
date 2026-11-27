@@ -45,6 +45,7 @@ test("uses accurate website structured data without unverifiable reviews", () =>
 
 test("provides a static home page heading without JavaScript", () => {
   assert.match(indexHtml, /<noscript>[\s\S]*?<h1>Promplify AI Prompt Management and Optimization<\/h1>/);
+  assert.match(indexHtml, /<div id="root">[\s\S]*?<main\s+data-seo-prerendered="true"[\s\S]*?<h1>Promplify AI Prompt Management and Optimization<\/h1>/);
 });
 
 test("generates a route-specific static heading for every public shell", () => {
@@ -53,4 +54,5 @@ test("generates a route-specific static heading for every public shell", () => {
   assert.match(generator, /heading: "Promplify API documentation"/);
   assert.ok(generator.includes("/<noscript>[\\s\\S]*?<\\/noscript>/"));
   assert.ok(generator.includes("<h1>${escapeAttribute(route.heading)}</h1>"));
+  assert.ok(generator.includes('data-seo-prerendered="true"'));
 });
